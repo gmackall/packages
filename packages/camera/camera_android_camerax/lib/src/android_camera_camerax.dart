@@ -4,6 +4,10 @@
 
 import 'dart:async';
 
+import 'package:camera_android_camerax/src/pending_recording.dart';
+import 'package:camera_android_camerax/src/recorder.dart';
+import 'package:camera_android_camerax/src/recording.dart';
+import 'package:camera_android_camerax/src/video_capture.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:flutter/widgets.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -37,6 +41,14 @@ class AndroidCameraCameraX extends CameraPlatform {
   /// The [Preview] instance that can be configured to present a live camera preview.
   @visibleForTesting
   Preview? preview;
+
+  /// The [VideoCapture] instance that can be instantiated and configured to
+  /// handle video recording
+  VideoCapture? videoCapture;
+
+  Recorder? _recorder;
+  PendingRecording? _pendingRecording;
+  Recording? _recording;
 
   /// Whether or not the [preview] is currently bound to the lifecycle that the
   /// [processCameraProvider] tracks.
@@ -378,5 +390,46 @@ class AndroidCameraCameraX extends CameraPlatform {
   Preview createPreview(int targetRotation, ResolutionInfo? targetResolution) {
     return Preview(
         targetRotation: targetRotation, targetResolution: targetResolution);
+  }
+
+  @override
+  Future<void> startVideoRecording(int cameraId, {Duration? maxVideoDuration}) async {
+    //TODO: remove temp camera selector used for testing:
+    await SystemServices.requestCameraPermissions(true);
+    processCameraProvider ??= await ProcessCameraProvider.getInstance();
+    _recorder = Recorder(bitRate: 1, aspectRatio: 1);
+    print("before withoutput");
+    VideoCapture videoCapture = await VideoCapture.withOutput(_recorder!);
+    _recorder = await videoCapture.getOutput();
+
+    //TODO: get these instead of just asserting. This is just for testing purposes
+    assert(cameraSelector != null);
+    assert(processCameraProvider != null);
+    processCameraProvider!.bindToLifecycle(cameraSelector!, [videoCapture]);
+    _pendingRecording = await _recorder!.prepareRecording();
+    _recording = await _pendingRecording!.start();
+  }
+
+  /// Stops the video recording and returns the file where it was saved.
+  @override
+  Future<XFile> stopVideoRecording(int cameraId) async {
+    _recording!.close();
+    return Future.value(XFile('/Users/mackall/development/cameraTestOutput/inner'));
+    //TODO: return the actual file, and also clean up the fields used for the
+    //three recording methods. Need to convert from URI
+  }
+
+  /// Pause video recording.
+  @override
+  Future<void> pauseVideoRecording(int cameraId) async {
+    assert(_recording != null);
+    _recording!.pause();
+  }
+
+  /// Resume video recording after pausing.
+  @override
+  Future<void> resumeVideoRecording(int cameraId) async {
+    assert(_recording != null);
+    _recording!.resume();
   }
 }
