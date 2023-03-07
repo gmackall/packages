@@ -13,6 +13,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.app.Activity;
+import android.content.Context;
+
 import io.flutter.embedding.engine.systemchannels.PlatformChannel.DeviceOrientation;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
@@ -34,11 +36,12 @@ public class SystemServicesTest {
 
   @Mock public BinaryMessenger mockBinaryMessenger;
   @Mock public InstanceManager mockInstanceManager;
+  @Mock public Context mockContext;
 
   @Test
   public void requestCameraPermissionsTest() {
     final SystemServicesHostApiImpl systemServicesHostApi =
-        new SystemServicesHostApiImpl(mockBinaryMessenger, mockInstanceManager);
+        new SystemServicesHostApiImpl(mockBinaryMessenger, mockInstanceManager, mockContext);
     final CameraXProxy mockCameraXProxy = mock(CameraXProxy.class);
     final CameraPermissionsManager mockCameraPermissionsManager =
         mock(CameraPermissionsManager.class);
@@ -92,7 +95,7 @@ public class SystemServicesTest {
   @Test
   public void deviceOrientationChangeTest() {
     final SystemServicesHostApiImpl systemServicesHostApi =
-        new SystemServicesHostApiImpl(mockBinaryMessenger, mockInstanceManager);
+        new SystemServicesHostApiImpl(mockBinaryMessenger, mockInstanceManager, mockContext);
     final CameraXProxy mockCameraXProxy = mock(CameraXProxy.class);
     final Activity mockActivity = mock(Activity.class);
     final DeviceOrientationManager mockDeviceOrientationManager =

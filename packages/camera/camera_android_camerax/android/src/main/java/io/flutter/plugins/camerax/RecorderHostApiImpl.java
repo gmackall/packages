@@ -4,19 +4,16 @@
 
 package io.flutter.plugins.camerax;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.FileOutputOptions;
-import androidx.camera.video.MediaStoreOutputOptions;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recorder;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -26,6 +23,9 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     private final BinaryMessenger binaryMessenger;
     private final InstanceManager instanceManager;
     private Context context;
+
+    @VisibleForTesting
+    public CameraXProxy cameraXProxy = new CameraXProxy();
 
     public RecorderHostApiImpl(
             BinaryMessenger binaryMessenger,
@@ -38,7 +38,6 @@ public class RecorderHostApiImpl implements RecorderHostApi {
 
     @Override
     public void create(@NonNull Long instanceId, Long aspectRatio, Long bitRate) {
-        //TODO: Aspect ratio and bitrate setters are only exposed in the most recent camerax
         Recorder.Builder recorderBuilder = new Recorder.Builder();
         Recorder recorder = recorderBuilder
                 .setAspectRatio(Math.toIntExact(aspectRatio))
@@ -68,18 +67,23 @@ public class RecorderHostApiImpl implements RecorderHostApi {
 
     @NonNull
     @Override
-    public Long prepareRecording(@NonNull Long identifier) {
+    public Long prepareRecording(@NonNull Long identifier, @NonNull String path) {
         Recorder recorder = getRecorderFromInstanceId(identifier);
-        final File outputDir = context.getCacheDir();
         File temporaryCaptureFile;
         try {
-            temporaryCaptureFile = File.createTempFile("MOV", ".mp4", outputDir);
-        } catch (IOException | SecurityException e) {
-            return 0L; //TODO fix
+            temporaryCaptureFile = new File(path);
+        } catch (NullPointerException | SecurityException e) {
+            SystemServicesFlutterApiImpl systemServicesFlutterApi =
+                    cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
+            systemServicesFlutterApi.sendCameraError((
+                    e.toString()
+            ), reply -> {});
+            return 0L; //What to return here?
         }
 
         FileOutputOptions fileOutputOptions = new FileOutputOptions.Builder(temporaryCaptureFile).build();
-        PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions);
+        PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions)
+                .withAudioEnabled();
         PendingRecordingFlutterApiImpl pendingRecordingFlutterApiImpl
                 = new PendingRecordingFlutterApiImpl(binaryMessenger, instanceManager);
         pendingRecordingFlutterApiImpl.create(pendingRecording, result -> {});

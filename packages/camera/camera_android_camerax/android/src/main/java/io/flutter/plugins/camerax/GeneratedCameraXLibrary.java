@@ -617,6 +617,7 @@ public class GeneratedCameraXLibrary {
     void requestCameraPermissions(@NonNull Boolean enableAudio, Result<CameraPermissionsErrorData> result);
     void startListeningForDeviceOrientationChange(@NonNull Boolean isFrontFacing, @NonNull Long sensorOrientation);
     void stopListeningForDeviceOrientationChange();
+    void getTempFilePath(Result<String> result);
 
     /** The codec used by SystemServicesHostApi. */
     static MessageCodec<Object> getCodec() {
@@ -701,6 +702,35 @@ public class GeneratedCameraXLibrary {
               wrapped.put("error", wrapError(exception));
             }
             reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.SystemServicesHostApi.getTempFilePath", getCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              Result<String> resultCallback = new Result<String>() {
+                public void success(String result) {
+                  wrapped.put("result", result);
+                  reply.reply(wrapped);
+                }
+                public void error(Throwable error) {
+                  wrapped.put("error", wrapError(error));
+                  reply.reply(wrapped);
+                }
+              };
+
+              api.getTempFilePath(resultCallback);
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+              reply.reply(wrapped);
+            }
           });
         } else {
           channel.setMessageHandler(null);
@@ -1011,7 +1041,7 @@ public class GeneratedCameraXLibrary {
     void create(@NonNull Long identifier, @Nullable Long aspectRatio, @Nullable Long bitRate);
     @NonNull Long getAspectRatio(@NonNull Long identifier);
     @NonNull Long getTargetVideoEncodingBitRate(@NonNull Long identifier);
-    @NonNull Long prepareRecording(@NonNull Long identifier);
+    @NonNull Long prepareRecording(@NonNull Long identifier, @NonNull String path);
 
     /** The codec used by RecorderHostApi. */
     static MessageCodec<Object> getCodec() {
@@ -1106,7 +1136,11 @@ public class GeneratedCameraXLibrary {
               if (identifierArg == null) {
                 throw new NullPointerException("identifierArg unexpectedly null.");
               }
-              Long output = api.prepareRecording((identifierArg == null) ? null : identifierArg.longValue());
+              String pathArg = (String)args.get(1);
+              if (pathArg == null) {
+                throw new NullPointerException("pathArg unexpectedly null.");
+              }
+              Long output = api.prepareRecording((identifierArg == null) ? null : identifierArg.longValue(), pathArg);
               wrapped.put("result", output);
             }
             catch (Error | RuntimeException exception) {

@@ -12,7 +12,7 @@ import 'recorder.dart';
 import 'use_case.dart';
 
 class VideoCapture extends UseCase {
-  //Creates a VideoCapture that is not automatically attached to a native object.
+  /// Creates a VideoCapture that is not automatically attached to a native object.
   VideoCapture.detached({BinaryMessenger? binaryMessenger,
     InstanceManager? instanceManager})
       : super.detached(
@@ -35,7 +35,9 @@ class VideoCapture extends UseCase {
     _api.createFromInstance(this);
   }
 
-  static Future<VideoCapture> withOutput(Recorder recorder, {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager}) {
+  /// Creates a VideoCapture associated with the given [Recorder].
+  static Future<VideoCapture> withOutput(Recorder recorder,
+      {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager}) {
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
     final VideoCaptureHostApiImpl api
     = VideoCaptureHostApiImpl(binaryMessenger: binaryMessenger, instanceManager: instanceManager);
@@ -43,6 +45,7 @@ class VideoCapture extends UseCase {
     return api.withOutputFromInstance(recorder);
   }
 
+  /// Gets the [Recorder] associated with this VideoCapture.
   Future<Recorder> getOutput() {
     return _api.getOutputFromInstance(this);
   }
@@ -86,9 +89,6 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
           instanceManager: instanceManager);
         });
     final int videoCaptureId = await withOutput(identifier)!;
-    print("in dart, video capture id is");
-    print(videoCaptureId);
-    print(instanceManager.containsIdentifier(videoCaptureId));
     return instanceManager.getInstanceWithWeakReference(videoCaptureId)!
       as VideoCapture;
   }

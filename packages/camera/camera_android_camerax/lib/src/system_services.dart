@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:camera_platform_interface/camera_platform_interface.dart'
-    show CameraException, DeviceOrientationChangedEvent;
+    show CameraEvent, CameraException, DeviceOrientationChangedEvent;
 import 'package:flutter/services.dart';
 
 import 'android_camera_camerax_flutter_api_impls.dart';
@@ -29,6 +29,9 @@ class SystemServices {
   /// Stream that emits the errors caused by camera usage on the native side.
   static final StreamController<String> cameraErrorStreamController =
       StreamController<String>.broadcast();
+  
+  static final StreamController<CameraEvent> cameraEventStreamController =
+      StreamController<CameraEvent>.broadcast();
 
   /// Requests permission to access the camera and audio if specified.
   static Future<void> requestCameraPermissions(bool enableAudio,
@@ -60,6 +63,13 @@ class SystemServices {
         SystemServicesHostApi(binaryMessenger: binaryMessenger);
 
     api.stopListeningForDeviceOrientationChange();
+  }
+
+  /// Gets the current cache directory path from context.
+  static Future<String> getTempFilePath({BinaryMessenger? binaryMessenger}) {
+    final SystemServicesHostApi api =
+        SystemServicesHostApi(binaryMessenger: binaryMessenger);
+    return api.getTempFilePath();
   }
 }
 

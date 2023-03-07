@@ -5,7 +5,13 @@
 package io.flutter.plugins.camerax;
 
 import android.app.Activity;
+import android.content.Context;
+
 import androidx.annotation.VisibleForTesting;
+
+import java.io.File;
+import java.io.IOException;
+
 import io.flutter.embedding.engine.systemchannels.PlatformChannel.DeviceOrientation;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
@@ -16,6 +22,7 @@ import io.flutter.plugins.camerax.GeneratedCameraXLibrary.SystemServicesHostApi;
 public class SystemServicesHostApiImpl implements SystemServicesHostApi {
   private final BinaryMessenger binaryMessenger;
   private final InstanceManager instanceManager;
+  private Context context;
 
   @VisibleForTesting public CameraXProxy cameraXProxy = new CameraXProxy();
   @VisibleForTesting public DeviceOrientationManager deviceOrientationManager;
@@ -25,10 +32,15 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
   private PermissionsRegistry permissionsRegistry;
 
   public SystemServicesHostApiImpl(
-      BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+      BinaryMessenger binaryMessenger, InstanceManager instanceManager, Context context) {
     this.binaryMessenger = binaryMessenger;
     this.instanceManager = instanceManager;
+    this.context = context;
     this.systemServicesFlutterApi = new SystemServicesFlutterApiImpl(binaryMessenger);
+  }
+
+  public void setContext(Context context) {
+    this.context = context;
   }
 
   public void setActivity(Activity activity) {
@@ -107,5 +119,17 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
     if (deviceOrientationManager != null) {
       deviceOrientationManager.stop();
     }
+  }
+
+  @Override
+  public void getTempFilePath(Result<String> result) {
+    try {
+      File path = File.createTempFile("MOV", ".mp4", context.getCacheDir());
+      result.success(path.toString());
+    } catch (IOException e) {
+      systemServicesFlutterApi.sendCameraError(e.toString(), reply -> {});
+      result.success(null);
+    }
+
   }
 }

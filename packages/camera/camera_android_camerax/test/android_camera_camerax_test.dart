@@ -10,10 +10,14 @@ import 'package:camera_android_camerax/src/camera.dart';
 import 'package:camera_android_camerax/src/camera_info.dart';
 import 'package:camera_android_camerax/src/camera_selector.dart';
 import 'package:camera_android_camerax/src/camerax_library.g.dart';
+import 'package:camera_android_camerax/src/pending_recording.dart';
 import 'package:camera_android_camerax/src/preview.dart';
 import 'package:camera_android_camerax/src/process_camera_provider.dart';
+import 'package:camera_android_camerax/src/recorder.dart';
+import 'package:camera_android_camerax/src/recording.dart';
 import 'package:camera_android_camerax/src/system_services.dart';
 import 'package:camera_android_camerax/src/use_case.dart';
+import 'package:camera_android_camerax/src/video_capture.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:flutter/services.dart' show DeviceOrientation;
 import 'package:flutter/widgets.dart';
@@ -29,6 +33,10 @@ import 'android_camera_camerax_test.mocks.dart';
   MockSpec<CameraSelector>(),
   MockSpec<Preview>(),
   MockSpec<ProcessCameraProvider>(),
+  MockSpec<Recorder>(),
+  MockSpec<PendingRecording>(),
+  MockSpec<Recording>(),
+  MockSpec<VideoCapture>(),
 ])
 @GenerateMocks(<Type>[BuildContext])
 void main() {
@@ -364,6 +372,53 @@ void main() {
         as Texture;
     expect(previewTexture.textureId, equals(textureId));
   });
+
+  test('pauseVideoRecording pauses the recording',
+          () async {
+    final AndroidCameraCameraX camera = AndroidCameraCameraX();
+    final MockRecording recording = MockRecording();
+    camera.recording = recording;
+    camera.pauseVideoRecording(0);
+    verify(recording.pause());
+    verifyNoMoreInteractions(recording);
+          });
+
+  test('resumeVideoRecording resumes the recording',
+          () async {
+        final AndroidCameraCameraX camera = AndroidCameraCameraX();
+        final MockRecording recording = MockRecording();
+        camera.recording = recording;
+        camera.resumeVideoRecording(0);
+        verify(recording.resume());
+        verifyNoMoreInteractions(recording);
+      });
+
+
+  test('stopVideoRecording stops the recording and unbinds from lifecycle',
+          () async {
+        final AndroidCameraCameraX camera = AndroidCameraCameraX();
+        final MockRecording recording = MockRecording();
+        final MockProcessCameraProvider processCameraProvider = MockProcessCameraProvider();
+        final MockVideoCapture videoCapture = MockVideoCapture();
+        const String videoOutputPath = '/test/output/path';
+
+        camera.processCameraProvider = processCameraProvider;
+        camera.recording = recording;
+        camera.videoCapture = videoCapture;
+        camera.videoOutputPath = videoOutputPath;
+
+        final XFile file = await camera.stopVideoRecording(0);
+        assert(file.path == videoOutputPath);
+
+        verifyInOrder([
+          recording.close(),
+          processCameraProvider.unbind([videoCapture])
+        ]);
+        verifyNoMoreInteractions(recording);
+        verifyNoMoreInteractions(processCameraProvider);
+      });
+
+
 }
 
 /// Mock of [AndroidCameraCameraX] that stubs behavior of some methods for

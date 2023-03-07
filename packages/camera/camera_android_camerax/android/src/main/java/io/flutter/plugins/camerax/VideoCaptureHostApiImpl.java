@@ -9,7 +9,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.VideoCapture;
-import androidx.core.content.ContextCompat;
 
 import java.util.Objects;
 
@@ -28,45 +27,33 @@ public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
         this.context = context;
     }
 
-    @Override
-    public void create(@NonNull Long identifier) {
-        //TODO: implement or delete
-    }
-
     public void setContext(Context context) {
         this.context = context;
     }
 
     @Override
-    @NonNull
-    public Long withOutput(@NonNull Long videoOutputId) {
-        System.out.println("At start of withOutput");
-        //TODO: allow configuration here, maybe other implementations of VideoOutput interface
-        Recorder recorder = (Recorder) Objects.requireNonNull(instanceManager.getInstance(videoOutputId));
-        //Recorder recorder = new Recorder.Builder()
-        //        .setExecutor(ContextCompat.getMainExecutor(context))
-        //        .build();
+    public void create(@NonNull Long identifier) {
 
-        //RecorderFlutterApiImpl recorderFlutterApi = new RecorderFlutterApiImpl(
-        //        binaryMessenger, instanceManager);
-        //recorderFlutterApi.create(recorder, 1L, 1L, result -> {});
-        VideoCapture<Recorder> videoCapture = VideoCapture.withOutput(recorder);
-        final VideoCaptureFlutterApiImpl videoCaptureFlutterApi =
-                new VideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
-        //if (!instanceManager.containsInstance(videoCapture)) {
-        videoCaptureFlutterApi.create(videoCapture, result -> {});
-        //}
-        System.out.println("id is");
-        System.out.println(instanceManager.getIdentifierForStrongReference(videoCapture));
-        return instanceManager.getIdentifierForStrongReference(videoCapture);
     }
 
     @Override
     @NonNull
-    public Long getOutput(Long identifier) {
-        VideoCapture<Recorder> videoCapture = instanceManager.getInstance(identifier);
+    public Long withOutput(@NonNull Long videoOutputId) {
+        Recorder recorder = (Recorder) Objects.requireNonNull(instanceManager.getInstance(videoOutputId));
+        VideoCapture<Recorder> videoCapture = VideoCapture.withOutput(recorder);
+        final VideoCaptureFlutterApiImpl videoCaptureFlutterApi =
+                new VideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
+        videoCaptureFlutterApi.create(videoCapture, result -> {});
+        return Objects.requireNonNull(
+                instanceManager.getIdentifierForStrongReference(videoCapture));
+    }
+
+    @Override
+    @NonNull
+    public Long getOutput(@NonNull Long identifier) {
+        VideoCapture<Recorder> videoCapture
+                = Objects.requireNonNull(instanceManager.getInstance(identifier));
         Recorder recorder = videoCapture.getOutput();
-        Long recorderId = instanceManager.getIdentifierForStrongReference(recorder);
-        return recorderId;
+        return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recorder));
     }
 }

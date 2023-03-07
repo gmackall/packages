@@ -44,11 +44,17 @@ class AndroidCameraCameraX extends CameraPlatform {
 
   /// The [VideoCapture] instance that can be instantiated and configured to
   /// handle video recording
+  @visibleForTesting
   VideoCapture? videoCapture;
 
-  Recorder? _recorder;
-  PendingRecording? _pendingRecording;
-  Recording? _recording;
+  @visibleForTesting
+  Recorder? recorder;
+  @visibleForTesting
+  PendingRecording? pendingRecording;
+  @visibleForTesting
+  Recording? recording;
+  @visibleForTesting
+  String? videoOutputPath;
 
   /// Whether or not the [preview] is currently bound to the lifecycle that the
   /// [processCameraProvider] tracks.
@@ -394,42 +400,38 @@ class AndroidCameraCameraX extends CameraPlatform {
 
   @override
   Future<void> startVideoRecording(int cameraId, {Duration? maxVideoDuration}) async {
-    //TODO: remove temp camera selector used for testing:
-    await SystemServices.requestCameraPermissions(true);
     processCameraProvider ??= await ProcessCameraProvider.getInstance();
-    _recorder = Recorder(bitRate: 1, aspectRatio: 1);
-    print("before withoutput");
-    VideoCapture videoCapture = await VideoCapture.withOutput(_recorder!);
-    _recorder = await videoCapture.getOutput();
+    recorder = Recorder(bitRate: 1, aspectRatio: 1);
+    videoCapture = await VideoCapture.withOutput(recorder!);
+    recorder = await videoCapture!.getOutput();
 
-    //TODO: get these instead of just asserting. This is just for testing purposes
     assert(cameraSelector != null);
     assert(processCameraProvider != null);
-    processCameraProvider!.bindToLifecycle(cameraSelector!, [videoCapture]);
-    _pendingRecording = await _recorder!.prepareRecording();
-    _recording = await _pendingRecording!.start();
+    processCameraProvider!.bindToLifecycle(cameraSelector!, [videoCapture!]);
+    videoOutputPath = await SystemServices.getTempFilePath();
+    pendingRecording = await recorder!.prepareRecording(videoOutputPath!);
+    recording = await pendingRecording!.start();
   }
 
   /// Stops the video recording and returns the file where it was saved.
   @override
   Future<XFile> stopVideoRecording(int cameraId) async {
-    _recording!.close();
-    return Future.value(XFile('/Users/mackall/development/cameraTestOutput/inner'));
-    //TODO: return the actual file, and also clean up the fields used for the
-    //three recording methods. Need to convert from URI
+    recording!.close();
+    processCameraProvider!.unbind(<UseCase>[videoCapture!]);
+    return XFile(videoOutputPath!);
   }
 
   /// Pause video recording.
   @override
   Future<void> pauseVideoRecording(int cameraId) async {
-    assert(_recording != null);
-    _recording!.pause();
+    assert(recording != null);
+    recording!.pause();
   }
 
   /// Resume video recording after pausing.
   @override
   Future<void> resumeVideoRecording(int cameraId) async {
-    assert(_recording != null);
-    _recording!.resume();
+    assert(recording != null);
+    recording!.resume();
   }
 }

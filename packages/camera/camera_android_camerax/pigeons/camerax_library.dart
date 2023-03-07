@@ -112,6 +112,9 @@ abstract class SystemServicesHostApi {
       bool isFrontFacing, int sensorOrientation);
 
   void stopListeningForDeviceOrientationChange();
+
+  @async
+  String getTempFilePath();
 }
 
 @FlutterApi()
@@ -154,7 +157,7 @@ abstract class RecorderHostApi {
 
   int getTargetVideoEncodingBitRate(int identifier);
 
-  int prepareRecording(int identifier);// TODO: figure out args
+  int prepareRecording(int identifier, String path);
 }
 
 @FlutterApi()
@@ -164,9 +167,7 @@ abstract class RecorderFlutterApi {
 
 @HostApi(dartHostTestHandler: 'TestPendingRecordingHostApi')
 abstract class PendingRecordingHostApi {
-  int start(int identifier);// TODO: figure out args
-
-//TODO: audio
+  int start(int identifier);
 }
 
 @FlutterApi()
@@ -182,7 +183,7 @@ abstract class RecordingHostApi {
 
   void resume(int identifier);
 
-  void stop(int identifier); //TODO: maybe remove close
+  void stop(int identifier);
 }
 
 @FlutterApi()

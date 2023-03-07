@@ -7,6 +7,7 @@ package io.flutter.plugins.camerax;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoRecordEvent;
@@ -20,8 +21,10 @@ import io.flutter.plugins.camerax.GeneratedCameraXLibrary.PendingRecordingHostAp
 public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     private final BinaryMessenger binaryMessenger;
     private final InstanceManager instanceManager;
-
     private Context context;
+
+    @VisibleForTesting
+    public CameraXProxy cameraXProxy = new CameraXProxy();
 
     public PendingRecordingHostApiImpl(
             BinaryMessenger binaryMessenger,
@@ -42,18 +45,15 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
         PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
         Recording recording = pendingRecording.start(ContextCompat.getMainExecutor(context),
                 (videoRecordEvent) -> {
-            if (videoRecordEvent instanceof VideoRecordEvent.Start) {
-
+            if (videoRecordEvent instanceof VideoRecordEvent.Finalize) {
+                if (((VideoRecordEvent.Finalize) videoRecordEvent).hasError()) {
+                    SystemServicesFlutterApiImpl systemServicesFlutterApi =
+                            cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
+                    systemServicesFlutterApi.sendCameraError((
+                            ((VideoRecordEvent.Finalize) videoRecordEvent).getCause().toString()
+                            ), reply -> {});
+                }
             }
-            else if (videoRecordEvent instanceof VideoRecordEvent.Finalize) {
-                System.out.println(((VideoRecordEvent.Finalize) videoRecordEvent).hasError());
-                //System.out.println(((VideoRecordEvent.Finalize) videoRecordEvent).getCause().toString());
-                System.out.println(((VideoRecordEvent.Finalize) videoRecordEvent).getError());
-            }
-            else if (videoRecordEvent instanceof VideoRecordEvent.Status) {
-                System.out.println(videoRecordEvent.getRecordingStats().getRecordedDurationNanos());
-            }
-                    //https://developer.android.com/reference/androidx/camera/video/VideoRecordEvent
                 });
         RecordingFlutterApiImpl recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger,
                 instanceManager);

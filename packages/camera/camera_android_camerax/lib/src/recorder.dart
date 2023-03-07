@@ -11,7 +11,7 @@ import 'java_object.dart';
 import 'pending_recording.dart';
 
 class Recorder extends JavaObject {
-  /// Creates a Recorder. TODO: figure out correct comment style
+  /// Creates a Recorder.
   Recorder({BinaryMessenger? binaryMessenger,
     InstanceManager? instanceManager,
     this.aspectRatio,
@@ -37,9 +37,8 @@ class Recorder extends JavaObject {
   late final RecorderHostApiImpl _api;
 
   /// Prepare a recording that will be saved to a file
-  /// TODO: need to figure out file info here, and passing in other args
-  Future<PendingRecording> prepareRecording() {
-    return _api.prepareRecordingFromInstance(this);
+  Future<PendingRecording> prepareRecording(String path) {
+    return _api.prepareRecordingFromInstance(this, path);
   }
 }
 
@@ -66,9 +65,11 @@ class RecorderHostApiImpl extends RecorderHostApi {
     create(identifier, aspectRatio, bitRate);
   }
 
-  Future<PendingRecording> prepareRecordingFromInstance(Recorder instance) async {
+  Future<PendingRecording> prepareRecordingFromInstance(Recorder instance, String path) async {
     final int pendingRecordingId = await prepareRecording(
-        instanceManager.getIdentifier(instance)!);
+        instanceManager.getIdentifier(instance)!,
+        path
+    );
 
     return instanceManager.getInstanceWithWeakReference(pendingRecordingId)!;
   }
