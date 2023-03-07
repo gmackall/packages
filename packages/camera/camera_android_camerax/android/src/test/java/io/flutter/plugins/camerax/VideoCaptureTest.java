@@ -57,6 +57,7 @@ public class VideoCaptureTest {
         VideoCaptureHostApiImpl videoCaptureHostApi =
                 new VideoCaptureHostApiImpl(mockBinaryMessenger, testInstanceManager, mockContext);
         assertEquals(videoCaptureHostApi.getOutput(videoCaptureId), recorderId);
-        testInstanceManager.
+        testInstanceManager.remove(recorderId);
+        testInstanceManager.remove(videoCaptureId);
     }
 }
