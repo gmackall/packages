@@ -106,5 +106,16 @@ void main() {
       });
       SystemServicesFlutterApiImpl().onCameraError(testErrorDescription);
     });
+
+    test('getTempFilePath completes normally', () async {
+      final MockTestSystemServicesHostApi mockApi =
+          MockTestSystemServicesHostApi();
+      TestSystemServicesHostApi.setup(mockApi);
+      const String testPath = '/test/path';
+
+      when(mockApi.getTempFilePath()).thenAnswer((_) async => testPath);
+      expect(await SystemServices.getTempFilePath(), testPath);
+      verify(mockApi.getTempFilePath());
+    });
   });
 }
