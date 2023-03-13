@@ -417,7 +417,7 @@ class AndroidCameraCameraX extends CameraPlatform {
   @override
   Future<XFile> stopVideoRecording(int cameraId) async {
     recording!.close();
-    processCameraProvider!.unbind(<UseCase>[videoCapture!]);
+    //processCameraProvider!.unbind(<UseCase>[videoCapture!]);
     return XFile(videoOutputPath!);
   }
 

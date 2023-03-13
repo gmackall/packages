@@ -11,6 +11,9 @@ import 'java_object.dart';
 import 'recorder.dart';
 import 'use_case.dart';
 
+/// Dart wrapping of CameraX VideoCapture class.
+///
+/// See https://developer.android.com/reference/androidx/camera/video/VideoCapture
 class VideoCapture extends UseCase {
   /// Creates a VideoCapture that is not automatically attached to a native object.
   VideoCapture.detached({BinaryMessenger? binaryMessenger,
@@ -21,18 +24,6 @@ class VideoCapture extends UseCase {
     _api = VideoCaptureHostApiImpl(
         binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
-  }
-
-  /// Creates a VideoCapture.
-  VideoCapture({BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager})
-      : super.detached(
-      binaryMessenger: binaryMessenger,
-      instanceManager: instanceManager) {
-    _api = VideoCaptureHostApiImpl(
-        binaryMessenger: binaryMessenger, instanceManager: instanceManager);
-    AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
-    _api.createFromInstance(this);
   }
 
   /// Creates a VideoCapture associated with the given [Recorder].
@@ -74,7 +65,7 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
     identifier ??= instanceManager.addDartCreatedInstance(
         instance,
         onCopy: (VideoCapture original) {
-          return VideoCapture(binaryMessenger: binaryMessenger,
+          return VideoCapture.detached(binaryMessenger: binaryMessenger,
               instanceManager: instanceManager);
         });
     create(identifier);

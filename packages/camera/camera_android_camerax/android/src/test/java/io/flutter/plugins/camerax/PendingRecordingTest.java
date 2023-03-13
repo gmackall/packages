@@ -10,5 +10,4 @@ import org.robolectric.RobolectricTestRunner;
 @RunWith(RobolectricTestRunner.class)
 public class PendingRecordingTest {
 
-
 }

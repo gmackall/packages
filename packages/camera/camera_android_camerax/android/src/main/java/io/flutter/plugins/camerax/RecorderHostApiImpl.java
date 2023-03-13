@@ -39,9 +39,13 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     @Override
     public void create(@NonNull Long instanceId, Long aspectRatio, Long bitRate) {
         Recorder.Builder recorderBuilder = new Recorder.Builder();
+        if (aspectRatio != null) {
+            recorderBuilder.setAspectRatio(Math.toIntExact(aspectRatio));
+        }
+        if (bitRate != null) {
+            recorderBuilder.setTargetVideoEncodingBitRate(Math.toIntExact(bitRate));
+        }
         Recorder recorder = recorderBuilder
-                .setAspectRatio(Math.toIntExact(aspectRatio))
-                .setTargetVideoEncodingBitRate(Math.toIntExact(bitRate))
                 .setExecutor(ContextCompat.getMainExecutor(context))
                 .build();
         instanceManager.addDartCreatedInstance(recorder, instanceId);

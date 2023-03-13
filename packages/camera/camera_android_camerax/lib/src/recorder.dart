@@ -10,8 +10,12 @@ import 'instance_manager.dart';
 import 'java_object.dart';
 import 'pending_recording.dart';
 
+/// A dart wrapping of the CameraX Recorder class. Does not exactly wrap all
+/// methods.
+///
+/// See https://developer.android.com/reference/androidx/camera/video/Recorder
 class Recorder extends JavaObject {
-  /// Creates a Recorder.
+  /// Creates a [Recorder].
   Recorder({BinaryMessenger? binaryMessenger,
     InstanceManager? instanceManager,
     this.aspectRatio,
@@ -23,6 +27,7 @@ class Recorder extends JavaObject {
     _api.createFromInstance(this, aspectRatio, bitRate);
   }
 
+  /// Creates a [Recorder] that is not automatically attached to a native object
   Recorder.detached(
       {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager, this.aspectRatio, this.bitRate})
       : super.detached(
@@ -32,9 +37,12 @@ class Recorder extends JavaObject {
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
   }
 
-  int? aspectRatio;
-  int? bitRate;
   late final RecorderHostApiImpl _api;
+
+  /// The video aspect ratio of this Recorder.
+  final int? aspectRatio;
+  /// The intended video encoding bitrate for recording.
+  final int? bitRate;
 
   /// Prepare a recording that will be saved to a file
   Future<PendingRecording> prepareRecording(String path) {

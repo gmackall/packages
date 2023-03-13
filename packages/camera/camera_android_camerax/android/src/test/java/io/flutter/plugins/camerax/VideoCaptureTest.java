@@ -60,4 +60,21 @@ public class VideoCaptureTest {
         testInstanceManager.remove(recorderId);
         testInstanceManager.remove(videoCaptureId);
     }
+
+    @Test
+    public void withOutput_returnsNewVideoCaptureWithAssociatedRecorder() {
+        final Long recorderId = 5L;
+        testInstanceManager.addDartCreatedInstance(mockRecorder, recorderId);
+
+        VideoCaptureHostApiImpl videoCaptureHostApi =
+                new VideoCaptureHostApiImpl(mockBinaryMessenger, testInstanceManager, mockContext);
+        final Long videoCaptureId = videoCaptureHostApi.withOutput(recorderId);
+
+        //Need to spy the flutterApi actions
+        VideoCapture<Recorder> videoCapture = testInstanceManager.getInstance(videoCaptureId);
+
+        assertEquals(videoCapture.getOutput(), mockRecorder);
+
+        testInstanceManager.remove(recorderId);
+    }
 }
