@@ -69,30 +69,27 @@ public class RecorderHostApiImpl implements RecorderHostApi {
         return Long.valueOf(recorder.getTargetVideoEncodingBitRate());
     }
 
-    @NonNull
     @Override
-    public Long prepareRecording(@NonNull Long identifier, @NonNull String path) {
+    public void prepareRecording(@NonNull Long identifier, @NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
         Recorder recorder = getRecorderFromInstanceId(identifier);
         File temporaryCaptureFile;
         try {
             temporaryCaptureFile = new File(path);
         } catch (NullPointerException | SecurityException e) {
-            SystemServicesFlutterApiImpl systemServicesFlutterApi =
-                    cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
-            systemServicesFlutterApi.sendCameraError((
-                    e.toString()
-            ), reply -> {});
-            return 0L; //What to return here?
+            result.error(e);
+            return;
         }
 
-        FileOutputOptions fileOutputOptions = new FileOutputOptions.Builder(temporaryCaptureFile).build();
+        FileOutputOptions fileOutputOptions = new FileOutputOptions.Builder(temporaryCaptureFile)
+                .build();
         PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions)
                 .withAudioEnabled();
         PendingRecordingFlutterApiImpl pendingRecordingFlutterApiImpl
                 = new PendingRecordingFlutterApiImpl(binaryMessenger, instanceManager);
-        pendingRecordingFlutterApiImpl.create(pendingRecording, result -> {});
-        return Objects.requireNonNull(
-                instanceManager.getIdentifierForStrongReference(pendingRecording));
+        pendingRecordingFlutterApiImpl.create(pendingRecording, reply -> {});
+        result.success(
+                Objects.requireNonNull(
+                        instanceManager.getIdentifierForStrongReference(pendingRecording)));
     }
 
     private Recorder getRecorderFromInstanceId(Long instanceId) {

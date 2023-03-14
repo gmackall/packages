@@ -157,6 +157,7 @@ abstract class RecorderHostApi {
 
   int getTargetVideoEncodingBitRate(int identifier);
 
+  @async
   int prepareRecording(int identifier, String path);
 }
 

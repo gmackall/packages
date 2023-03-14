@@ -4,8 +4,6 @@
 
 package io.flutter.plugins.camerax;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.Recorder;
@@ -19,17 +17,11 @@ import io.flutter.plugins.camerax.GeneratedCameraXLibrary.VideoCaptureHostApi;
 public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
     private final BinaryMessenger binaryMessenger;
     private final InstanceManager instanceManager;
-    private Context context;
 
     public VideoCaptureHostApiImpl(
-            BinaryMessenger binaryMessenger, InstanceManager instanceManager, Context context) {
+            BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
-        this.context = context;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
     }
 
     @Override //TODO: delete

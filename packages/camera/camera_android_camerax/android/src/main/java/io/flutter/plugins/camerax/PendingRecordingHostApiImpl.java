@@ -14,6 +14,7 @@ import androidx.camera.video.VideoRecordEvent;
 import androidx.core.content.ContextCompat;
 
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.PendingRecordingHostApi;
@@ -29,6 +30,9 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     @VisibleForTesting
     SystemServicesFlutterApiImpl systemServicesFlutterApi;
 
+    @VisibleForTesting
+    RecordingFlutterApiImpl recordingFlutterApi;
+
     public PendingRecordingHostApiImpl(
             BinaryMessenger binaryMessenger,
             @NonNull InstanceManager instanceManager,
@@ -37,6 +41,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
         this.instanceManager = instanceManager;
         this.context = context;
         systemServicesFlutterApi = cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
+        recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger, instanceManager);
     }
 
     public void setContext(Context context) {
@@ -47,12 +52,17 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     @Override
     public Long start(@NonNull Long identifier) {
         PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
-        Recording recording = pendingRecording.start(ContextCompat.getMainExecutor(context),
-                this::handleVideoRecordEvent);
-        RecordingFlutterApiImpl recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger,
-                instanceManager);
+        Recording recording = pendingRecording.start(
+                this.getExecutor(),
+                this::handleVideoRecordEvent
+        );
         recordingFlutterApi.create(recording, reply -> {});
         return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
+    }
+
+    @VisibleForTesting
+    public Executor getExecutor() {
+        return ContextCompat.getMainExecutor(context);
     }
 
     private void handleVideoRecordEvent(VideoRecordEvent event) {

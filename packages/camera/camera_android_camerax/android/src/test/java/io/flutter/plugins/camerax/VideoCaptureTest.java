@@ -5,30 +5,20 @@
 package io.flutter.plugins.camerax;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import android.content.Context;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 import androidx.camera.video.Recorder;
-import androidx.camera.video.Recording;
 import androidx.camera.video.VideoCapture;
-
-import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -42,7 +32,6 @@ public class VideoCaptureTest {
 
     @Mock public BinaryMessenger mockBinaryMessenger;
     @Mock public Recorder mockRecorder;
-    @Mock public Context mockContext;
     @Mock public VideoCaptureFlutterApiImpl mockVideoCaptureFlutterApi;
 
     InstanceManager testInstanceManager;
@@ -67,7 +56,7 @@ public class VideoCaptureTest {
         testInstanceManager.addDartCreatedInstance(videoCapture, videoCaptureId);
 
         VideoCaptureHostApiImpl videoCaptureHostApi =
-                new VideoCaptureHostApiImpl(mockBinaryMessenger, testInstanceManager, mockContext);
+                new VideoCaptureHostApiImpl(mockBinaryMessenger, testInstanceManager);
         assertEquals(videoCaptureHostApi.getOutput(videoCaptureId), recorderId);
         testInstanceManager.remove(recorderId);
         testInstanceManager.remove(videoCaptureId);
@@ -80,7 +69,7 @@ public class VideoCaptureTest {
         testInstanceManager.addDartCreatedInstance(mockRecorder, recorderId);
 
         VideoCaptureHostApiImpl videoCaptureHostApi =
-                new VideoCaptureHostApiImpl(mockBinaryMessenger, testInstanceManager, mockContext);
+                new VideoCaptureHostApiImpl(mockBinaryMessenger, testInstanceManager);
         VideoCaptureHostApiImpl spyVideoCaptureApi = spy(videoCaptureHostApi);
         doReturn(mockVideoCaptureFlutterApi)
                 .when(spyVideoCaptureApi)

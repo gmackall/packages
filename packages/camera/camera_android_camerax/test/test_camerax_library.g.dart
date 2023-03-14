@@ -482,7 +482,7 @@ abstract class TestRecorderHostApi {
   void create(int identifier, int? aspectRatio, int? bitRate);
   int getAspectRatio(int identifier);
   int getTargetVideoEncodingBitRate(int identifier);
-  int prepareRecording(int identifier, String path);
+  Future<int> prepareRecording(int identifier, String path);
   static void setup(TestRecorderHostApi? api, {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
@@ -547,7 +547,7 @@ abstract class TestRecorderHostApi {
           assert(arg_identifier != null, 'Argument for dev.flutter.pigeon.RecorderHostApi.prepareRecording was null, expected non-null int.');
           final String? arg_path = (args[1] as String?);
           assert(arg_path != null, 'Argument for dev.flutter.pigeon.RecorderHostApi.prepareRecording was null, expected non-null String.');
-          final int output = api.prepareRecording(arg_identifier!, arg_path!);
+          final int output = await api.prepareRecording(arg_identifier!, arg_path!);
           return <Object?, Object?>{'result': output};
         });
       }
