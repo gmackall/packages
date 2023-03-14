@@ -26,6 +26,9 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     @VisibleForTesting
     public CameraXProxy cameraXProxy = new CameraXProxy();
 
+    @VisibleForTesting
+    SystemServicesFlutterApiImpl systemServicesFlutterApi;
+
     public PendingRecordingHostApiImpl(
             BinaryMessenger binaryMessenger,
             @NonNull InstanceManager instanceManager,
@@ -33,6 +36,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
         this.context = context;
+        systemServicesFlutterApi = cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
     }
 
     public void setContext(Context context) {
@@ -44,21 +48,21 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     public Long start(@NonNull Long identifier) {
         PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
         Recording recording = pendingRecording.start(ContextCompat.getMainExecutor(context),
-                (videoRecordEvent) -> {
-            if (videoRecordEvent instanceof VideoRecordEvent.Finalize) {
-                if (((VideoRecordEvent.Finalize) videoRecordEvent).hasError()) {
-                    SystemServicesFlutterApiImpl systemServicesFlutterApi =
-                            cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
-                    systemServicesFlutterApi.sendCameraError((
-                            ((VideoRecordEvent.Finalize) videoRecordEvent).getCause().toString()
-                            ), reply -> {});
-                }
-            }
-                });
+                this::handleVideoRecordEvent);
         RecordingFlutterApiImpl recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger,
                 instanceManager);
         recordingFlutterApi.create(recording, reply -> {});
         return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
+    }
+
+    private void handleVideoRecordEvent(VideoRecordEvent event) {
+        if (event instanceof VideoRecordEvent.Finalize) {
+            VideoRecordEvent.Finalize castedEvent = (VideoRecordEvent.Finalize) event;
+            if (castedEvent.hasError()) {
+                systemServicesFlutterApi.sendCameraError(
+                        castedEvent.getCause().toString(), reply -> {});
+            }
+        }
     }
 
     private PendingRecording getPendingRecordingFromInstanceId(Long instanceId) {
