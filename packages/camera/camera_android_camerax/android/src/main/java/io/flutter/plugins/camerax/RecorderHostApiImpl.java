@@ -38,7 +38,7 @@ public class RecorderHostApiImpl implements RecorderHostApi {
 
     @Override
     public void create(@NonNull Long instanceId, Long aspectRatio, Long bitRate) {
-        Recorder.Builder recorderBuilder = new Recorder.Builder();
+        Recorder.Builder recorderBuilder = cameraXProxy.createRecorderBuilder();
         if (aspectRatio != null) {
             recorderBuilder.setAspectRatio(Math.toIntExact(aspectRatio));
         }

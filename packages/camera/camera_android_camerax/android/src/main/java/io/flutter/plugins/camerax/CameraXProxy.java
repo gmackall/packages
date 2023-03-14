@@ -10,6 +10,8 @@ import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.Preview;
+import androidx.camera.video.Recorder;
+
 import io.flutter.plugin.common.BinaryMessenger;
 
 /** Utility class used to create CameraX-related objects primarily for testing purposes. */
@@ -47,5 +49,9 @@ public class CameraXProxy {
   public SystemServicesFlutterApiImpl createSystemServicesFlutterApiImpl(
       @NonNull BinaryMessenger binaryMessenger) {
     return new SystemServicesFlutterApiImpl(binaryMessenger);
+  }
+
+  public Recorder.Builder createRecorderBuilder() {
+    return new Recorder.Builder();
   }
 }

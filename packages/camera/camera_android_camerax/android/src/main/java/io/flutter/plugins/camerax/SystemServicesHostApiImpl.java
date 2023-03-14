@@ -17,6 +17,7 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.CameraPermissionsErrorData;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.Result;
+import io.flutter.plugins.camerax.GeneratedCameraXLibrary.SystemServicesFlutterApi;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.SystemServicesHostApi;
 
 public class SystemServicesHostApiImpl implements SystemServicesHostApi {
@@ -82,7 +83,7 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
   }
 
   /**
-   * Starts listening for device orientation changes using an instace of a {@link
+   * Starts listening for device orientation changes using an instance of a {@link
    * DeviceOrientationManager}.
    *
    * <p>Whenever a change in device orientation is detected by the {@code DeviceOrientationManager},
@@ -122,14 +123,13 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
   }
 
   @Override
-  public void getTempFilePath(Result<String> result) {
+  public void getTempFilePath(Result<String> result) { //TODO(gmackall): take in prefix and suffix here
     try {
       File path = File.createTempFile("MOV", ".mp4", context.getCacheDir());
       result.success(path.toString());
-    } catch (IOException e) {
+    } catch (IOException | SecurityException e) {
       systemServicesFlutterApi.sendCameraError(e.toString(), reply -> {});
-      result.success(null);
+      result.error(e);
     }
-
   }
 }

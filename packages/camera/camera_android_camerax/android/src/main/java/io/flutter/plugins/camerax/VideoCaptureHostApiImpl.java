@@ -7,6 +7,7 @@ package io.flutter.plugins.camerax;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.VideoCapture;
 
@@ -31,7 +32,7 @@ public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
         this.context = context;
     }
 
-    @Override
+    @Override //TODO: delete
     public void create(@NonNull Long identifier) {
 
     }
@@ -42,7 +43,7 @@ public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
         Recorder recorder = (Recorder) Objects.requireNonNull(instanceManager.getInstance(videoOutputId));
         VideoCapture<Recorder> videoCapture = VideoCapture.withOutput(recorder);
         final VideoCaptureFlutterApiImpl videoCaptureFlutterApi =
-                new VideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
+                getVideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
         videoCaptureFlutterApi.create(videoCapture, result -> {});
         return Objects.requireNonNull(
                 instanceManager.getIdentifierForStrongReference(videoCapture));
@@ -55,5 +56,11 @@ public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
                 = Objects.requireNonNull(instanceManager.getInstance(identifier));
         Recorder recorder = videoCapture.getOutput();
         return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recorder));
+    }
+
+    @VisibleForTesting
+    public VideoCaptureFlutterApiImpl getVideoCaptureFlutterApiImpl(
+            BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+        return new VideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
     }
 }
