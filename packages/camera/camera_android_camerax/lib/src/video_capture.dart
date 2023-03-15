@@ -68,14 +68,14 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
           return Recorder(binaryMessenger: binaryMessenger,
           instanceManager: instanceManager);
         });
-    final int videoCaptureId = await withOutput(identifier)!;
+    final int videoCaptureId = await withOutput(identifier);
     return instanceManager.getInstanceWithWeakReference(videoCaptureId)!
       as VideoCapture;
   }
 
   Future<Recorder> getOutputFromInstance(VideoCapture instance) async {
-    int? identifier = instanceManager.getIdentifier(instance);
-    int recorderId = await getOutput(identifier!);
+    final int? identifier = instanceManager.getIdentifier(instance);
+    final int recorderId = await getOutput(identifier!);
     return instanceManager.getInstanceWithWeakReference(recorderId)!;
   }
 }

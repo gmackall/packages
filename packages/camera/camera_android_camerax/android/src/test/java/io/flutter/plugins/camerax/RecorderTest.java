@@ -6,6 +6,9 @@ package io.flutter.plugins.camerax;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -13,6 +16,8 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 
+import androidx.camera.video.FileOutputOptions;
+import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recorder;
 import androidx.test.core.app.ApplicationProvider;
 
@@ -26,6 +31,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.robolectric.RobolectricTestRunner;
 
+import java.io.File;
 import java.util.concurrent.Executor;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -101,5 +107,46 @@ public class RecorderTest {
         assertEquals(recorderHostApi.getTargetVideoEncodingBitRate(3L), Long.valueOf(7L));
         verify(mockRecorder).getTargetVideoEncodingBitRate();
         testInstanceManager.remove(3L);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void prepareRecording_returnsExpectedPendingRecording() {
+        PendingRecordingFlutterApiImpl mockPendingRecordingFlutterApi
+                = mock(PendingRecordingFlutterApiImpl.class);
+        PendingRecording mockPendingRecording = mock(PendingRecording.class);
+        Long mockRecorderId = 3L;
+        testInstanceManager.addDartCreatedInstance(mockRecorder, mockRecorderId);
+        when(mockRecorder.prepareRecording(any(Context.class), any(FileOutputOptions.class)))
+                .thenReturn(mockPendingRecording);
+        when(mockPendingRecording.withAudioEnabled()).thenReturn(mockPendingRecording);
+        doNothing().when(mockPendingRecordingFlutterApi).create(any(PendingRecording.class), any());
+        Long mockPendingRecordingId = testInstanceManager
+                .addHostCreatedInstance(mockPendingRecording);
+
+        RecorderHostApiImpl spy
+                = spy(new RecorderHostApiImpl(mockBinaryMessenger, testInstanceManager, context));
+        spy.pendingRecordingFlutterApi = mockPendingRecordingFlutterApi;
+        GeneratedCameraXLibrary.Result<Long> result = mock(GeneratedCameraXLibrary.Result.class);
+        doReturn(mock(File.class)).when(spy).openTempFile(any(), any());
+        spy.prepareRecording(mockRecorderId, "", result);
+        verify(result).success(mockPendingRecordingId);
+
+        testInstanceManager.remove(mockRecorderId);
+        testInstanceManager.remove(mockPendingRecordingId);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void prepareRecording_errorsWhenPassedNullPath() {
+        Long mockRecorderId = 3L;
+        testInstanceManager.addDartCreatedInstance(mockRecorder, mockRecorderId);
+        RecorderHostApiImpl recorderHostApi
+                = new RecorderHostApiImpl(mockBinaryMessenger, testInstanceManager, context);
+        GeneratedCameraXLibrary.Result<Long> result = mock(GeneratedCameraXLibrary.Result.class);
+        recorderHostApi.prepareRecording(mockRecorderId, null, result);
+        verify(result).error(isA(NullPointerException.class));
+
+        testInstanceManager.remove(mockRecorderId);
     }
 }

@@ -27,6 +27,9 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     @VisibleForTesting
     public CameraXProxy cameraXProxy = new CameraXProxy();
 
+    @VisibleForTesting
+    public PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
+
     public RecorderHostApiImpl(
             BinaryMessenger binaryMessenger,
             @NonNull InstanceManager instanceManager,
@@ -34,6 +37,8 @@ public class RecorderHostApiImpl implements RecorderHostApi {
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
         this.context = context;
+        this.pendingRecordingFlutterApi
+                = new PendingRecordingFlutterApiImpl(binaryMessenger, instanceManager);
     }
 
     @Override
@@ -73,24 +78,29 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     public void prepareRecording(@NonNull Long identifier, @NonNull String path,
                                  GeneratedCameraXLibrary.Result<Long> result) {
         Recorder recorder = getRecorderFromInstanceId(identifier);
-        File temporaryCaptureFile;
-        try {
-            temporaryCaptureFile = new File(path);
-        } catch (NullPointerException | SecurityException e) {
-            result.error(e);
+        File temporaryCaptureFile = openTempFile(path, result);
+        if (temporaryCaptureFile == null) {
             return;
         }
-
         FileOutputOptions fileOutputOptions = new FileOutputOptions.Builder(temporaryCaptureFile)
                 .build();
         PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions)
                 .withAudioEnabled();
-        PendingRecordingFlutterApiImpl pendingRecordingFlutterApiImpl
-                = new PendingRecordingFlutterApiImpl(binaryMessenger, instanceManager);
-        pendingRecordingFlutterApiImpl.create(pendingRecording, reply -> {});
+        pendingRecordingFlutterApi.create(pendingRecording, reply -> {});
         result.success(
                 Objects.requireNonNull(
                         instanceManager.getIdentifierForStrongReference(pendingRecording)));
+    }
+
+    @VisibleForTesting
+    public File openTempFile(@NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
+        File file = null;
+        try {
+            file = new File(path);
+        } catch (NullPointerException | SecurityException e) {
+            result.error(e);
+        }
+        return file;
     }
 
     private Recorder getRecorderFromInstanceId(Long instanceId) {
