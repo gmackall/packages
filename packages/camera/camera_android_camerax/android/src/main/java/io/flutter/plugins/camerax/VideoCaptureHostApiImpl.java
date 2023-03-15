@@ -24,11 +24,6 @@ public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
         this.instanceManager = instanceManager;
     }
 
-    @Override //TODO: delete
-    public void create(@NonNull Long identifier) {
-
-    }
-
     @Override
     @NonNull
     public Long withOutput(@NonNull Long videoOutputId) {
