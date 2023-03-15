@@ -398,15 +398,15 @@ class AndroidCameraCameraX extends CameraPlatform {
         targetRotation: targetRotation, targetResolution: targetResolution);
   }
 
+  /// Configures and starts a video recording.
   @override
   Future<void> startVideoRecording(int cameraId, {Duration? maxVideoDuration}) async {
-    processCameraProvider ??= await ProcessCameraProvider.getInstance();
-    recorder = Recorder(bitRate: 1, aspectRatio: 1);
-    videoCapture = await VideoCapture.withOutput(recorder!);
-    recorder = await videoCapture!.getOutput();
-
     assert(cameraSelector != null);
     assert(processCameraProvider != null);
+
+    processCameraProvider ??= await ProcessCameraProvider.getInstance();
+    recorder = Recorder(); // TODO(gmackall): Configure resolution info here.
+    videoCapture = await VideoCapture.withOutput(recorder!);
     processCameraProvider!.bindToLifecycle(cameraSelector!, [videoCapture!]);
     videoOutputPath = await SystemServices.getTempFilePath('MOV', '.mp4');
     pendingRecording = await recorder!.prepareRecording(videoOutputPath!);
@@ -417,7 +417,6 @@ class AndroidCameraCameraX extends CameraPlatform {
   @override
   Future<XFile> stopVideoRecording(int cameraId) async {
     recording!.close();
-    //processCameraProvider!.unbind(<UseCase>[videoCapture!]);
     return XFile(videoOutputPath!);
   }
 
