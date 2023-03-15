@@ -114,7 +114,7 @@ abstract class SystemServicesHostApi {
   void stopListeningForDeviceOrientationChange();
 
   @async
-  String getTempFilePath();
+  String getTempFilePath(String prefix, String suffix);
 }
 
 @FlutterApi()
@@ -137,8 +137,6 @@ abstract class PreviewHostApi {
 
 @HostApi(dartHostTestHandler: 'TestVideoCaptureHostApi')
 abstract class VideoCaptureHostApi {
-  void create(int identifier);
-
   int withOutput(int videoOutputId);
 
   int getOutput(int identifier);

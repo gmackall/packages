@@ -292,22 +292,6 @@ class MockProcessCameraProvider extends _i1.Mock
 /// See the documentation for Mockito's code generation for more information.
 class MockRecorder extends _i1.Mock implements _i6.Recorder {
   @override
-  set aspectRatio(int? _aspectRatio) => super.noSuchMethod(
-        Invocation.setter(
-          #aspectRatio,
-          _aspectRatio,
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  set bitRate(int? _bitRate) => super.noSuchMethod(
-        Invocation.setter(
-          #bitRate,
-          _bitRate,
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
   _i11.Future<_i4.PendingRecording> prepareRecording(String? path) =>
       (super.noSuchMethod(
         Invocation.method(

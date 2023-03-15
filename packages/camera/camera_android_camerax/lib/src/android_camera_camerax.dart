@@ -408,7 +408,7 @@ class AndroidCameraCameraX extends CameraPlatform {
     assert(cameraSelector != null);
     assert(processCameraProvider != null);
     processCameraProvider!.bindToLifecycle(cameraSelector!, [videoCapture!]);
-    videoOutputPath = await SystemServices.getTempFilePath();
+    videoOutputPath = await SystemServices.getTempFilePath('MOV', '.mp4');
     pendingRecording = await recorder!.prepareRecording(videoOutputPath!);
     recording = await pendingRecording!.start();
   }

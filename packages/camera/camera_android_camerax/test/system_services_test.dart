@@ -111,11 +111,16 @@ void main() {
       final MockTestSystemServicesHostApi mockApi =
           MockTestSystemServicesHostApi();
       TestSystemServicesHostApi.setup(mockApi);
-      const String testPath = '/test/path';
+      const String testPath = '/test/path/';
+      const String testPrefix = 'MOV';
+      const String testSuffix = '.mp4';
 
-      when(mockApi.getTempFilePath()).thenAnswer((_) async => testPath);
-      expect(await SystemServices.getTempFilePath(), testPath);
-      verify(mockApi.getTempFilePath());
+      when(mockApi.getTempFilePath(testPrefix, testSuffix))
+          .thenAnswer((_) async => testPath + testPrefix + testSuffix);
+      expect(
+          await SystemServices.getTempFilePath(testPrefix, testSuffix),
+          testPath + testPrefix + testSuffix);
+      verify(mockApi.getTempFilePath(testPrefix, testSuffix));
     });
   });
 }

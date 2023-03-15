@@ -7,6 +7,7 @@ package io.flutter.plugins.camerax;
 import android.app.Activity;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
 import java.io.File;
@@ -123,9 +124,9 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
   }
 
   @Override
-  public void getTempFilePath(Result<String> result) { //TODO(gmackall): take in prefix and suffix here
+  public void getTempFilePath(@NonNull String prefix, @NonNull String suffix, Result<String> result) {
     try {
-      File path = File.createTempFile("MOV", ".mp4", context.getCacheDir());
+      File path = File.createTempFile(prefix, suffix, context.getCacheDir());
       result.success(path.toString());
     } catch (IOException | SecurityException e) {
       systemServicesFlutterApi.sendCameraError(e.toString(), reply -> {});

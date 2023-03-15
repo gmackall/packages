@@ -66,10 +66,11 @@ class SystemServices {
   }
 
   /// Gets the current cache directory path from context.
-  static Future<String> getTempFilePath({BinaryMessenger? binaryMessenger}) {
+  static Future<String> getTempFilePath(String prefix, String suffix,
+      {BinaryMessenger? binaryMessenger}) {
     final SystemServicesHostApi api =
         SystemServicesHostApi(binaryMessenger: binaryMessenger);
-    return api.getTempFilePath();
+    return api.getTempFilePath(prefix, suffix);
   }
 }
 

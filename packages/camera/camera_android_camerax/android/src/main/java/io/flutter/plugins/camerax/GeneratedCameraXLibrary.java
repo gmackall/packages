@@ -617,7 +617,7 @@ public class GeneratedCameraXLibrary {
     void requestCameraPermissions(@NonNull Boolean enableAudio, Result<CameraPermissionsErrorData> result);
     void startListeningForDeviceOrientationChange(@NonNull Boolean isFrontFacing, @NonNull Long sensorOrientation);
     void stopListeningForDeviceOrientationChange();
-    void getTempFilePath(Result<String> result);
+    void getTempFilePath(@NonNull String prefix, @NonNull String suffix, Result<String> result);
 
     /** The codec used by SystemServicesHostApi. */
     static MessageCodec<Object> getCodec() {
@@ -714,6 +714,15 @@ public class GeneratedCameraXLibrary {
           channel.setMessageHandler((message, reply) -> {
             Map<String, Object> wrapped = new HashMap<>();
             try {
+              ArrayList<Object> args = (ArrayList<Object>)message;
+              String prefixArg = (String)args.get(0);
+              if (prefixArg == null) {
+                throw new NullPointerException("prefixArg unexpectedly null.");
+              }
+              String suffixArg = (String)args.get(1);
+              if (suffixArg == null) {
+                throw new NullPointerException("suffixArg unexpectedly null.");
+              }
               Result<String> resultCallback = new Result<String>() {
                 public void success(String result) {
                   wrapped.put("result", result);
@@ -725,7 +734,7 @@ public class GeneratedCameraXLibrary {
                 }
               };
 
-              api.getTempFilePath(resultCallback);
+              api.getTempFilePath(prefixArg, suffixArg, resultCallback);
             }
             catch (Error | RuntimeException exception) {
               wrapped.put("error", wrapError(exception));
@@ -920,7 +929,6 @@ public class GeneratedCameraXLibrary {
 
   /** Generated interface from Pigeon that represents a handler of messages from Flutter.*/
   public interface VideoCaptureHostApi {
-    void create(@NonNull Long identifier);
     @NonNull Long withOutput(@NonNull Long videoOutputId);
     @NonNull Long getOutput(@NonNull Long identifier);
 
@@ -931,30 +939,6 @@ public class GeneratedCameraXLibrary {
 
     /** Sets up an instance of `VideoCaptureHostApi` to handle messages through the `binaryMessenger`. */
     static void setup(BinaryMessenger binaryMessenger, VideoCaptureHostApi api) {
-      {
-        BasicMessageChannel<Object> channel =
-            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.VideoCaptureHostApi.create", getCodec());
-        if (api != null) {
-          channel.setMessageHandler((message, reply) -> {
-            Map<String, Object> wrapped = new HashMap<>();
-            try {
-              ArrayList<Object> args = (ArrayList<Object>)message;
-              Number identifierArg = (Number)args.get(0);
-              if (identifierArg == null) {
-                throw new NullPointerException("identifierArg unexpectedly null.");
-              }
-              api.create((identifierArg == null) ? null : identifierArg.longValue());
-              wrapped.put("result", null);
-            }
-            catch (Error | RuntimeException exception) {
-              wrapped.put("error", wrapError(exception));
-            }
-            reply.reply(wrapped);
-          });
-        } else {
-          channel.setMessageHandler(null);
-        }
-      }
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.VideoCaptureHostApi.withOutput", getCodec());

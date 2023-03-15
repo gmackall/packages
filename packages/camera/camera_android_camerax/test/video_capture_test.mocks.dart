@@ -28,14 +28,6 @@ class MockTestVideoCaptureHostApi extends _i1.Mock
   }
 
   @override
-  void create(int? identifier) => super.noSuchMethod(
-        Invocation.method(
-          #create,
-          [identifier],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
   int withOutput(int? videoOutputId) => (super.noSuchMethod(
         Invocation.method(
           #withOutput,

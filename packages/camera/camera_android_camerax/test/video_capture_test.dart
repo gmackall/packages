@@ -17,20 +17,6 @@ import 'video_capture_test.mocks.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('detached create does not call create on the Java side', () async {
-    final MockTestVideoCaptureHostApi mockApi = MockTestVideoCaptureHostApi();
-    TestVideoCaptureHostApi.setup(mockApi);
-    final InstanceManager instanceManager = InstanceManager(
-      onWeakReferenceRemoved: (_) {},
-    );
-
-    VideoCapture.detached(instanceManager: instanceManager);
-
-    verifyNever(
-      mockApi.create(argThat(isA<int>()))
-    );
-  });
-
   test('withOutput calls the Java side and returns correct video capture', () async {
     final MockTestVideoCaptureHostApi mockApi = MockTestVideoCaptureHostApi();
     TestVideoCaptureHostApi.setup(mockApi);

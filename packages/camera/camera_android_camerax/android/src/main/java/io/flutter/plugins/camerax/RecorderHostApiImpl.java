@@ -70,7 +70,8 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     }
 
     @Override
-    public void prepareRecording(@NonNull Long identifier, @NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
+    public void prepareRecording(@NonNull Long identifier, @NonNull String path,
+                                 GeneratedCameraXLibrary.Result<Long> result) {
         Recorder recorder = getRecorderFromInstanceId(identifier);
         File temporaryCaptureFile;
         try {

@@ -60,17 +60,6 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
   /// Maintains instances stored to communicate with native language objects.
   late final InstanceManager instanceManager;
 
-  void createFromInstance(VideoCapture instance) {
-    int? identifier = instanceManager.getIdentifier(instance);
-    identifier ??= instanceManager.addDartCreatedInstance(
-        instance,
-        onCopy: (VideoCapture original) {
-          return VideoCapture.detached(binaryMessenger: binaryMessenger,
-              instanceManager: instanceManager);
-        });
-    create(identifier);
-  }
-
   Future<VideoCapture> withOutputFromInstance(Recorder recorder) async {
     int? identifier = instanceManager.getIdentifier(recorder);
     identifier ??= instanceManager.addDartCreatedInstance(
