@@ -117,8 +117,7 @@ void main() {
 
       when(mockApi.getTempFilePath(testPrefix, testSuffix))
           .thenAnswer((_) async => testPath + testPrefix + testSuffix);
-      expect(
-          await SystemServices.getTempFilePath(testPrefix, testSuffix),
+      expect(await SystemServices.getTempFilePath(testPrefix, testSuffix),
           testPath + testPrefix + testSuffix);
       verify(mockApi.getTempFilePath(testPrefix, testSuffix));
     });

@@ -18,30 +18,25 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test('start calls the Java side and returns correct recording', () async {
-    final MockTestPendingRecordingHostApi mockApi
-        = MockTestPendingRecordingHostApi();
+    final MockTestPendingRecordingHostApi mockApi =
+        MockTestPendingRecordingHostApi();
     TestPendingRecordingHostApi.setup(mockApi);
 
     final InstanceManager instanceManager = InstanceManager(
       onWeakReferenceRemoved: (_) {},
     );
 
-    final PendingRecording pendingRecording = PendingRecording.detached(
-        instanceManager: instanceManager);
+    final PendingRecording pendingRecording =
+        PendingRecording.detached(instanceManager: instanceManager);
     const int pendingRecordingId = 2;
-    instanceManager.addHostCreatedInstance(
-        pendingRecording,
-        pendingRecordingId,
-        onCopy: (_) => PendingRecording.detached(instanceManager: instanceManager)
-    );
+    instanceManager.addHostCreatedInstance(pendingRecording, pendingRecordingId,
+        onCopy: (_) =>
+            PendingRecording.detached(instanceManager: instanceManager));
 
     final Recording mockRecording = MockRecording();
     const int mockRecordingId = 3;
-    instanceManager.addHostCreatedInstance(
-        mockRecording,
-        mockRecordingId,
-        onCopy: (_) => Recording.detached(instanceManager: instanceManager)
-    );
+    instanceManager.addHostCreatedInstance(mockRecording, mockRecordingId,
+        onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
     when(mockApi.start(pendingRecordingId)).thenReturn(mockRecordingId);
     expect(await pendingRecording.start(), mockRecording);

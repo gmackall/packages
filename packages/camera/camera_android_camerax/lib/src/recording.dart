@@ -13,14 +13,14 @@ import 'java_object.dart';
 /// See https://developer.android.com/reference/androidx/camera/video/Recording
 class Recording extends JavaObject {
   /// Constructs a detached [Recording]
-  Recording.detached({BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager}) : super.detached(
-    binaryMessenger: binaryMessenger,
-    instanceManager: instanceManager,
-  ) {
+  Recording.detached(
+      {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager})
+      : super.detached(
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        ) {
     _api = RecordingHostApiImpl(
-        binaryMessenger: binaryMessenger,
-        instanceManager: instanceManager);
+        binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
   }
 
@@ -44,10 +44,8 @@ class Recording extends JavaObject {
 }
 
 class RecordingHostApiImpl extends RecordingHostApi {
-
   /// Creates a [RecordingHostApiImpl]
-  RecordingHostApiImpl(
-      {this.binaryMessenger, InstanceManager? instanceManager})
+  RecordingHostApiImpl({this.binaryMessenger, InstanceManager? instanceManager})
       : super(binaryMessenger: binaryMessenger) {
     this.instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
   }
@@ -78,7 +76,6 @@ class RecordingHostApiImpl extends RecordingHostApi {
   }
 }
 
-
 class RecordingFlutterApiImpl extends RecordingFlutterApi {
   RecordingFlutterApiImpl({
     this.binaryMessenger,
@@ -101,12 +98,11 @@ class RecordingFlutterApiImpl extends RecordingFlutterApi {
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        identifier,
-        onCopy: (Recording original) {
-          return Recording.detached(
-            binaryMessenger: binaryMessenger,
-            instanceManager: instanceManager,
-          );
-        });
+        identifier, onCopy: (Recording original) {
+      return Recording.detached(
+        binaryMessenger: binaryMessenger,
+        instanceManager: instanceManager,
+      );
+    });
   }
 }

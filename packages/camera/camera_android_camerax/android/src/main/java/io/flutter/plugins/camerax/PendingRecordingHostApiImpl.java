@@ -20,62 +20,53 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.PendingRecordingHostApi;
 
 public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
-    private final BinaryMessenger binaryMessenger;
-    private final InstanceManager instanceManager;
-    private Context context;
+  private final BinaryMessenger binaryMessenger;
+  private final InstanceManager instanceManager;
+  private Context context;
 
-    @VisibleForTesting
-    public CameraXProxy cameraXProxy = new CameraXProxy();
+  @VisibleForTesting public CameraXProxy cameraXProxy = new CameraXProxy();
 
-    @VisibleForTesting
-    SystemServicesFlutterApiImpl systemServicesFlutterApi;
+  @VisibleForTesting SystemServicesFlutterApiImpl systemServicesFlutterApi;
 
-    @VisibleForTesting
-    RecordingFlutterApiImpl recordingFlutterApi;
+  @VisibleForTesting RecordingFlutterApiImpl recordingFlutterApi;
 
-    public PendingRecordingHostApiImpl(
-            BinaryMessenger binaryMessenger,
-            @NonNull InstanceManager instanceManager,
-            Context context) {
-        this.binaryMessenger = binaryMessenger;
-        this.instanceManager = instanceManager;
-        this.context = context;
-        systemServicesFlutterApi = cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
-        recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger, instanceManager);
+  public PendingRecordingHostApiImpl(
+      BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager, Context context) {
+    this.binaryMessenger = binaryMessenger;
+    this.instanceManager = instanceManager;
+    this.context = context;
+    systemServicesFlutterApi = cameraXProxy.createSystemServicesFlutterApiImpl(binaryMessenger);
+    recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger, instanceManager);
+  }
+
+  public void setContext(Context context) {
+    this.context = context;
+  }
+
+  @NonNull
+  @Override
+  public Long start(@NonNull Long identifier) {
+    PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
+    Recording recording = pendingRecording.start(this.getExecutor(), this::handleVideoRecordEvent);
+    recordingFlutterApi.create(recording, reply -> {});
+    return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
+  }
+
+  @VisibleForTesting
+  public Executor getExecutor() {
+    return ContextCompat.getMainExecutor(context);
+  }
+
+  private void handleVideoRecordEvent(VideoRecordEvent event) {
+    if (event instanceof VideoRecordEvent.Finalize) {
+      VideoRecordEvent.Finalize castedEvent = (VideoRecordEvent.Finalize) event;
+      if (castedEvent.hasError()) {
+        systemServicesFlutterApi.sendCameraError(castedEvent.getCause().toString(), reply -> {});
+      }
     }
+  }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    @NonNull
-    @Override
-    public Long start(@NonNull Long identifier) {
-        PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
-        Recording recording = pendingRecording.start(
-                this.getExecutor(),
-                this::handleVideoRecordEvent
-        );
-        recordingFlutterApi.create(recording, reply -> {});
-        return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
-    }
-
-    @VisibleForTesting
-    public Executor getExecutor() {
-        return ContextCompat.getMainExecutor(context);
-    }
-
-    private void handleVideoRecordEvent(VideoRecordEvent event) {
-        if (event instanceof VideoRecordEvent.Finalize) {
-            VideoRecordEvent.Finalize castedEvent = (VideoRecordEvent.Finalize) event;
-            if (castedEvent.hasError()) {
-                systemServicesFlutterApi.sendCameraError(
-                        castedEvent.getCause().toString(), reply -> {});
-            }
-        }
-    }
-
-    private PendingRecording getPendingRecordingFromInstanceId(Long instanceId) {
-        return (PendingRecording) Objects.requireNonNull(instanceManager.getInstance(instanceId));
-    }
+  private PendingRecording getPendingRecordingFromInstanceId(Long instanceId) {
+    return (PendingRecording) Objects.requireNonNull(instanceManager.getInstance(instanceId));
+  }
 }

@@ -43,10 +43,8 @@ class AndroidCameraXCameraFlutterApis {
         systemServicesFlutterApi ?? SystemServicesFlutterApiImpl();
     this.pendingRecordingFlutterApi =
         pendingRecordingFlutterApi ?? PendingRecordingFlutterApiImpl();
-    this.recordingFlutterApi =
-        recordingFlutterApi ?? RecordingFlutterApiImpl();
-    this.recorderFlutterApi =
-        recorderFlutterApi ?? RecorderFlutterApiImpl();
+    this.recordingFlutterApi = recordingFlutterApi ?? RecordingFlutterApiImpl();
+    this.recorderFlutterApi = recorderFlutterApi ?? RecorderFlutterApiImpl();
     this.videoCaptureFlutterApi =
         videoCaptureFlutterApi ?? VideoCaptureFlutterApiImpl();
   }

@@ -19,27 +19,19 @@ void main() {
 
   group('Recorder', () {
     tearDown(() => TestCameraSelectorHostApi.setup(null));
-    
+
     test('detached create does not call create on the Java side', () async {
       final MockTestRecorderHostApi mockApi = MockTestRecorderHostApi();
       TestRecorderHostApi.setup(mockApi);
       final InstanceManager instanceManager = InstanceManager(
         onWeakReferenceRemoved: (_) {},
       );
-      
+
       Recorder.detached(
-          instanceManager: instanceManager,
-          aspectRatio: 0,
-          bitRate: 0
-      );
-      
-      verifyNever(
-          mockApi.create(
-              argThat(isA<int>()),
-              argThat(isA<int>()),
-              argThat(isA<int>())
-          )
-      );
+          instanceManager: instanceManager, aspectRatio: 0, bitRate: 0);
+
+      verifyNever(mockApi.create(
+          argThat(isA<int>()), argThat(isA<int>()), argThat(isA<int>())));
     });
 
     test('create does call create on the Java side', () async {
@@ -55,16 +47,9 @@ void main() {
       Recorder(
           instanceManager: instanceManager,
           aspectRatio: aspectRatio,
-          bitRate: bitRate
-      );
+          bitRate: bitRate);
 
-      verify(
-          mockApi.create(
-              argThat(isA<int>()),
-              aspectRatio,
-              bitRate
-          )
-      );
+      verify(mockApi.create(argThat(isA<int>()), aspectRatio, bitRate));
     });
 
     test('prepareRecording calls prepareRecording on Java side', () async {
@@ -76,25 +61,22 @@ void main() {
       );
 
       const String filePath = '/test/path';
-      final Recorder recorder = Recorder.detached(
-          instanceManager: instanceManager);
+      final Recorder recorder =
+          Recorder.detached(instanceManager: instanceManager);
       const int recorderId = 0;
       const int mockPendingRecordingId = 2;
 
-      instanceManager.addHostCreatedInstance(recorder,
-          recorderId,
-          onCopy: (_) => Recorder.detached()
-      );
+      instanceManager.addHostCreatedInstance(recorder, recorderId,
+          onCopy: (_) => Recorder.detached());
 
       final MockPendingRecording mockPendingRecording = MockPendingRecording();
       instanceManager.addHostCreatedInstance(
-          mockPendingRecording,
-          mockPendingRecordingId,
+          mockPendingRecording, mockPendingRecordingId,
           onCopy: (_) => PendingRecording.detached());
       when(mockApi.prepareRecording(recorderId, filePath))
           .thenAnswer((_) async => mockPendingRecordingId);
-      final PendingRecording pendingRecording = await recorder.prepareRecording(
-          filePath);
+      final PendingRecording pendingRecording =
+          await recorder.prepareRecording(filePath);
       expect(pendingRecording, mockPendingRecording);
     });
 
@@ -114,7 +96,8 @@ void main() {
       expect(instanceManager.getInstanceWithWeakReference(recorderId),
           isA<Recorder>());
       expect(
-          (instanceManager.getInstanceWithWeakReference(recorderId)! as Recorder)
+          (instanceManager.getInstanceWithWeakReference(recorderId)!
+                  as Recorder)
               .aspectRatio,
           equals(aspectRatio));
       expect(

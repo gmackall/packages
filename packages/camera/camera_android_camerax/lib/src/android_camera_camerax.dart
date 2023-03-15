@@ -400,7 +400,8 @@ class AndroidCameraCameraX extends CameraPlatform {
 
   /// Configures and starts a video recording.
   @override
-  Future<void> startVideoRecording(int cameraId, {Duration? maxVideoDuration}) async {
+  Future<void> startVideoRecording(int cameraId,
+      {Duration? maxVideoDuration}) async {
     assert(cameraSelector != null);
     assert(processCameraProvider != null);
 

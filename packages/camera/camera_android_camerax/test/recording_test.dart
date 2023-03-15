@@ -27,13 +27,11 @@ void main() {
         onWeakReferenceRemoved: (_) {},
       );
 
-      final Recording recording = Recording.detached(
-          instanceManager: instanceManager);
+      final Recording recording =
+          Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
 
-      instanceManager.addHostCreatedInstance(
-          recording,
-          recordingId,
+      instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached());
 
       recording.close();
@@ -49,13 +47,11 @@ void main() {
         onWeakReferenceRemoved: (_) {},
       );
 
-      final Recording recording = Recording.detached(
-          instanceManager: instanceManager);
+      final Recording recording =
+          Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
 
-      instanceManager.addHostCreatedInstance(
-          recording,
-          recordingId,
+      instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached());
 
       recording.pause();
@@ -71,13 +67,11 @@ void main() {
         onWeakReferenceRemoved: (_) {},
       );
 
-      final Recording recording = Recording.detached(
-          instanceManager: instanceManager);
+      final Recording recording =
+          Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
 
-      instanceManager.addHostCreatedInstance(
-          recording,
-          recordingId,
+      instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached());
 
       recording.resume();
@@ -93,13 +87,11 @@ void main() {
         onWeakReferenceRemoved: (_) {},
       );
 
-      final Recording recording = Recording.detached(
-          instanceManager: instanceManager);
+      final Recording recording =
+          Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
 
-      instanceManager.addHostCreatedInstance(
-          recording,
-          recordingId,
+      instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached());
 
       recording.stop();

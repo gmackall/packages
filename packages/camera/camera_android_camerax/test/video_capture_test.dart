@@ -17,7 +17,8 @@ import 'video_capture_test.mocks.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  test('withOutput calls the Java side and returns correct video capture', () async {
+  test('withOutput calls the Java side and returns correct video capture',
+      () async {
     final MockTestVideoCaptureHostApi mockApi = MockTestVideoCaptureHostApi();
     TestVideoCaptureHostApi.setup(mockApi);
     final InstanceManager instanceManager = InstanceManager(
@@ -26,25 +27,19 @@ void main() {
 
     final Recorder mockRecorder = MockRecorder();
     const int mockRecorderId = 2;
-    instanceManager.addHostCreatedInstance(
-        mockRecorder,
-        mockRecorderId,
+    instanceManager.addHostCreatedInstance(mockRecorder, mockRecorderId,
         onCopy: (_) => Recorder.detached());
 
-    final VideoCapture videoCapture = VideoCapture.detached(
-        instanceManager: instanceManager);
+    final VideoCapture videoCapture =
+        VideoCapture.detached(instanceManager: instanceManager);
     const int videoCaptureId = 3;
-    instanceManager.addHostCreatedInstance(
-        videoCapture,
-        videoCaptureId,
+    instanceManager.addHostCreatedInstance(videoCapture, videoCaptureId,
         onCopy: (_) => VideoCapture.detached(instanceManager: instanceManager));
 
     when(mockApi.withOutput(mockRecorderId)).thenReturn(videoCaptureId);
 
-    expect
-      (
-        await VideoCapture.withOutput(
-            mockRecorder,
+    expect(
+        await VideoCapture.withOutput(mockRecorder,
             instanceManager: instanceManager),
         videoCapture);
     verify(mockApi.withOutput(mockRecorderId));
@@ -57,22 +52,16 @@ void main() {
       onWeakReferenceRemoved: (_) {},
     );
 
-    final VideoCapture videoCapture = VideoCapture.detached(
-        instanceManager: instanceManager);
+    final VideoCapture videoCapture =
+        VideoCapture.detached(instanceManager: instanceManager);
     const int videoCaptureId = 2;
-    instanceManager.addHostCreatedInstance(
-        videoCapture,
-        videoCaptureId,
-        onCopy: (_) => VideoCapture.detached(instanceManager: instanceManager)
-    );
+    instanceManager.addHostCreatedInstance(videoCapture, videoCaptureId,
+        onCopy: (_) => VideoCapture.detached(instanceManager: instanceManager));
 
     final MockRecorder mockRecorder = MockRecorder();
     const int mockRecorderId = 3;
-    instanceManager.addHostCreatedInstance(
-        mockRecorder,
-        mockRecorderId,
-        onCopy: (_) => Recorder.detached(instanceManager: instanceManager)
-    );
+    instanceManager.addHostCreatedInstance(mockRecorder, mockRecorderId,
+        onCopy: (_) => Recorder.detached(instanceManager: instanceManager));
 
     when(mockApi.getOutput(videoCaptureId)).thenReturn(mockRecorderId);
     expect(await videoCapture.getOutput(), mockRecorder);

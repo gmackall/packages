@@ -53,7 +53,7 @@ public class RecordingTest {
 
         recordingHostApi.close(recordingId);
 
-        verify(mockRecording).close();
+    verify(mockRecording).close();
         testInstanceManager.remove(recordingId);
     }
 

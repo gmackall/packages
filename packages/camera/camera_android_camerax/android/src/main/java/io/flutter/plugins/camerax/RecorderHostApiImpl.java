@@ -20,90 +20,83 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecorderHostApi;
 
 public class RecorderHostApiImpl implements RecorderHostApi {
-    private final BinaryMessenger binaryMessenger;
-    private final InstanceManager instanceManager;
-    private Context context;
+  private final BinaryMessenger binaryMessenger;
+  private final InstanceManager instanceManager;
+  private Context context;
 
-    @VisibleForTesting
-    public CameraXProxy cameraXProxy = new CameraXProxy();
+  @VisibleForTesting public CameraXProxy cameraXProxy = new CameraXProxy();
 
-    @VisibleForTesting
-    public PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
+  @VisibleForTesting public PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
 
-    public RecorderHostApiImpl(
-            BinaryMessenger binaryMessenger,
-            @NonNull InstanceManager instanceManager,
-            Context context) {
-        this.binaryMessenger = binaryMessenger;
-        this.instanceManager = instanceManager;
-        this.context = context;
-        this.pendingRecordingFlutterApi
-                = new PendingRecordingFlutterApiImpl(binaryMessenger, instanceManager);
+  public RecorderHostApiImpl(
+      BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager, Context context) {
+    this.binaryMessenger = binaryMessenger;
+    this.instanceManager = instanceManager;
+    this.context = context;
+    this.pendingRecordingFlutterApi =
+        new PendingRecordingFlutterApiImpl(binaryMessenger, instanceManager);
+  }
+
+  @Override
+  public void create(@NonNull Long instanceId, Long aspectRatio, Long bitRate) {
+    Recorder.Builder recorderBuilder = cameraXProxy.createRecorderBuilder();
+    if (aspectRatio != null) {
+      recorderBuilder.setAspectRatio(Math.toIntExact(aspectRatio));
     }
-
-    @Override
-    public void create(@NonNull Long instanceId, Long aspectRatio, Long bitRate) {
-        Recorder.Builder recorderBuilder = cameraXProxy.createRecorderBuilder();
-        if (aspectRatio != null) {
-            recorderBuilder.setAspectRatio(Math.toIntExact(aspectRatio));
-        }
-        if (bitRate != null) {
-            recorderBuilder.setTargetVideoEncodingBitRate(Math.toIntExact(bitRate));
-        }
-        Recorder recorder = recorderBuilder
-                .setExecutor(ContextCompat.getMainExecutor(context))
-                .build();
-        instanceManager.addDartCreatedInstance(recorder, instanceId);
+    if (bitRate != null) {
+      recorderBuilder.setTargetVideoEncodingBitRate(Math.toIntExact(bitRate));
     }
+    Recorder recorder = recorderBuilder.setExecutor(ContextCompat.getMainExecutor(context)).build();
+    instanceManager.addDartCreatedInstance(recorder, instanceId);
+  }
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
+  public void setContext(Context context) {
+    this.context = context;
+  }
 
-    @NonNull
-    @Override
-    public Long getAspectRatio(@NonNull Long identifier) {
-        Recorder recorder = getRecorderFromInstanceId(identifier);
-        return Long.valueOf(recorder.getAspectRatio());
-    }
+  @NonNull
+  @Override
+  public Long getAspectRatio(@NonNull Long identifier) {
+    Recorder recorder = getRecorderFromInstanceId(identifier);
+    return Long.valueOf(recorder.getAspectRatio());
+  }
 
-    @NonNull
-    @Override
-    public Long getTargetVideoEncodingBitRate(@NonNull Long identifier) {
-        Recorder recorder = getRecorderFromInstanceId(identifier);
-        return Long.valueOf(recorder.getTargetVideoEncodingBitRate());
-    }
+  @NonNull
+  @Override
+  public Long getTargetVideoEncodingBitRate(@NonNull Long identifier) {
+    Recorder recorder = getRecorderFromInstanceId(identifier);
+    return Long.valueOf(recorder.getTargetVideoEncodingBitRate());
+  }
 
-    @Override
-    public void prepareRecording(@NonNull Long identifier, @NonNull String path,
-                                 GeneratedCameraXLibrary.Result<Long> result) {
-        Recorder recorder = getRecorderFromInstanceId(identifier);
-        File temporaryCaptureFile = openTempFile(path, result);
-        if (temporaryCaptureFile == null) {
-            return;
-        }
-        FileOutputOptions fileOutputOptions = new FileOutputOptions.Builder(temporaryCaptureFile)
-                .build();
-        PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions)
-                .withAudioEnabled();
-        pendingRecordingFlutterApi.create(pendingRecording, reply -> {});
-        result.success(
-                Objects.requireNonNull(
-                        instanceManager.getIdentifierForStrongReference(pendingRecording)));
+  @Override
+  public void prepareRecording(
+      @NonNull Long identifier, @NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
+    Recorder recorder = getRecorderFromInstanceId(identifier);
+    File temporaryCaptureFile = openTempFile(path, result);
+    if (temporaryCaptureFile == null) {
+      return;
     }
+    FileOutputOptions fileOutputOptions =
+        new FileOutputOptions.Builder(temporaryCaptureFile).build();
+    PendingRecording pendingRecording =
+        recorder.prepareRecording(context, fileOutputOptions).withAudioEnabled();
+    pendingRecordingFlutterApi.create(pendingRecording, reply -> {});
+    result.success(
+        Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(pendingRecording)));
+  }
 
-    @VisibleForTesting
-    public File openTempFile(@NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
-        File file = null;
-        try {
-            file = new File(path);
-        } catch (NullPointerException | SecurityException e) {
-            result.error(e);
-        }
-        return file;
+  @VisibleForTesting
+  public File openTempFile(@NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
+    File file = null;
+    try {
+      file = new File(path);
+    } catch (NullPointerException | SecurityException e) {
+      result.error(e);
     }
+    return file;
+  }
 
-    private Recorder getRecorderFromInstanceId(Long instanceId) {
-        return (Recorder) Objects.requireNonNull(instanceManager.getInstance(instanceId));
-    }
+  private Recorder getRecorderFromInstanceId(Long instanceId) {
+    return (Recorder) Objects.requireNonNull(instanceManager.getInstance(instanceId));
+  }
 }

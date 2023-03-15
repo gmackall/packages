@@ -16,22 +16,29 @@ import 'pending_recording.dart';
 /// See https://developer.android.com/reference/androidx/camera/video/Recorder
 class Recorder extends JavaObject {
   /// Creates a [Recorder].
-  Recorder({BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager,
-    this.aspectRatio,
-    this.bitRate})
+  Recorder(
+      {BinaryMessenger? binaryMessenger,
+      InstanceManager? instanceManager,
+      this.aspectRatio,
+      this.bitRate})
       : super.detached(
-      binaryMessenger: binaryMessenger, instanceManager: instanceManager) {
+            binaryMessenger: binaryMessenger,
+            instanceManager: instanceManager) {
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
-    _api = RecorderHostApiImpl(binaryMessenger: binaryMessenger, instanceManager: instanceManager);
+    _api = RecorderHostApiImpl(
+        binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     _api.createFromInstance(this, aspectRatio, bitRate);
   }
 
   /// Creates a [Recorder] that is not automatically attached to a native object
   Recorder.detached(
-      {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager, this.aspectRatio, this.bitRate})
+      {BinaryMessenger? binaryMessenger,
+      InstanceManager? instanceManager,
+      this.aspectRatio,
+      this.bitRate})
       : super.detached(
-      binaryMessenger: binaryMessenger, instanceManager: instanceManager) {
+            binaryMessenger: binaryMessenger,
+            instanceManager: instanceManager) {
     _api = RecorderHostApiImpl(
         binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
@@ -41,6 +48,7 @@ class Recorder extends JavaObject {
 
   /// The video aspect ratio of this Recorder.
   final int? aspectRatio;
+
   /// The intended video encoding bitrate for recording.
   final int? bitRate;
 
@@ -65,42 +73,44 @@ class RecorderHostApiImpl extends RecorderHostApi {
     int? identifier = instanceManager.getIdentifier(instance);
     identifier ??= instanceManager.addDartCreatedInstance(instance,
         onCopy: (Recorder original) {
-          return Recorder.detached(binaryMessenger: binaryMessenger,
-              instanceManager: instanceManager,
-              aspectRatio: aspectRatio,
-              bitRate: bitRate);
-        });
+      return Recorder.detached(
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+          aspectRatio: aspectRatio,
+          bitRate: bitRate);
+    });
     create(identifier, aspectRatio, bitRate);
   }
 
-  Future<PendingRecording> prepareRecordingFromInstance(Recorder instance, String path) async {
-    final int pendingRecordingId = await prepareRecording(
-        instanceManager.getIdentifier(instance)!,
-        path
-    );
+  Future<PendingRecording> prepareRecordingFromInstance(
+      Recorder instance, String path) async {
+    final int pendingRecordingId =
+        await prepareRecording(instanceManager.getIdentifier(instance)!, path);
 
     return instanceManager.getInstanceWithWeakReference(pendingRecordingId)!;
   }
 }
 
 class RecorderFlutterApiImpl extends RecorderFlutterApi {
-
-  RecorderFlutterApiImpl(
-      {this.binaryMessenger, InstanceManager? instanceManager,
-      }) : this.instanceManager = instanceManager ??
-      JavaObject.globalInstanceManager;
+  RecorderFlutterApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  }) : this.instanceManager =
+            instanceManager ?? JavaObject.globalInstanceManager;
 
   final BinaryMessenger? binaryMessenger;
   final InstanceManager instanceManager;
 
   @override
   void create(int identifier, int? aspectRatio, int? bitRate) {
-    instanceManager.addHostCreatedInstance(Recorder.detached(
-      binaryMessenger: binaryMessenger,
-      instanceManager: instanceManager,
-      aspectRatio: aspectRatio,
-      bitRate: bitRate,
-    ), identifier, onCopy: (Recorder original) {
+    instanceManager.addHostCreatedInstance(
+        Recorder.detached(
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+          aspectRatio: aspectRatio,
+          bitRate: bitRate,
+        ),
+        identifier, onCopy: (Recorder original) {
       return Recorder.detached(
         binaryMessenger: binaryMessenger,
         instanceManager: instanceManager,

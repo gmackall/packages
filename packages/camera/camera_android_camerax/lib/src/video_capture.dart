@@ -16,11 +16,11 @@ import 'use_case.dart';
 /// See https://developer.android.com/reference/androidx/camera/video/VideoCapture
 class VideoCapture extends UseCase {
   /// Creates a VideoCapture that is not automatically attached to a native object.
-  VideoCapture.detached({BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager})
+  VideoCapture.detached(
+      {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager})
       : super.detached(
-      binaryMessenger: binaryMessenger,
-      instanceManager: instanceManager) {
+            binaryMessenger: binaryMessenger,
+            instanceManager: instanceManager) {
     _api = VideoCaptureHostApiImpl(
         binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
@@ -30,8 +30,8 @@ class VideoCapture extends UseCase {
   static Future<VideoCapture> withOutput(Recorder recorder,
       {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager}) {
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
-    final VideoCaptureHostApiImpl api
-    = VideoCaptureHostApiImpl(binaryMessenger: binaryMessenger, instanceManager: instanceManager);
+    final VideoCaptureHostApiImpl api = VideoCaptureHostApiImpl(
+        binaryMessenger: binaryMessenger, instanceManager: instanceManager);
 
     return api.withOutputFromInstance(recorder);
   }
@@ -44,10 +44,9 @@ class VideoCapture extends UseCase {
   late final VideoCaptureHostApiImpl _api;
 }
 
-
 class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
-  VideoCaptureHostApiImpl({this.binaryMessenger,
-    InstanceManager? instanceManager}) {
+  VideoCaptureHostApiImpl(
+      {this.binaryMessenger, InstanceManager? instanceManager}) {
     this.instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
   }
 
@@ -62,15 +61,14 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
 
   Future<VideoCapture> withOutputFromInstance(Recorder recorder) async {
     int? identifier = instanceManager.getIdentifier(recorder);
-    identifier ??= instanceManager.addDartCreatedInstance(
-        recorder,
+    identifier ??= instanceManager.addDartCreatedInstance(recorder,
         onCopy: (Recorder original) {
-          return Recorder(binaryMessenger: binaryMessenger,
-          instanceManager: instanceManager);
-        });
+      return Recorder(
+          binaryMessenger: binaryMessenger, instanceManager: instanceManager);
+    });
     final int videoCaptureId = await withOutput(identifier);
     return instanceManager.getInstanceWithWeakReference(videoCaptureId)!
-      as VideoCapture;
+        as VideoCapture;
   }
 
   Future<Recorder> getOutputFromInstance(VideoCapture instance) async {
@@ -80,12 +78,11 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
   }
 }
 
-
 class VideoCaptureFlutterApiImpl implements VideoCaptureFlutterApi {
-  VideoCaptureFlutterApiImpl(
-      {this.binaryMessenger, InstanceManager? instanceManager,
-      })
-      : instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+  VideoCaptureFlutterApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  }) : instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
 
   /// Receives binary data across the Flutter platform barrier.
   ///
@@ -103,12 +100,11 @@ class VideoCaptureFlutterApiImpl implements VideoCaptureFlutterApi {
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        identifier,
-        onCopy: (VideoCapture original) {
-          return VideoCapture.detached(
-            binaryMessenger: binaryMessenger,
-            instanceManager: instanceManager,
-          );
-        });
+        identifier, onCopy: (VideoCapture original) {
+      return VideoCapture.detached(
+        binaryMessenger: binaryMessenger,
+        instanceManager: instanceManager,
+      );
+    });
   }
 }

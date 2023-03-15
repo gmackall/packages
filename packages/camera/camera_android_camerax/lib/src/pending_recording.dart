@@ -10,21 +10,19 @@ import 'instance_manager.dart';
 import 'java_object.dart';
 import 'recording.dart';
 
-
 /// Dart wrapping of PendingRecording CameraX class
 ///
 /// See https://developer.android.com/reference/androidx/camera/video/PendingRecording
 class PendingRecording extends JavaObject {
-
   /// Creates a [PendingRecording] that is not automatically attached to
   /// a native object.
-  PendingRecording.detached({BinaryMessenger? binaryMessenger,
-    InstanceManager? instanceManager}) : super.detached(
-    binaryMessenger: binaryMessenger,
-    instanceManager: instanceManager
-  ) {
-    _api = PendingRecordingHostApiImpl(binaryMessenger: binaryMessenger,
-        instanceManager: instanceManager);
+  PendingRecording.detached(
+      {BinaryMessenger? binaryMessenger, InstanceManager? instanceManager})
+      : super.detached(
+            binaryMessenger: binaryMessenger,
+            instanceManager: instanceManager) {
+    _api = PendingRecordingHostApiImpl(
+        binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
   }
 
@@ -38,10 +36,9 @@ class PendingRecording extends JavaObject {
 
 /// Host API implementation of [PendingRecording]
 class PendingRecordingHostApiImpl extends PendingRecordingHostApi {
-
   /// Constructs a PendingRecordingHostApiImpl
   PendingRecordingHostApiImpl(
-  {this.binaryMessenger, InstanceManager? instanceManager})
+      {this.binaryMessenger, InstanceManager? instanceManager})
       : super(binaryMessenger: binaryMessenger) {
     this.instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
   }
@@ -64,8 +61,9 @@ class PendingRecordingHostApiImpl extends PendingRecordingHostApi {
         binaryMessenger: binaryMessenger,
         instanceManager: instanceManager,
       );
-        });
-    return instanceManager.getInstanceWithWeakReference(await start(instanceId))! as Recording;
+    });
+    return instanceManager
+        .getInstanceWithWeakReference(await start(instanceId))! as Recording;
   }
 }
 
@@ -93,12 +91,11 @@ class PendingRecordingFlutterApiImpl extends PendingRecordingFlutterApi {
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        identifier,
-        onCopy: (PendingRecording original) {
-          return PendingRecording.detached(
-            binaryMessenger: binaryMessenger,
-            instanceManager: instanceManager,
-          );
-        });
+        identifier, onCopy: (PendingRecording original) {
+      return PendingRecording.detached(
+        binaryMessenger: binaryMessenger,
+        instanceManager: instanceManager,
+      );
+    });
   }
 }

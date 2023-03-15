@@ -50,25 +50,20 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
         new ProcessCameraProviderHostApiImpl(binaryMessenger, instanceManager, context);
     GeneratedCameraXLibrary.ProcessCameraProviderHostApi.setup(
         binaryMessenger, processCameraProviderHostApi);
-    systemServicesHostApi = new SystemServicesHostApiImpl(binaryMessenger, instanceManager,
-            context);
+    systemServicesHostApi =
+        new SystemServicesHostApiImpl(binaryMessenger, instanceManager, context);
     GeneratedCameraXLibrary.SystemServicesHostApi.setup(binaryMessenger, systemServicesHostApi);
     GeneratedCameraXLibrary.PreviewHostApi.setup(
         binaryMessenger, new PreviewHostApiImpl(binaryMessenger, instanceManager, textureRegistry));
     GeneratedCameraXLibrary.RecordingHostApi.setup(
-            binaryMessenger, new RecordingHostApiImpl(binaryMessenger, instanceManager));
-    recorderHostApi =
-            new RecorderHostApiImpl(binaryMessenger, instanceManager, context);
-    GeneratedCameraXLibrary.RecorderHostApi.setup(
-            binaryMessenger, recorderHostApi);
+        binaryMessenger, new RecordingHostApiImpl(binaryMessenger, instanceManager));
+    recorderHostApi = new RecorderHostApiImpl(binaryMessenger, instanceManager, context);
+    GeneratedCameraXLibrary.RecorderHostApi.setup(binaryMessenger, recorderHostApi);
     pendingRecordingHostApi =
-            new PendingRecordingHostApiImpl(binaryMessenger, instanceManager, context);
-    GeneratedCameraXLibrary.PendingRecordingHostApi.setup(
-            binaryMessenger, pendingRecordingHostApi);
-    videoCaptureHostApi =
-            new VideoCaptureHostApiImpl(binaryMessenger, instanceManager);
-    GeneratedCameraXLibrary.VideoCaptureHostApi.setup(
-            binaryMessenger, videoCaptureHostApi);
+        new PendingRecordingHostApiImpl(binaryMessenger, instanceManager, context);
+    GeneratedCameraXLibrary.PendingRecordingHostApi.setup(binaryMessenger, pendingRecordingHostApi);
+    videoCaptureHostApi = new VideoCaptureHostApiImpl(binaryMessenger, instanceManager);
+    GeneratedCameraXLibrary.VideoCaptureHostApi.setup(binaryMessenger, videoCaptureHostApi);
   }
 
   @Override

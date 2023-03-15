@@ -29,7 +29,7 @@ class SystemServices {
   /// Stream that emits the errors caused by camera usage on the native side.
   static final StreamController<String> cameraErrorStreamController =
       StreamController<String>.broadcast();
-  
+
   static final StreamController<CameraEvent> cameraEventStreamController =
       StreamController<CameraEvent>.broadcast();
 

@@ -35,48 +35,42 @@ import io.flutter.plugin.common.BinaryMessenger;
 
 @RunWith(RobolectricTestRunner.class)
 public class PendingRecordingTest {
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
+  @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-    @Mock
-    public BinaryMessenger mockBinaryMessenger;
-    @Mock
-    public PendingRecording mockPendingRecording;
-    @Mock
-    public Recording mockRecording;
-    @Mock
-    public RecordingFlutterApiImpl mockRecordingFlutterApi;
-    @Mock
-    public Context mockContext;
+  @Mock public BinaryMessenger mockBinaryMessenger;
+  @Mock public PendingRecording mockPendingRecording;
+  @Mock public Recording mockRecording;
+  @Mock public RecordingFlutterApiImpl mockRecordingFlutterApi;
+  @Mock public Context mockContext;
 
-    InstanceManager testInstanceManager;
+  InstanceManager testInstanceManager;
 
-    @Before
-    public void setUp() {
-        testInstanceManager = spy(InstanceManager.open(identifier -> {}));
-    }
+  @Before
+  public void setUp() {
+    testInstanceManager = spy(InstanceManager.open(identifier -> {}));
+  }
 
-    @After
-    public void tearDown() {
-        testInstanceManager.close();
-    }
+  @After
+  public void tearDown() {
+    testInstanceManager.close();
+  }
 
-    @Test
-    public void testStart() {
-        final Long mockPendingRecordingId = 3L;
-        final Long mockRecordingId = testInstanceManager.addHostCreatedInstance(mockRecording);
-        testInstanceManager.addDartCreatedInstance(mockPendingRecording, mockPendingRecordingId);
+  @Test
+  public void testStart() {
+    final Long mockPendingRecordingId = 3L;
+    final Long mockRecordingId = testInstanceManager.addHostCreatedInstance(mockRecording);
+    testInstanceManager.addDartCreatedInstance(mockPendingRecording, mockPendingRecordingId);
 
-        doReturn(mockRecording).when(mockPendingRecording).start(any(), any());
-        doNothing().when(mockRecordingFlutterApi).create(any(Recording.class), any());
-        PendingRecordingHostApiImpl spy = spy(new PendingRecordingHostApiImpl(
-                mockBinaryMessenger, testInstanceManager, mockContext));
-        doReturn(mock(Executor.class)).when(spy).getExecutor();
-        spy.recordingFlutterApi = mockRecordingFlutterApi;
-        assertEquals(spy.start(mockPendingRecordingId), mockRecordingId);
-        verify(mockRecordingFlutterApi).create(eq(mockRecording), any());
+    doReturn(mockRecording).when(mockPendingRecording).start(any(), any());
+    doNothing().when(mockRecordingFlutterApi).create(any(Recording.class), any());
+    PendingRecordingHostApiImpl spy =
+        spy(new PendingRecordingHostApiImpl(mockBinaryMessenger, testInstanceManager, mockContext));
+    doReturn(mock(Executor.class)).when(spy).getExecutor();
+    spy.recordingFlutterApi = mockRecordingFlutterApi;
+    assertEquals(spy.start(mockPendingRecordingId), mockRecordingId);
+    verify(mockRecordingFlutterApi).create(eq(mockRecording), any());
 
-        testInstanceManager.remove(mockPendingRecordingId);
-        testInstanceManager.remove(mockRecordingId);
-    }
+    testInstanceManager.remove(mockPendingRecordingId);
+    testInstanceManager.remove(mockRecordingId);
+  }
 }

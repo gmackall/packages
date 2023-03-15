@@ -15,39 +15,38 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.VideoCaptureHostApi;
 
 public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
-    private final BinaryMessenger binaryMessenger;
-    private final InstanceManager instanceManager;
+  private final BinaryMessenger binaryMessenger;
+  private final InstanceManager instanceManager;
 
-    public VideoCaptureHostApiImpl(
-            BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
-        this.binaryMessenger = binaryMessenger;
-        this.instanceManager = instanceManager;
-    }
+  public VideoCaptureHostApiImpl(BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+    this.binaryMessenger = binaryMessenger;
+    this.instanceManager = instanceManager;
+  }
 
-    @Override
-    @NonNull
-    public Long withOutput(@NonNull Long videoOutputId) {
-        Recorder recorder = (Recorder) Objects.requireNonNull(instanceManager.getInstance(videoOutputId));
-        VideoCapture<Recorder> videoCapture = VideoCapture.withOutput(recorder);
-        final VideoCaptureFlutterApiImpl videoCaptureFlutterApi =
-                getVideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
-        videoCaptureFlutterApi.create(videoCapture, result -> {});
-        return Objects.requireNonNull(
-                instanceManager.getIdentifierForStrongReference(videoCapture));
-    }
+  @Override
+  @NonNull
+  public Long withOutput(@NonNull Long videoOutputId) {
+    Recorder recorder =
+        (Recorder) Objects.requireNonNull(instanceManager.getInstance(videoOutputId));
+    VideoCapture<Recorder> videoCapture = VideoCapture.withOutput(recorder);
+    final VideoCaptureFlutterApiImpl videoCaptureFlutterApi =
+        getVideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
+    videoCaptureFlutterApi.create(videoCapture, result -> {});
+    return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(videoCapture));
+  }
 
-    @Override
-    @NonNull
-    public Long getOutput(@NonNull Long identifier) {
-        VideoCapture<Recorder> videoCapture
-                = Objects.requireNonNull(instanceManager.getInstance(identifier));
-        Recorder recorder = videoCapture.getOutput();
-        return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recorder));
-    }
+  @Override
+  @NonNull
+  public Long getOutput(@NonNull Long identifier) {
+    VideoCapture<Recorder> videoCapture =
+        Objects.requireNonNull(instanceManager.getInstance(identifier));
+    Recorder recorder = videoCapture.getOutput();
+    return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recorder));
+  }
 
-    @VisibleForTesting
-    public VideoCaptureFlutterApiImpl getVideoCaptureFlutterApiImpl(
-            BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
-        return new VideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
-    }
+  @VisibleForTesting
+  public VideoCaptureFlutterApiImpl getVideoCaptureFlutterApiImpl(
+      BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+    return new VideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
+  }
 }

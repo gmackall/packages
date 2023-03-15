@@ -373,52 +373,48 @@ void main() {
     expect(previewTexture.textureId, equals(textureId));
   });
 
-  test('pauseVideoRecording pauses the recording',
-          () async {
+  test('pauseVideoRecording pauses the recording', () async {
     final AndroidCameraCameraX camera = AndroidCameraCameraX();
     final MockRecording recording = MockRecording();
     camera.recording = recording;
     camera.pauseVideoRecording(0);
     verify(recording.pause());
     verifyNoMoreInteractions(recording);
-          });
+  });
 
-  test('resumeVideoRecording resumes the recording',
-          () async {
-        final AndroidCameraCameraX camera = AndroidCameraCameraX();
-        final MockRecording recording = MockRecording();
-        camera.recording = recording;
-        camera.resumeVideoRecording(0);
-        verify(recording.resume());
-        verifyNoMoreInteractions(recording);
-      });
-
+  test('resumeVideoRecording resumes the recording', () async {
+    final AndroidCameraCameraX camera = AndroidCameraCameraX();
+    final MockRecording recording = MockRecording();
+    camera.recording = recording;
+    camera.resumeVideoRecording(0);
+    verify(recording.resume());
+    verifyNoMoreInteractions(recording);
+  });
 
   test('stopVideoRecording stops the recording and unbinds from lifecycle',
-          () async {
-        final AndroidCameraCameraX camera = AndroidCameraCameraX();
-        final MockRecording recording = MockRecording();
-        final MockProcessCameraProvider processCameraProvider = MockProcessCameraProvider();
-        final MockVideoCapture videoCapture = MockVideoCapture();
-        const String videoOutputPath = '/test/output/path';
+      () async {
+    final AndroidCameraCameraX camera = AndroidCameraCameraX();
+    final MockRecording recording = MockRecording();
+    final MockProcessCameraProvider processCameraProvider =
+        MockProcessCameraProvider();
+    final MockVideoCapture videoCapture = MockVideoCapture();
+    const String videoOutputPath = '/test/output/path';
 
-        camera.processCameraProvider = processCameraProvider;
-        camera.recording = recording;
-        camera.videoCapture = videoCapture;
-        camera.videoOutputPath = videoOutputPath;
+    camera.processCameraProvider = processCameraProvider;
+    camera.recording = recording;
+    camera.videoCapture = videoCapture;
+    camera.videoOutputPath = videoOutputPath;
 
-        final XFile file = await camera.stopVideoRecording(0);
-        assert(file.path == videoOutputPath);
+    final XFile file = await camera.stopVideoRecording(0);
+    assert(file.path == videoOutputPath);
 
-        verifyInOrder([
-          recording.close(),
-          processCameraProvider.unbind([videoCapture])
-        ]);
-        verifyNoMoreInteractions(recording);
-        verifyNoMoreInteractions(processCameraProvider);
-      });
-
-
+    verifyInOrder([
+      recording.close(),
+      processCameraProvider.unbind([videoCapture])
+    ]);
+    verifyNoMoreInteractions(recording);
+    verifyNoMoreInteractions(processCameraProvider);
+  });
 }
 
 /// Mock of [AndroidCameraCameraX] that stubs behavior of some methods for
