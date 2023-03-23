@@ -30,9 +30,6 @@ class SystemServices {
   static final StreamController<String> cameraErrorStreamController =
       StreamController<String>.broadcast();
 
-  static final StreamController<CameraEvent> cameraEventStreamController =
-      StreamController<CameraEvent>.broadcast();
-
   /// Requests permission to access the camera and audio if specified.
   static Future<void> requestCameraPermissions(bool enableAudio,
       {BinaryMessenger? binaryMessenger}) {

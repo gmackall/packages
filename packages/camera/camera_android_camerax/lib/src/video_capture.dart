@@ -13,7 +13,7 @@ import 'use_case.dart';
 
 /// Dart wrapping of CameraX VideoCapture class.
 ///
-/// See https://developer.android.com/reference/androidx/camera/video/VideoCapture
+/// See https://developer.android.com/reference/androidx/camera/video/VideoCapture.
 class VideoCapture extends UseCase {
   /// Creates a VideoCapture that is not automatically attached to a native object.
   VideoCapture.detached(

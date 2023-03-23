@@ -2,18 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:camera_android_camerax/src/pending_recording.dart';
-import 'package:camera_android_camerax/src/recorder.dart';
-import 'package:camera_android_camerax/src/recording.dart';
-import 'package:camera_android_camerax/src/video_capture.dart';
-
 import 'camera.dart';
 import 'camera_info.dart';
 import 'camera_selector.dart';
 import 'camerax_library.g.dart';
 import 'java_object.dart';
+import 'pending_recording.dart';
 import 'process_camera_provider.dart';
+import 'recorder.dart';
+import 'recording.dart';
 import 'system_services.dart';
+import 'video_capture.dart';
 
 /// Handles initialization of Flutter APIs for the Android CameraX library.
 class AndroidCameraXCameraFlutterApis {
@@ -76,16 +75,16 @@ class AndroidCameraXCameraFlutterApis {
   /// Flutter Api for [SystemServices].
   late final SystemServicesFlutterApiImpl systemServicesFlutterApi;
 
-  /// Flutter api for [PendingRecording].
+  /// Flutter Api for [PendingRecording].
   late final PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
 
-  /// Flutter api for [Recording]
+  /// Flutter Api for [Recording].
   late final RecordingFlutterApiImpl recordingFlutterApi;
 
-  /// Flutter api for [Recorder]
+  /// Flutter Api for [Recorder].
   late final RecorderFlutterApiImpl recorderFlutterApi;
 
-  /// Flutter api for [VideoCapture]
+  /// Flutter Api for [VideoCapture].
   late final VideoCaptureFlutterApiImpl videoCaptureFlutterApi;
 
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.

@@ -10,7 +10,7 @@ import 'instance_manager.dart';
 import 'java_object.dart';
 import 'recording.dart';
 
-/// Dart wrapping of PendingRecording CameraX class
+/// Dart wrapping of PendingRecording CameraX class.
 ///
 /// See https://developer.android.com/reference/androidx/camera/video/PendingRecording
 class PendingRecording extends JavaObject {
@@ -26,17 +26,17 @@ class PendingRecording extends JavaObject {
     AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
   }
 
+  late final PendingRecordingHostApiImpl _api;
+
   /// Starts the recording, making it an active recording.
   Future<Recording> start() {
     return _api.startFromInstance(this);
   }
-
-  late final PendingRecordingHostApiImpl _api;
 }
 
-/// Host API implementation of [PendingRecording]
+/// Host API implementation of [PendingRecording].
 class PendingRecordingHostApiImpl extends PendingRecordingHostApi {
-  /// Constructs a PendingRecordingHostApiImpl
+  /// Constructs a PendingRecordingHostApiImpl.
   PendingRecordingHostApiImpl(
       {this.binaryMessenger, InstanceManager? instanceManager})
       : super(binaryMessenger: binaryMessenger) {

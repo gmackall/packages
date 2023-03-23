@@ -13,7 +13,7 @@ import 'pending_recording.dart';
 /// A dart wrapping of the CameraX Recorder class. Does not exactly wrap all
 /// methods.
 ///
-/// See https://developer.android.com/reference/androidx/camera/video/Recorder
+/// See https://developer.android.com/reference/androidx/camera/video/Recorder.
 class Recorder extends JavaObject {
   /// Creates a [Recorder].
   Recorder(
@@ -52,14 +52,14 @@ class Recorder extends JavaObject {
   /// The intended video encoding bitrate for recording.
   final int? bitRate;
 
-  /// Prepare a recording that will be saved to a file
+  /// Prepare a recording that will be saved to a file.
   Future<PendingRecording> prepareRecording(String path) {
     return _api.prepareRecordingFromInstance(this, path);
   }
 }
 
 class RecorderHostApiImpl extends RecorderHostApi {
-  ///Creates a RecorderHostApiImpl
+  ///Creates a RecorderHostApiImpl.
   RecorderHostApiImpl(
       {this.binaryMessenger, InstanceManager? instanceManager}) {
     this.instanceManager = instanceManager ?? JavaObject.globalInstanceManager;

@@ -41,6 +41,9 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
     this.systemServicesFlutterApi = new SystemServicesFlutterApiImpl(binaryMessenger);
   }
 
+  /**
+   * Sets the context, which is used to get the cache directory.
+   */
   public void setContext(Context context) {
     this.context = context;
   }
@@ -123,6 +126,9 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
     }
   }
 
+  /**
+   * Returns a path to be used to create a temp file in the current cache directory.
+   */
   @Override
   public void getTempFilePath(@NonNull String prefix, @NonNull String suffix, Result<String> result) {
     try {

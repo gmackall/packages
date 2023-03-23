@@ -4,10 +4,6 @@
 
 import 'dart:async';
 
-import 'package:camera_android_camerax/src/pending_recording.dart';
-import 'package:camera_android_camerax/src/recorder.dart';
-import 'package:camera_android_camerax/src/recording.dart';
-import 'package:camera_android_camerax/src/video_capture.dart';
 import 'package:camera_platform_interface/camera_platform_interface.dart';
 import 'package:flutter/widgets.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -16,11 +12,15 @@ import 'camera.dart';
 import 'camera_info.dart';
 import 'camera_selector.dart';
 import 'camerax_library.g.dart';
+import 'pending_recording.dart';
 import 'preview.dart';
 import 'process_camera_provider.dart';
+import 'recorder.dart';
+import 'recording.dart';
 import 'surface.dart';
 import 'system_services.dart';
 import 'use_case.dart';
+import 'video_capture.dart';
 
 /// The Android implementation of [CameraPlatform] that uses the CameraX library.
 class AndroidCameraCameraX extends CameraPlatform {
@@ -405,7 +405,6 @@ class AndroidCameraCameraX extends CameraPlatform {
     assert(cameraSelector != null);
     assert(processCameraProvider != null);
 
-    processCameraProvider ??= await ProcessCameraProvider.getInstance();
     recorder = Recorder(); // TODO(gmackall): Configure resolution info here.
     videoCapture = await VideoCapture.withOutput(recorder!);
     processCameraProvider!.bindToLifecycle(cameraSelector!, [videoCapture!]);
@@ -418,6 +417,7 @@ class AndroidCameraCameraX extends CameraPlatform {
   @override
   Future<XFile> stopVideoRecording(int cameraId) async {
     recording!.close();
+    recording = null;
     return XFile(videoOutputPath!);
   }
 

@@ -39,15 +39,24 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger, instanceManager);
   }
 
+  /**
+   * Sets the context, which is used to get the {@link Executor} needed to start the recording.
+   */
   public void setContext(Context context) {
     this.context = context;
   }
 
+  /**
+   * Starts the given {@link PendingRecording}, creating a new {@link Recording}. The recording
+   * is then added to the instance manager and we return the corresponding identifier.
+   * @param identifier An identifier corresponding to a PendingRecording.
+   */
   @NonNull
   @Override
   public Long start(@NonNull Long identifier) {
     PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
-    Recording recording = pendingRecording.start(this.getExecutor(), this::handleVideoRecordEvent);
+    Recording recording = pendingRecording.start(this.getExecutor(),
+            x -> handleVideoRecordEvent(x));
     recordingFlutterApi.create(recording, reply -> {});
     return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
   }

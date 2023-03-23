@@ -10,7 +10,7 @@ import 'instance_manager.dart';
 import 'java_object.dart';
 
 /// Wraps a CameraX recording class.
-/// See https://developer.android.com/reference/androidx/camera/video/Recording
+/// See https://developer.android.com/reference/androidx/camera/video/Recording.
 class Recording extends JavaObject {
   /// Constructs a detached [Recording]
   Recording.detached(
@@ -44,7 +44,7 @@ class Recording extends JavaObject {
 }
 
 class RecordingHostApiImpl extends RecordingHostApi {
-  /// Creates a [RecordingHostApiImpl]
+  /// Creates a [RecordingHostApiImpl].
   RecordingHostApiImpl({this.binaryMessenger, InstanceManager? instanceManager})
       : super(binaryMessenger: binaryMessenger) {
     this.instanceManager = instanceManager ?? JavaObject.globalInstanceManager;

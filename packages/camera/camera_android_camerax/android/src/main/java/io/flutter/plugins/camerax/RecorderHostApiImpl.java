@@ -4,7 +4,7 @@
 
 package io.flutter.plugins.camerax;
 
-import android.content.Context;
+import android.Manifest;import android.content.Context;import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecorderHostApi;
@@ -41,19 +42,25 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   public void create(@NonNull Long instanceId, Long aspectRatio, Long bitRate) {
     Recorder.Builder recorderBuilder = cameraXProxy.createRecorderBuilder();
     if (aspectRatio != null) {
-      recorderBuilder.setAspectRatio(Math.toIntExact(aspectRatio));
+      recorderBuilder.setAspectRatio(aspectRatio.intValue());
     }
     if (bitRate != null) {
-      recorderBuilder.setTargetVideoEncodingBitRate(Math.toIntExact(bitRate));
+      recorderBuilder.setTargetVideoEncodingBitRate(bitRate.intValue());
     }
     Recorder recorder = recorderBuilder.setExecutor(ContextCompat.getMainExecutor(context)).build();
     instanceManager.addDartCreatedInstance(recorder, instanceId);
   }
 
+  /**
+   * Sets the context, which is used to get the {@link Executor} passed to the Recorder builder.
+   */
   public void setContext(Context context) {
     this.context = context;
   }
 
+  /**
+   * Gets the aspect ratio of the given {@link Recorder}.
+   */
   @NonNull
   @Override
   public Long getAspectRatio(@NonNull Long identifier) {
@@ -61,6 +68,9 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     return Long.valueOf(recorder.getAspectRatio());
   }
 
+  /**
+   * Gets the target video encoding bitrate of the given {@link Recorder}.
+   */
   @NonNull
   @Override
   public Long getTargetVideoEncodingBitRate(@NonNull Long identifier) {
@@ -78,8 +88,11 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     }
     FileOutputOptions fileOutputOptions =
         new FileOutputOptions.Builder(temporaryCaptureFile).build();
-    PendingRecording pendingRecording =
-        recorder.prepareRecording(context, fileOutputOptions).withAudioEnabled();
+    PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions);
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+            == PackageManager.PERMISSION_GRANTED) {
+      pendingRecording.withAudioEnabled();
+    }
     pendingRecordingFlutterApi.create(pendingRecording, reply -> {});
     result.success(
         Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(pendingRecording)));
