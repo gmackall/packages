@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import io.flutter.embedding.engine.systemchannels.PlatformChannel.DeviceOrientation;
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
+import io.flutter.plugin.common.FlutterException;import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.CameraPermissionsErrorData;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.Result;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.SystemServicesFlutterApi;
@@ -130,13 +130,12 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
    * Returns a path to be used to create a temp file in the current cache directory.
    */
   @Override
-  public void getTempFilePath(@NonNull String prefix, @NonNull String suffix, Result<String> result) {
+  public String getTempFilePath(@NonNull String prefix, @NonNull String suffix) {
     try {
       File path = File.createTempFile(prefix, suffix, context.getCacheDir());
-      result.success(path.toString());
+      return path.toString();
     } catch (IOException | SecurityException e) {
-      systemServicesFlutterApi.sendCameraError(e.toString(), reply -> {});
-      result.error(e);
+      throw new RuntimeException(e);
     }
   }
 }

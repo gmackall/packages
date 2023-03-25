@@ -5,9 +5,10 @@
 package io.flutter.plugins.camerax;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertThrows;import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,8 +29,11 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import java.io.File;
+import java.io.IOException;
 
 public class SystemServicesTest {
   @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -139,5 +143,43 @@ public class SystemServicesTest {
 
     // Test that the DeviceOrientationManager starts listening for device orientation changes.
     verify(mockDeviceOrientationManager).start();
+  }
+
+  @Test
+  public void getTempFilePath_returnsCorrectPath() {
+    final SystemServicesHostApiImpl systemServicesHostApi =
+        new SystemServicesHostApiImpl(mockBinaryMessenger, mockInstanceManager, mockContext);
+
+    final String prefix = "prefix";
+    final String suffix = ".suffix";
+    final MockedStatic<File> mockedStaticFile = mockStatic(File.class);
+    final File mockOutputDir = mock(File.class);
+    final File mockFile = mock(File.class);
+    when(mockContext.getCacheDir()).thenReturn(mockOutputDir);
+    mockedStaticFile
+        .when(() -> File.createTempFile(prefix, suffix, mockOutputDir))
+        .thenReturn(mockFile);
+    when(mockFile.toString()).thenReturn(prefix + suffix);
+    assertEquals(systemServicesHostApi.getTempFilePath(prefix, suffix), prefix + suffix);
+
+    mockedStaticFile.close();
+  }
+
+  @Test
+  public void getTempFilePath_throwsRuntimeExceptionOnIOException() {
+    final SystemServicesHostApiImpl systemServicesHostApi =
+        new SystemServicesHostApiImpl(mockBinaryMessenger, mockInstanceManager, mockContext);
+
+    final String prefix = "prefix";
+    final String suffix = ".suffix";
+    final MockedStatic<File> mockedStaticFile = mockStatic(File.class);
+    final File mockOutputDir = mock(File.class);
+    when(mockContext.getCacheDir()).thenReturn(mockOutputDir);
+    mockedStaticFile
+        .when(() -> File.createTempFile(prefix, suffix, mockOutputDir))
+        .thenThrow(IOException.class);
+    assertThrows(RuntimeException.class, () -> systemServicesHostApi.getTempFilePath(prefix, suffix));
+
+    mockedStaticFile.close();
   }
 }

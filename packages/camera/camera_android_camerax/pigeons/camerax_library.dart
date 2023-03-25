@@ -113,7 +113,6 @@ abstract class SystemServicesHostApi {
 
   void stopListeningForDeviceOrientationChange();
 
-  @async
   String getTempFilePath(String prefix, String suffix);
 }
 
@@ -155,7 +154,6 @@ abstract class RecorderHostApi {
 
   int getTargetVideoEncodingBitRate(int identifier);
 
-  @async
   int prepareRecording(int identifier, String path);
 }
 

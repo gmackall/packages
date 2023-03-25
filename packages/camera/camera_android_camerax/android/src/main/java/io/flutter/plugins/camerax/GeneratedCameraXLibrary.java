@@ -617,7 +617,7 @@ public class GeneratedCameraXLibrary {
     void requestCameraPermissions(@NonNull Boolean enableAudio, Result<CameraPermissionsErrorData> result);
     void startListeningForDeviceOrientationChange(@NonNull Boolean isFrontFacing, @NonNull Long sensorOrientation);
     void stopListeningForDeviceOrientationChange();
-    void getTempFilePath(@NonNull String prefix, @NonNull String suffix, Result<String> result);
+    @NonNull String getTempFilePath(@NonNull String prefix, @NonNull String suffix);
 
     /** The codec used by SystemServicesHostApi. */
     static MessageCodec<Object> getCodec() {
@@ -723,23 +723,13 @@ public class GeneratedCameraXLibrary {
               if (suffixArg == null) {
                 throw new NullPointerException("suffixArg unexpectedly null.");
               }
-              Result<String> resultCallback = new Result<String>() {
-                public void success(String result) {
-                  wrapped.put("result", result);
-                  reply.reply(wrapped);
-                }
-                public void error(Throwable error) {
-                  wrapped.put("error", wrapError(error));
-                  reply.reply(wrapped);
-                }
-              };
-
-              api.getTempFilePath(prefixArg, suffixArg, resultCallback);
+              String output = api.getTempFilePath(prefixArg, suffixArg);
+              wrapped.put("result", output);
             }
             catch (Error | RuntimeException exception) {
               wrapped.put("error", wrapError(exception));
-              reply.reply(wrapped);
             }
+            reply.reply(wrapped);
           });
         } else {
           channel.setMessageHandler(null);
@@ -1025,7 +1015,7 @@ public class GeneratedCameraXLibrary {
     void create(@NonNull Long identifier, @Nullable Long aspectRatio, @Nullable Long bitRate);
     @NonNull Long getAspectRatio(@NonNull Long identifier);
     @NonNull Long getTargetVideoEncodingBitRate(@NonNull Long identifier);
-    void prepareRecording(@NonNull Long identifier, @NonNull String path, Result<Long> result);
+    @NonNull Long prepareRecording(@NonNull Long identifier, @NonNull String path);
 
     /** The codec used by RecorderHostApi. */
     static MessageCodec<Object> getCodec() {
@@ -1124,23 +1114,13 @@ public class GeneratedCameraXLibrary {
               if (pathArg == null) {
                 throw new NullPointerException("pathArg unexpectedly null.");
               }
-              Result<Long> resultCallback = new Result<Long>() {
-                public void success(Long result) {
-                  wrapped.put("result", result);
-                  reply.reply(wrapped);
-                }
-                public void error(Throwable error) {
-                  wrapped.put("error", wrapError(error));
-                  reply.reply(wrapped);
-                }
-              };
-
-              api.prepareRecording((identifierArg == null) ? null : identifierArg.longValue(), pathArg, resultCallback);
+              Long output = api.prepareRecording((identifierArg == null) ? null : identifierArg.longValue(), pathArg);
+              wrapped.put("result", output);
             }
             catch (Error | RuntimeException exception) {
               wrapped.put("error", wrapError(exception));
-              reply.reply(wrapped);
             }
+            reply.reply(wrapped);
           });
         } else {
           channel.setMessageHandler(null);

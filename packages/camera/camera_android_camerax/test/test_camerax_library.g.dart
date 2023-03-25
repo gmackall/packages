@@ -242,7 +242,7 @@ abstract class TestSystemServicesHostApi {
   Future<CameraPermissionsErrorData?> requestCameraPermissions(bool enableAudio);
   void startListeningForDeviceOrientationChange(bool isFrontFacing, int sensorOrientation);
   void stopListeningForDeviceOrientationChange();
-  Future<String> getTempFilePath(String prefix, String suffix);
+  String getTempFilePath(String prefix, String suffix);
   static void setup(TestSystemServicesHostApi? api, {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
@@ -304,7 +304,7 @@ abstract class TestSystemServicesHostApi {
           assert(arg_prefix != null, 'Argument for dev.flutter.pigeon.SystemServicesHostApi.getTempFilePath was null, expected non-null String.');
           final String? arg_suffix = (args[1] as String?);
           assert(arg_suffix != null, 'Argument for dev.flutter.pigeon.SystemServicesHostApi.getTempFilePath was null, expected non-null String.');
-          final String output = await api.getTempFilePath(arg_prefix!, arg_suffix!);
+          final String output = api.getTempFilePath(arg_prefix!, arg_suffix!);
           return <Object?, Object?>{'result': output};
         });
       }
@@ -470,7 +470,7 @@ abstract class TestRecorderHostApi {
   void create(int identifier, int? aspectRatio, int? bitRate);
   int getAspectRatio(int identifier);
   int getTargetVideoEncodingBitRate(int identifier);
-  Future<int> prepareRecording(int identifier, String path);
+  int prepareRecording(int identifier, String path);
   static void setup(TestRecorderHostApi? api, {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
@@ -535,7 +535,7 @@ abstract class TestRecorderHostApi {
           assert(arg_identifier != null, 'Argument for dev.flutter.pigeon.RecorderHostApi.prepareRecording was null, expected non-null int.');
           final String? arg_path = (args[1] as String?);
           assert(arg_path != null, 'Argument for dev.flutter.pigeon.RecorderHostApi.prepareRecording was null, expected non-null String.');
-          final int output = await api.prepareRecording(arg_identifier!, arg_path!);
+          final int output = api.prepareRecording(arg_identifier!, arg_path!);
           return <Object?, Object?>{'result': output};
         });
       }

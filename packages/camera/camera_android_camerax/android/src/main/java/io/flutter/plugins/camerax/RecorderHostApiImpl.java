@@ -79,13 +79,10 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   }
 
   @Override
-  public void prepareRecording(
-      @NonNull Long identifier, @NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
+  public Long prepareRecording(
+      @NonNull Long identifier, @NonNull String path) {
     Recorder recorder = getRecorderFromInstanceId(identifier);
-    File temporaryCaptureFile = openTempFile(path, result);
-    if (temporaryCaptureFile == null) {
-      return;
-    }
+    File temporaryCaptureFile = openTempFile(path);
     FileOutputOptions fileOutputOptions =
         new FileOutputOptions.Builder(temporaryCaptureFile).build();
     PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions);
@@ -94,17 +91,17 @@ public class RecorderHostApiImpl implements RecorderHostApi {
       pendingRecording.withAudioEnabled();
     }
     pendingRecordingFlutterApi.create(pendingRecording, reply -> {});
-    result.success(
-        Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(pendingRecording)));
+    return
+        Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(pendingRecording));
   }
 
   @VisibleForTesting
-  public File openTempFile(@NonNull String path, GeneratedCameraXLibrary.Result<Long> result) {
+  public File openTempFile(@NonNull String path) {
     File file = null;
     try {
       file = new File(path);
     } catch (NullPointerException | SecurityException e) {
-      result.error(e);
+      throw new RuntimeException(e);
     }
     return file;
   }

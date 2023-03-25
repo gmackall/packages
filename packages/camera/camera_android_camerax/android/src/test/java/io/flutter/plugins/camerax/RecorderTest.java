@@ -5,7 +5,7 @@
 package io.flutter.plugins.camerax;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertThrows;import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -130,10 +130,8 @@ public class RecorderTest {
     RecorderHostApiImpl spy =
         spy(new RecorderHostApiImpl(mockBinaryMessenger, testInstanceManager, context));
     spy.pendingRecordingFlutterApi = mockPendingRecordingFlutterApi;
-    GeneratedCameraXLibrary.Result<Long> result = mock(GeneratedCameraXLibrary.Result.class);
-    doReturn(mock(File.class)).when(spy).openTempFile(any(), any());
-    spy.prepareRecording(Long.valueOf(recorderId), "", result);
-    verify(result).success(mockPendingRecordingId);
+    doReturn(mock(File.class)).when(spy).openTempFile(any());
+    spy.prepareRecording(Long.valueOf(recorderId), "");
 
     testInstanceManager.remove(Long.valueOf(recorderId));
     testInstanceManager.remove(mockPendingRecordingId);
@@ -147,10 +145,8 @@ public class RecorderTest {
     testInstanceManager.addDartCreatedInstance(mockRecorder, Long.valueOf(recorderId));
     RecorderHostApiImpl recorderHostApi =
         new RecorderHostApiImpl(mockBinaryMessenger, testInstanceManager, context);
-    GeneratedCameraXLibrary.Result<Long> result = mock(GeneratedCameraXLibrary.Result.class);
-    recorderHostApi.prepareRecording(Long.valueOf(recorderId), null, result);
-    verify(result).error(isA(NullPointerException.class));
-
+    assertThrows(RuntimeException.class,
+            () -> { recorderHostApi.prepareRecording(Long.valueOf(recorderId), null);});
     testInstanceManager.remove(Long.valueOf(recorderId));
   }
 }
