@@ -519,16 +519,16 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               ? const Icon(Icons.play_arrow)
               : const Icon(Icons.pause),
           color: Colors.blue,
-          onPressed:
-              cameraController == null ? null :
-              (cameraController.value.isRecordingPaused
-                  ? onResumeButtonPressed : onPauseButtonPressed),
+          onPressed: cameraController == null
+              ? null
+              : (cameraController.value.isRecordingPaused
+                  ? onResumeButtonPressed
+                  : onPauseButtonPressed),
         ),
         IconButton(
           icon: const Icon(Icons.stop),
           color: Colors.red,
-          onPressed:
-              cameraController == null ? null : onStopButtonPressed,
+          onPressed: cameraController == null ? null : onStopButtonPressed,
         ),
         IconButton(
           icon: const Icon(Icons.pause_presentation),
