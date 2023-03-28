@@ -47,12 +47,19 @@ class AndroidCameraCameraX extends CameraPlatform {
   @visibleForTesting
   VideoCapture? videoCapture;
 
+  /// The [Recorder] instance handling the current creating a new [PendingRecording].
   @visibleForTesting
   Recorder? recorder;
+
+  /// The [PendingRecording] instance used to create an active [Recording].
   @visibleForTesting
   PendingRecording? pendingRecording;
+
+  /// The [Recording] instance representing the current recording.
   @visibleForTesting
   Recording? recording;
+
+  /// The path at which the video file will be saved for the current [Recording].
   @visibleForTesting
   String? videoOutputPath;
 

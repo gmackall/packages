@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:camera_platform_interface/camera_platform_interface.dart'
-    show CameraEvent, CameraException, DeviceOrientationChangedEvent;
+    show CameraException, DeviceOrientationChangedEvent;
 import 'package:flutter/services.dart';
 
 import 'android_camera_camerax_flutter_api_impls.dart';

@@ -44,7 +44,9 @@ class VideoCapture extends UseCase {
   late final VideoCaptureHostApiImpl _api;
 }
 
+/// Host API implementation of [VideoCapture].
 class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
+  /// Constructs a [VideoCaptureHostApiImpl].
   VideoCaptureHostApiImpl(
       {this.binaryMessenger, InstanceManager? instanceManager}) {
     this.instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
@@ -59,6 +61,7 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
   /// Maintains instances stored to communicate with native language objects.
   late final InstanceManager instanceManager;
 
+  /// Creates a [VideoCapture] associated with the provided [Recorder] instance.
   Future<VideoCapture> withOutputFromInstance(Recorder recorder) async {
     int? identifier = instanceManager.getIdentifier(recorder);
     identifier ??= instanceManager.addDartCreatedInstance(recorder,
@@ -71,6 +74,7 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
         as VideoCapture;
   }
 
+  /// Gets the [Recorder] associated with the provided [VideoCapture] instance.
   Future<Recorder> getOutputFromInstance(VideoCapture instance) async {
     final int? identifier = instanceManager.getIdentifier(instance);
     final int recorderId = await getOutput(identifier!);
@@ -78,7 +82,9 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
   }
 }
 
+/// Flutter API implementation of [VideoCapture].
 class VideoCaptureFlutterApiImpl implements VideoCaptureFlutterApi {
+  /// Constructs a [VideoCaptureFlutterApiImpl].
   VideoCaptureFlutterApiImpl({
     this.binaryMessenger,
     InstanceManager? instanceManager,

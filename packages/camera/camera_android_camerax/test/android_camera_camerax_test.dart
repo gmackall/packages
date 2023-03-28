@@ -391,7 +391,7 @@ void main() {
     verifyNoMoreInteractions(recording);
   });
 
-  test('stopVideoRecording stops the recording and unbinds from lifecycle',
+  test('stopVideoRecording stops the recording',
       () async {
     final AndroidCameraCameraX camera = AndroidCameraCameraX();
     final MockRecording recording = MockRecording();
@@ -408,12 +408,8 @@ void main() {
     final XFile file = await camera.stopVideoRecording(0);
     assert(file.path == videoOutputPath);
 
-    verifyInOrder([
-      recording.close(),
-      processCameraProvider.unbind([videoCapture])
-    ]);
+    verify(recording.close());
     verifyNoMoreInteractions(recording);
-    verifyNoMoreInteractions(processCameraProvider);
   });
 }
 

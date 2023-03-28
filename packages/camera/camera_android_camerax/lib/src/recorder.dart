@@ -58,17 +58,24 @@ class Recorder extends JavaObject {
   }
 }
 
+/// Host API implementation of [Recorder].
 class RecorderHostApiImpl extends RecorderHostApi {
-  ///Creates a RecorderHostApiImpl.
+  /// Constructs a [RecorderHostApiImpl].
   RecorderHostApiImpl(
       {this.binaryMessenger, InstanceManager? instanceManager}) {
     this.instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
   }
 
+  /// Receives binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
   final BinaryMessenger? binaryMessenger;
 
+  /// Maintains instances stored to communicate with native language objects.
   late final InstanceManager instanceManager;
 
+  /// Creates a [Recorder] with the provided aspect ratio and bitrate if specified.
   void createFromInstance(Recorder instance, int? aspectRatio, int? bitRate) {
     int? identifier = instanceManager.getIdentifier(instance);
     identifier ??= instanceManager.addDartCreatedInstance(instance,
@@ -82,6 +89,8 @@ class RecorderHostApiImpl extends RecorderHostApi {
     create(identifier, aspectRatio, bitRate);
   }
 
+  /// Prepares a [Recording] using this recorder. The output file will be saved
+  /// at the provided path.
   Future<PendingRecording> prepareRecordingFromInstance(
       Recorder instance, String path) async {
     final int pendingRecordingId =
@@ -91,14 +100,22 @@ class RecorderHostApiImpl extends RecorderHostApi {
   }
 }
 
+/// Flutter API implementation of [Recorder].
 class RecorderFlutterApiImpl extends RecorderFlutterApi {
+  /// Constructs a [RecorderFlutterApiImpl].
   RecorderFlutterApiImpl({
     this.binaryMessenger,
     InstanceManager? instanceManager,
-  }) : this.instanceManager =
+  }) : instanceManager =
             instanceManager ?? JavaObject.globalInstanceManager;
 
+  /// Receives binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
   final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
   final InstanceManager instanceManager;
 
   @override

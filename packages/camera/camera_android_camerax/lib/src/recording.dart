@@ -26,23 +26,28 @@ class Recording extends JavaObject {
 
   late final RecordingHostApiImpl _api;
 
+  /// Closes this recording.
   Future<void> close() {
     return _api.closeFromInstance(this);
   }
 
+  /// Pauses this recording if active.
   Future<void> pause() {
     return _api.pauseFromInstance(this);
   }
 
+  /// Resumes the current recording if paused.
   Future<void> resume() {
     return _api.resumeFromInstance(this);
   }
 
+  /// Stops the recording, as if calling close().
   Future<void> stop() {
     return _api.stopFromInstance(this);
   }
 }
 
+/// Host API implementation of [Recording].
 class RecordingHostApiImpl extends RecordingHostApi {
   /// Creates a [RecordingHostApiImpl].
   RecordingHostApiImpl({this.binaryMessenger, InstanceManager? instanceManager})
@@ -59,24 +64,30 @@ class RecordingHostApiImpl extends RecordingHostApi {
   /// Maintains instances stored to communicate with native language objects.
   late final InstanceManager instanceManager;
 
+  /// Closes the specified recording instance.
   Future<void> closeFromInstance(Recording recording) async {
     close(instanceManager.getIdentifier(recording)!);
   }
 
+  /// Pauses the specified recording instance if active.
   Future<void> pauseFromInstance(Recording recording) async {
     pause(instanceManager.getIdentifier(recording)!);
   }
 
+  /// Resumes the specified recording instance if paused.
   Future<void> resumeFromInstance(Recording recording) async {
     resume(instanceManager.getIdentifier(recording)!);
   }
 
+  /// Stops the specified recording instance, as if calling closeFromInstance().
   Future<void> stopFromInstance(Recording recording) async {
     stop(instanceManager.getIdentifier(recording)!);
   }
 }
 
+/// Flutter API implementation of [Recording].
 class RecordingFlutterApiImpl extends RecordingFlutterApi {
+  /// Constructs a [RecordingFlutterApiImpl].
   RecordingFlutterApiImpl({
     this.binaryMessenger,
     InstanceManager? instanceManager,
