@@ -522,8 +522,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           onPressed: () {
             if (cameraController == null) {
               return;
-            }
-            else if (cameraController.value.isRecordingPaused) {
+            } else if (cameraController.value.isRecordingPaused) {
               return onResumeButtonPressed();
             } else {
               return onPauseButtonPressed();

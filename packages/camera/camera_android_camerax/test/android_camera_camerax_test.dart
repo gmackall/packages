@@ -391,8 +391,7 @@ void main() {
     verifyNoMoreInteractions(recording);
   });
 
-  test('stopVideoRecording stops the recording',
-      () async {
+  test('stopVideoRecording stops the recording', () async {
     final AndroidCameraCameraX camera = AndroidCameraCameraX();
     final MockRecording recording = MockRecording();
     final MockProcessCameraProvider processCameraProvider =

@@ -106,8 +106,7 @@ class RecorderFlutterApiImpl extends RecorderFlutterApi {
   RecorderFlutterApiImpl({
     this.binaryMessenger,
     InstanceManager? instanceManager,
-  }) : instanceManager =
-            instanceManager ?? JavaObject.globalInstanceManager;
+  }) : instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
 
   /// Receives binary data across the Flutter platform barrier.
   ///
