@@ -414,7 +414,8 @@ class AndroidCameraCameraX extends CameraPlatform {
 
     recorder = Recorder(); // TODO(gmackall): Configure resolution info here.
     videoCapture = await VideoCapture.withOutput(recorder!);
-    processCameraProvider!.bindToLifecycle(cameraSelector!, [videoCapture!]);
+    processCameraProvider!
+        .bindToLifecycle(cameraSelector!, <UseCase>[videoCapture!]);
     videoOutputPath = await SystemServices.getTempFilePath('MOV', '.mp4');
     pendingRecording = await recorder!.prepareRecording(videoOutputPath!);
     recording = await pendingRecording!.start();
@@ -425,6 +426,7 @@ class AndroidCameraCameraX extends CameraPlatform {
   Future<XFile> stopVideoRecording(int cameraId) async {
     recording!.close();
     recording = null;
+    pendingRecording = null;
     return XFile(videoOutputPath!);
   }
 

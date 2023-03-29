@@ -3,8 +3,6 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
-
 import 'package:mockito/mockito.dart' as _i1;
 
 import 'test_camerax_library.g.dart' as _i2;
@@ -63,7 +61,7 @@ class MockTestRecorderHostApi extends _i1.Mock
         returnValue: 0,
       ) as int);
   @override
-  _i3.Future<int> prepareRecording(
+  int prepareRecording(
     int? identifier,
     String? path,
   ) =>
@@ -75,6 +73,6 @@ class MockTestRecorderHostApi extends _i1.Mock
             path,
           ],
         ),
-        returnValue: _i3.Future<int>.value(0),
-      ) as _i3.Future<int>);
+        returnValue: 0,
+      ) as int);
 }
