@@ -74,7 +74,7 @@ void main() {
           mockPendingRecording, mockPendingRecordingId,
           onCopy: (_) => PendingRecording.detached());
       when(mockApi.prepareRecording(recorderId, filePath))
-          .thenAnswer((_) async => mockPendingRecordingId);
+          .thenReturn(mockPendingRecordingId);
       final PendingRecording pendingRecording =
           await recorder.prepareRecording(filePath);
       expect(pendingRecording, mockPendingRecording);

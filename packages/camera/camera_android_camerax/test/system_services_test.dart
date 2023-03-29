@@ -116,7 +116,7 @@ void main() {
       const String testSuffix = '.mp4';
 
       when(mockApi.getTempFilePath(testPrefix, testSuffix))
-          .thenAnswer((_) async => testPath + testPrefix + testSuffix);
+          .thenReturn(testPath + testPrefix + testSuffix);
       expect(await SystemServices.getTempFilePath(testPrefix, testSuffix),
           testPath + testPrefix + testSuffix);
       verify(mockApi.getTempFilePath(testPrefix, testSuffix));
