@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.Preview;
 import androidx.camera.video.Recorder;
-
 import io.flutter.plugin.common.BinaryMessenger;
 
 /** Utility class used to create CameraX-related objects primarily for testing purposes. */

@@ -4,9 +4,9 @@
 
 package io.flutter.plugins.camerax;
 
-import androidx.annotation.NonNull;import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.camera.video.Recorder;
-
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecorderFlutterApi;
 
@@ -19,7 +19,10 @@ public class RecorderFlutterApiImpl extends RecorderFlutterApi {
   }
 
   void create(
-      @NonNull Recorder recorder, @Nullable Long aspectRatio, @Nullable Long bitRate, Reply<Void> reply) {
+      @NonNull Recorder recorder,
+      @Nullable Long aspectRatio,
+      @Nullable Long bitRate,
+      Reply<Void> reply) {
     create(instanceManager.addHostCreatedInstance(recorder), aspectRatio, bitRate, reply);
   }
 }

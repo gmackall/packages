@@ -5,8 +5,8 @@
 package io.flutter.plugins.camerax;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -15,12 +15,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
-
 import androidx.camera.video.FileOutputOptions;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recorder;
 import androidx.test.core.app.ApplicationProvider;
-
+import io.flutter.plugin.common.BinaryMessenger;
+import java.io.File;
+import java.util.concurrent.Executor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,11 +31,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.robolectric.RobolectricTestRunner;
-
-import java.io.File;
-import java.util.concurrent.Executor;
-
-import io.flutter.plugin.common.BinaryMessenger;
 
 @RunWith(RobolectricTestRunner.class)
 public class RecorderTest {
@@ -71,11 +67,13 @@ public class RecorderTest {
     recorderHostApi.cameraXProxy = mockCameraXProxy;
     when(mockCameraXProxy.createRecorderBuilder()).thenReturn(mockRecorderBuilder);
     when(mockRecorderBuilder.setAspectRatio(aspectRatio)).thenReturn(mockRecorderBuilder);
-    when(mockRecorderBuilder.setTargetVideoEncodingBitRate(bitRate)).thenReturn(mockRecorderBuilder);
+    when(mockRecorderBuilder.setTargetVideoEncodingBitRate(bitRate))
+        .thenReturn(mockRecorderBuilder);
     when(mockRecorderBuilder.setExecutor(any(Executor.class))).thenReturn(mockRecorderBuilder);
     when(mockRecorderBuilder.build()).thenReturn(mockRecorder);
 
-    recorderHostApi.create(Long.valueOf(recorderId), Long.valueOf(aspectRatio), Long.valueOf(bitRate));
+    recorderHostApi.create(
+        Long.valueOf(recorderId), Long.valueOf(aspectRatio), Long.valueOf(bitRate));
     verify(mockCameraXProxy).createRecorderBuilder();
     verify(mockRecorderBuilder).setAspectRatio(aspectRatio);
     verify(mockRecorderBuilder).setTargetVideoEncodingBitRate(bitRate);
@@ -93,7 +91,8 @@ public class RecorderTest {
     testInstanceManager.addDartCreatedInstance(mockRecorder, Long.valueOf(recorderId));
     final RecorderHostApiImpl recorderHostApi =
         new RecorderHostApiImpl(mockBinaryMessenger, testInstanceManager, context);
-    assertEquals(recorderHostApi.getAspectRatio(Long.valueOf(recorderId)), Long.valueOf(aspectRatio));
+    assertEquals(
+        recorderHostApi.getAspectRatio(Long.valueOf(recorderId)), Long.valueOf(aspectRatio));
     verify(mockRecorder).getAspectRatio();
     testInstanceManager.remove(Long.valueOf(recorderId));
   }
@@ -107,7 +106,9 @@ public class RecorderTest {
     testInstanceManager.addDartCreatedInstance(mockRecorder, Long.valueOf(recorderId));
     final RecorderHostApiImpl recorderHostApi =
         new RecorderHostApiImpl(mockBinaryMessenger, testInstanceManager, context);
-    assertEquals(recorderHostApi.getTargetVideoEncodingBitRate(Long.valueOf(recorderId)), Long.valueOf(bitRate));
+    assertEquals(
+        recorderHostApi.getTargetVideoEncodingBitRate(Long.valueOf(recorderId)),
+        Long.valueOf(bitRate));
     verify(mockRecorder).getTargetVideoEncodingBitRate();
     testInstanceManager.remove(Long.valueOf(recorderId));
   }
@@ -145,8 +146,11 @@ public class RecorderTest {
     testInstanceManager.addDartCreatedInstance(mockRecorder, Long.valueOf(recorderId));
     RecorderHostApiImpl recorderHostApi =
         new RecorderHostApiImpl(mockBinaryMessenger, testInstanceManager, context);
-    assertThrows(RuntimeException.class,
-            () -> { recorderHostApi.prepareRecording(Long.valueOf(recorderId), null);});
+    assertThrows(
+        RuntimeException.class,
+        () -> {
+          recorderHostApi.prepareRecording(Long.valueOf(recorderId), null);
+        });
     testInstanceManager.remove(Long.valueOf(recorderId));
   }
 }

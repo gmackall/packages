@@ -4,16 +4,15 @@
 
 package io.flutter.plugins.camerax;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import static org.junit.Assert.assertEquals;
-
 import androidx.camera.video.Recorder;
 import androidx.camera.video.VideoCapture;
-
+import io.flutter.plugin.common.BinaryMessenger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,8 +22,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.robolectric.RobolectricTestRunner;
-
-import io.flutter.plugin.common.BinaryMessenger;
 
 @RunWith(RobolectricTestRunner.class)
 public class VideoCaptureTest {

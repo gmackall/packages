@@ -4,8 +4,8 @@
 
 package io.flutter.plugins.camerax;
 
-import androidx.annotation.NonNull;import androidx.camera.video.PendingRecording;
-
+import androidx.annotation.NonNull;
+import androidx.camera.video.PendingRecording;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.PendingRecordingFlutterApi;
 

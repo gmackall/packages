@@ -6,20 +6,17 @@ package io.flutter.plugins.camerax;
 
 import android.app.Activity;
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
-
-import java.io.File;
-import java.io.IOException;
-
 import io.flutter.embedding.engine.systemchannels.PlatformChannel.DeviceOrientation;
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.FlutterException;import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
+import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.CameraPermissionsErrorData;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.Result;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.SystemServicesFlutterApi;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.SystemServicesHostApi;
+import java.io.File;
+import java.io.IOException;
 
 public class SystemServicesHostApiImpl implements SystemServicesHostApi {
   private final BinaryMessenger binaryMessenger;
@@ -41,9 +38,7 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
     this.systemServicesFlutterApi = new SystemServicesFlutterApiImpl(binaryMessenger);
   }
 
-  /**
-   * Sets the context, which is used to get the cache directory.
-   */
+  /** Sets the context, which is used to get the cache directory. */
   public void setContext(Context context) {
     this.context = context;
   }
@@ -126,9 +121,7 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
     }
   }
 
-  /**
-   * Returns a path to be used to create a temp file in the current cache directory.
-   */
+  /** Returns a path to be used to create a temp file in the current cache directory. */
   @Override
   public String getTempFilePath(@NonNull String prefix, @NonNull String suffix) {
     try {

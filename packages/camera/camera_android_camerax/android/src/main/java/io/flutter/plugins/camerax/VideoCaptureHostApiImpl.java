@@ -8,11 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.Recorder;
 import androidx.camera.video.VideoCapture;
-
-import java.util.Objects;
-
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.VideoCaptureHostApi;
+import java.util.Objects;
 
 public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
   private final BinaryMessenger binaryMessenger;

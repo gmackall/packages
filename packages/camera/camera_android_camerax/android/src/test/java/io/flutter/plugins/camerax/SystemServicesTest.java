@@ -5,7 +5,8 @@
 package io.flutter.plugins.camerax;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -15,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import android.app.Activity;
 import android.content.Context;
-
 import io.flutter.embedding.engine.systemchannels.PlatformChannel.DeviceOrientation;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.CameraPermissionsManager.PermissionsRegistry;
@@ -24,6 +24,8 @@ import io.flutter.plugins.camerax.DeviceOrientationManager.DeviceOrientationChan
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.CameraPermissionsErrorData;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.Result;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.SystemServicesFlutterApi.Reply;
+import java.io.File;
+import java.io.IOException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -32,8 +34,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import java.io.File;
-import java.io.IOException;
 
 public class SystemServicesTest {
   @Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -178,7 +178,8 @@ public class SystemServicesTest {
     mockedStaticFile
         .when(() -> File.createTempFile(prefix, suffix, mockOutputDir))
         .thenThrow(IOException.class);
-    assertThrows(RuntimeException.class, () -> systemServicesHostApi.getTempFilePath(prefix, suffix));
+    assertThrows(
+        RuntimeException.class, () -> systemServicesHostApi.getTempFilePath(prefix, suffix));
 
     mockedStaticFile.close();
   }

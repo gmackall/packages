@@ -5,19 +5,16 @@
 package io.flutter.plugins.camerax;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recording;
 import androidx.camera.video.VideoRecordEvent;
 import androidx.core.content.ContextCompat;
-
-import java.util.Objects;
-import java.util.concurrent.Executor;
-
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.PendingRecordingHostApi;
+import java.util.Objects;
+import java.util.concurrent.Executor;
 
 public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
   private final BinaryMessenger binaryMessenger;
@@ -39,24 +36,23 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     recordingFlutterApi = new RecordingFlutterApiImpl(binaryMessenger, instanceManager);
   }
 
-  /**
-   * Sets the context, which is used to get the {@link Executor} needed to start the recording.
-   */
+  /** Sets the context, which is used to get the {@link Executor} needed to start the recording. */
   public void setContext(Context context) {
     this.context = context;
   }
 
   /**
-   * Starts the given {@link PendingRecording}, creating a new {@link Recording}. The recording
-   * is then added to the instance manager and we return the corresponding identifier.
+   * Starts the given {@link PendingRecording}, creating a new {@link Recording}. The recording is
+   * then added to the instance manager and we return the corresponding identifier.
+   *
    * @param identifier An identifier corresponding to a PendingRecording.
    */
   @NonNull
   @Override
   public Long start(@NonNull Long identifier) {
     PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
-    Recording recording = pendingRecording.start(this.getExecutor(),
-            x -> handleVideoRecordEvent(x));
+    Recording recording =
+        pendingRecording.start(this.getExecutor(), x -> handleVideoRecordEvent(x));
     recordingFlutterApi.create(recording, reply -> {});
     return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
   }

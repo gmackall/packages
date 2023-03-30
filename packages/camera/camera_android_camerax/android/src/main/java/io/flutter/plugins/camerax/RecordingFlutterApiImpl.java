@@ -5,7 +5,6 @@
 package io.flutter.plugins.camerax;
 
 import androidx.camera.video.Recording;
-
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecordingFlutterApi;
 

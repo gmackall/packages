@@ -4,6 +4,7 @@
 
 package io.flutter.plugins.camerax;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -12,13 +13,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import static org.junit.Assert.assertEquals;
-
 import android.content.Context;
-
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recording;
-
+import io.flutter.plugin.common.BinaryMessenger;
+import java.util.concurrent.Executor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -28,10 +27,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.robolectric.RobolectricTestRunner;
-
-import java.util.concurrent.Executor;
-
-import io.flutter.plugin.common.BinaryMessenger;
 
 @RunWith(RobolectricTestRunner.class)
 public class PendingRecordingTest {

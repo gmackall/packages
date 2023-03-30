@@ -4,21 +4,20 @@
 
 package io.flutter.plugins.camerax;
 
-import android.Manifest;import android.content.Context;import android.content.pm.PackageManager;
-
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.FileOutputOptions;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recorder;
 import androidx.core.content.ContextCompat;
-
+import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecorderHostApi;
 import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.Executor;
-
-import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecorderHostApi;
 
 public class RecorderHostApiImpl implements RecorderHostApi {
   private final BinaryMessenger binaryMessenger;
@@ -51,16 +50,12 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     instanceManager.addDartCreatedInstance(recorder, instanceId);
   }
 
-  /**
-   * Sets the context, which is used to get the {@link Executor} passed to the Recorder builder.
-   */
+  /** Sets the context, which is used to get the {@link Executor} passed to the Recorder builder. */
   public void setContext(Context context) {
     this.context = context;
   }
 
-  /**
-   * Gets the aspect ratio of the given {@link Recorder}.
-   */
+  /** Gets the aspect ratio of the given {@link Recorder}. */
   @NonNull
   @Override
   public Long getAspectRatio(@NonNull Long identifier) {
@@ -68,9 +63,7 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     return Long.valueOf(recorder.getAspectRatio());
   }
 
-  /**
-   * Gets the target video encoding bitrate of the given {@link Recorder}.
-   */
+  /** Gets the target video encoding bitrate of the given {@link Recorder}. */
   @NonNull
   @Override
   public Long getTargetVideoEncodingBitRate(@NonNull Long identifier) {
@@ -79,20 +72,19 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   }
 
   @Override
-  public Long prepareRecording(
-      @NonNull Long identifier, @NonNull String path) {
+  public Long prepareRecording(@NonNull Long identifier, @NonNull String path) {
     Recorder recorder = getRecorderFromInstanceId(identifier);
     File temporaryCaptureFile = openTempFile(path);
     FileOutputOptions fileOutputOptions =
         new FileOutputOptions.Builder(temporaryCaptureFile).build();
     PendingRecording pendingRecording = recorder.prepareRecording(context, fileOutputOptions);
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-            == PackageManager.PERMISSION_GRANTED) {
+        == PackageManager.PERMISSION_GRANTED) {
       pendingRecording.withAudioEnabled();
     }
     pendingRecordingFlutterApi.create(pendingRecording, reply -> {});
-    return
-        Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(pendingRecording));
+    return Objects.requireNonNull(
+        instanceManager.getIdentifierForStrongReference(pendingRecording));
   }
 
   @VisibleForTesting

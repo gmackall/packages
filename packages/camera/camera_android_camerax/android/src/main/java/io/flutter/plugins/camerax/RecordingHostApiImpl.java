@@ -6,11 +6,9 @@ package io.flutter.plugins.camerax;
 
 import androidx.annotation.NonNull;
 import androidx.camera.video.Recording;
-
-import java.util.Objects;
-
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecordingHostApi;
+import java.util.Objects;
 
 public class RecordingHostApiImpl implements RecordingHostApi {
   private final BinaryMessenger binaryMessenger;
