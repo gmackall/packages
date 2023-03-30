@@ -10,8 +10,7 @@ import 'instance_manager.dart';
 import 'java_object.dart';
 import 'pending_recording.dart';
 
-/// A dart wrapping of the CameraX Recorder class. Does not exactly wrap all
-/// methods.
+/// A dart wrapping of the CameraX Recorder class.
 ///
 /// See https://developer.android.com/reference/androidx/camera/video/Recorder.
 class Recorder extends JavaObject {

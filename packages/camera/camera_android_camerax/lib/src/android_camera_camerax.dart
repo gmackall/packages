@@ -70,6 +70,8 @@ class AndroidCameraCameraX extends CameraPlatform {
 
   bool _previewIsPaused = false;
 
+  final String _videoPrefix = 'MOV';
+
   /// The [CameraSelector] used to configure the [processCameraProvider] to use
   /// the desired camera.
   @visibleForTesting
@@ -416,7 +418,7 @@ class AndroidCameraCameraX extends CameraPlatform {
     videoCapture = await VideoCapture.withOutput(recorder!);
     processCameraProvider!
         .bindToLifecycle(cameraSelector!, <UseCase>[videoCapture!]);
-    videoOutputPath = await SystemServices.getTempFilePath('MOV', '.mp4');
+    videoOutputPath = await SystemServices.getTempFilePath(_videoPrefix, '.temp');
     pendingRecording = await recorder!.prepareRecording(videoOutputPath!);
     recording = await pendingRecording!.start();
   }

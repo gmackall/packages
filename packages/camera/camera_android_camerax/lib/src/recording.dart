@@ -10,6 +10,7 @@ import 'instance_manager.dart';
 import 'java_object.dart';
 
 /// Wraps a CameraX recording class.
+///
 /// See https://developer.android.com/reference/androidx/camera/video/Recording.
 class Recording extends JavaObject {
   /// Constructs a detached [Recording]
