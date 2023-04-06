@@ -72,7 +72,7 @@ void main() {
       final MockPendingRecording mockPendingRecording = MockPendingRecording();
       instanceManager.addHostCreatedInstance(
           mockPendingRecording, mockPendingRecordingId,
-          onCopy: (_) => PendingRecording.detached());
+          onCopy: (_) => MockPendingRecording());
       when(mockApi.prepareRecording(recorderId, filePath))
           .thenReturn(mockPendingRecordingId);
       final PendingRecording pendingRecording =

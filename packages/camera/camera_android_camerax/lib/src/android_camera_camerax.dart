@@ -12,6 +12,7 @@ import 'camera.dart';
 import 'camera_info.dart';
 import 'camera_selector.dart';
 import 'camerax_library.g.dart';
+import 'image_capture.dart';
 import 'pending_recording.dart';
 import 'preview.dart';
 import 'process_camera_provider.dart';
@@ -72,10 +73,18 @@ class AndroidCameraCameraX extends CameraPlatform {
 
   final String _videoPrefix = 'MOV';
 
+  /// The [ImageCapture] instance that can be configured to capture a still image.
+  @visibleForTesting
+  ImageCapture? imageCapture;
+
   /// The [CameraSelector] used to configure the [processCameraProvider] to use
   /// the desired camera.
   @visibleForTesting
   CameraSelector? cameraSelector;
+
+  /// The resolution preset used to create a camera that should be used for
+  /// capturing still images and recording video.
+  ResolutionPreset? _resolutionPreset;
 
   /// The controller we need to broadcast the different camera events.
   ///
@@ -164,18 +173,29 @@ class AndroidCameraCameraX extends CameraPlatform {
     startListeningForDeviceOrientationChange(
         cameraIsFrontFacing, cameraDescription.sensorOrientation);
 
-    // Retrieve a ProcessCameraProvider instance.
+    // Retrieve a fresh ProcessCameraProvider instance.
     processCameraProvider ??= await ProcessCameraProvider.getInstance();
+    processCameraProvider!.unbindAll();
 
-    // Configure Preview instance and bind to ProcessCameraProvider.
+    // Configure Preview instance.
+    _resolutionPreset = resolutionPreset;
     final int targetRotation =
         _getTargetRotation(cameraDescription.sensorOrientation);
-    final ResolutionInfo? targetResolution =
+    final ResolutionInfo? previewTargetResolution =
         _getTargetResolutionForPreview(resolutionPreset);
-    preview = createPreview(targetRotation, targetResolution);
-    previewIsBound = false;
-    _previewIsPaused = false;
+    preview = createPreview(targetRotation, previewTargetResolution);
     final int flutterSurfaceTextureId = await preview!.setSurfaceProvider();
+
+    // Configure ImageCapture instance.
+    final ResolutionInfo? imageCaptureTargetResolution =
+        _getTargetResolutionForImageCapture(_resolutionPreset);
+    imageCapture = createImageCapture(null, imageCaptureTargetResolution);
+
+    // Bind configured UseCases to ProcessCameraProvider instance & mark Preview
+    // instance as bound but not paused.
+    camera = await processCameraProvider!
+        .bindToLifecycle(cameraSelector!, <UseCase>[preview!, imageCapture!]);
+    _previewIsPaused = false;
 
     return flutterSurfaceTextureId;
   }
@@ -205,10 +225,8 @@ class AndroidCameraCameraX extends CameraPlatform {
       preview != null,
       'Preview instance not found. Please call the "createCamera" method before calling "initializeCamera"',
     );
-    await _bindPreviewToLifecycle();
     final ResolutionInfo previewResolutionInfo =
         await preview!.getResolutionInfo();
-    _unbindPreviewFromLifecycle();
 
     // Retrieve exposure and focus mode configurations:
     // TODO(camsim99): Implement support for retrieving exposure mode configuration.
@@ -297,6 +315,22 @@ class AndroidCameraCameraX extends CameraPlatform {
         });
   }
 
+  /// Captures an image and returns the file where it was saved.
+  ///
+  /// [cameraId] is not used.
+  @override
+  Future<XFile> takePicture(int cameraId) async {
+    assert(processCameraProvider != null);
+    assert(cameraSelector != null);
+    assert(imageCapture != null);
+
+    // TODO(camsim99): Add support for flash mode configuration.
+    // https://github.com/flutter/flutter/issues/120715
+    final String picturePath = await imageCapture!.takePicture();
+
+    return XFile(picturePath);
+  }
+
   // Methods for binding UseCases to the lifecycle of the camera controlled
   // by a ProcessCameraProvider instance:
 
@@ -305,7 +339,9 @@ class AndroidCameraCameraX extends CameraPlatform {
   Future<void> _bindPreviewToLifecycle() async {
     assert(processCameraProvider != null);
     assert(cameraSelector != null);
+    assert(preview != null);
 
+    final bool previewIsBound = await processCameraProvider!.isBound(preview!);
     if (previewIsBound || _previewIsPaused) {
       // Only bind if preview is not already bound or intentionally paused.
       return;
@@ -313,12 +349,12 @@ class AndroidCameraCameraX extends CameraPlatform {
 
     camera = await processCameraProvider!
         .bindToLifecycle(cameraSelector!, <UseCase>[preview!]);
-    previewIsBound = true;
   }
 
   /// Unbinds [preview] instance to camera lifecycle controlled by the
   /// [processCameraProvider].
-  void _unbindPreviewFromLifecycle() {
+  Future<void> _unbindPreviewFromLifecycle() async {
+    final bool previewIsBound = await processCameraProvider!.isBound(preview!);
     if (preview == null || !previewIsBound) {
       return;
     }
@@ -326,7 +362,6 @@ class AndroidCameraCameraX extends CameraPlatform {
     assert(processCameraProvider != null);
 
     processCameraProvider!.unbind(<UseCase>[preview!]);
-    previewIsBound = false;
   }
 
   // Methods for mapping Flutter camera constants to CameraX constants:
@@ -365,6 +400,15 @@ class AndroidCameraCameraX extends CameraPlatform {
   /// Returns [ResolutionInfo] that maps to the specified resolution preset for
   /// a camera preview.
   ResolutionInfo? _getTargetResolutionForPreview(ResolutionPreset? resolution) {
+    // TODO(camsim99): Implement resolution configuration.
+    // https://github.com/flutter/flutter/issues/120462
+    return null;
+  }
+
+  /// Returns [ResolutionInfo] that maps to the specified resolution preset for
+  /// image capture.
+  ResolutionInfo? _getTargetResolutionForImageCapture(
+      ResolutionPreset? resolution) {
     // TODO(camsim99): Implement resolution configuration.
     // https://github.com/flutter/flutter/issues/120462
     return null;
@@ -445,5 +489,14 @@ class AndroidCameraCameraX extends CameraPlatform {
   Future<void> resumeVideoRecording(int cameraId) async {
     assert(recording != null);
     recording!.resume();
+  }
+
+  /// Returns an [ImageCapture] configured with specified flash mode and
+  /// target resolution.
+  @visibleForTesting
+  ImageCapture createImageCapture(
+      int? flashMode, ResolutionInfo? targetResolution) {
+    return ImageCapture(
+        targetFlashMode: flashMode, targetResolution: targetResolution);
   }
 }

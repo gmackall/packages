@@ -18,6 +18,7 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
   private InstanceManager instanceManager;
   private FlutterPluginBinding pluginBinding;
   private ProcessCameraProviderHostApiImpl processCameraProviderHostApi;
+  private ImageCaptureHostApiImpl imageCaptureHostApi;
   public SystemServicesHostApiImpl systemServicesHostApi;
   private PendingRecordingHostApiImpl pendingRecordingHostApi;
   private RecorderHostApiImpl recorderHostApi;
@@ -40,6 +41,8 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
             });
 
     // Set up Host APIs.
+    GeneratedCameraXLibrary.InstanceManagerHostApi.setup(
+        binaryMessenger, () -> instanceManager.clear());
     GeneratedCameraXLibrary.CameraInfoHostApi.setup(
         binaryMessenger, new CameraInfoHostApiImpl(instanceManager));
     GeneratedCameraXLibrary.CameraSelectorHostApi.setup(
@@ -64,6 +67,8 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
     GeneratedCameraXLibrary.PendingRecordingHostApi.setup(binaryMessenger, pendingRecordingHostApi);
     videoCaptureHostApi = new VideoCaptureHostApiImpl(binaryMessenger, instanceManager);
     GeneratedCameraXLibrary.VideoCaptureHostApi.setup(binaryMessenger, videoCaptureHostApi);
+    imageCaptureHostApi = new ImageCaptureHostApiImpl(binaryMessenger, instanceManager, context);
+    GeneratedCameraXLibrary.ImageCaptureHostApi.setup(binaryMessenger, imageCaptureHostApi);
   }
 
   @Override
@@ -126,6 +131,8 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
     }
     if (systemServicesHostApi != null) {
       systemServicesHostApi.setContext(context);
+    if (imageCaptureHostApi != null) {
+      processCameraProviderHostApi.setContext(context);
     }
   }
 }

@@ -9,9 +9,11 @@ import android.graphics.SurfaceTexture;
 import android.view.Surface;
 import androidx.annotation.NonNull;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageCapture;
 import androidx.camera.core.Preview;
 import androidx.camera.video.Recorder;
 import io.flutter.plugin.common.BinaryMessenger;
+import java.io.File;
 
 /** Utility class used to create CameraX-related objects primarily for testing purposes. */
 public class CameraXProxy {
@@ -52,5 +54,16 @@ public class CameraXProxy {
 
   public Recorder.Builder createRecorderBuilder() {
     return new Recorder.Builder();
+  }
+
+  public ImageCapture.Builder createImageCaptureBuilder() {
+    return new ImageCapture.Builder();
+  }
+
+  /**
+   * Creates an {@link ImageCapture.OutputFileOptions} to configure where to save a captured image.
+   */
+  public ImageCapture.OutputFileOptions createImageCaptureOutputFileOptions(@NonNull File file) {
+    return new ImageCapture.OutputFileOptions.Builder(file).build();
   }
 }

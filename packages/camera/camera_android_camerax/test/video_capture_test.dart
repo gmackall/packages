@@ -58,7 +58,7 @@ void main() {
     instanceManager.addHostCreatedInstance(videoCapture, videoCaptureId,
         onCopy: (_) => VideoCapture.detached(instanceManager: instanceManager));
 
-    final MockRecorder mockRecorder = MockRecorder();
+    final Recorder mockRecorder = MockRecorder();
     const int mockRecorderId = 3;
     instanceManager.addHostCreatedInstance(mockRecorder, mockRecorderId,
         onCopy: (_) => Recorder.detached(instanceManager: instanceManager));
