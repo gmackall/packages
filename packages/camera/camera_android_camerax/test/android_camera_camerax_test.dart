@@ -415,23 +415,23 @@ void main() {
   });
 
   test('stopVideoRecording stops the recording', () async {
-  final AndroidCameraCameraX camera = AndroidCameraCameraX();
-  final MockRecording recording = MockRecording();
-  final MockProcessCameraProvider processCameraProvider =
-  MockProcessCameraProvider();
-  final MockVideoCapture videoCapture = MockVideoCapture();
-  const String videoOutputPath = '/test/output/path';
+    final AndroidCameraCameraX camera = AndroidCameraCameraX();
+    final MockRecording recording = MockRecording();
+    final MockProcessCameraProvider processCameraProvider =
+        MockProcessCameraProvider();
+    final MockVideoCapture videoCapture = MockVideoCapture();
+    const String videoOutputPath = '/test/output/path';
 
-  camera.processCameraProvider = processCameraProvider;
-  camera.recording = recording;
-  camera.videoCapture = videoCapture;
-  camera.videoOutputPath = videoOutputPath;
+    camera.processCameraProvider = processCameraProvider;
+    camera.recording = recording;
+    camera.videoCapture = videoCapture;
+    camera.videoOutputPath = videoOutputPath;
 
-  final XFile file = await camera.stopVideoRecording(0);
-  assert(file.path == videoOutputPath);
+    final XFile file = await camera.stopVideoRecording(0);
+    assert(file.path == videoOutputPath);
 
-  verify(recording.close());
-  verifyNoMoreInteractions(recording);
+    verify(recording.close());
+    verifyNoMoreInteractions(recording);
   });
 
   test(
