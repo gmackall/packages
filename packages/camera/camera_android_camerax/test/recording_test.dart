@@ -11,9 +11,12 @@ import 'package:mockito/mockito.dart';
 import 'recording_test.mocks.dart';
 import 'test_camerax_library.g.dart';
 
-@GenerateMocks(<Type>[TestRecordingHostApi])
+@GenerateMocks(<Type>[TestRecordingHostApi, TestInstanceManagerHostApi])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // Mocks the call to clear the native InstanceManager.
+  TestInstanceManagerHostApi.setup(MockTestInstanceManagerHostApi());
 
   group('Recording', () {
     tearDown(() => TestRecorderHostApi.setup(null));
@@ -29,7 +32,7 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-      when(mockApi.close(recordingId)).thenAnswer((_) { });
+      when(mockApi.close(recordingId)).thenAnswer((_) {});
       instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
@@ -49,7 +52,7 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-      when(mockApi.pause(recordingId)).thenAnswer((_) { });
+      when(mockApi.pause(recordingId)).thenAnswer((_) {});
       instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
@@ -69,7 +72,7 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-      when(mockApi.resume(recordingId)).thenAnswer((_) { });
+      when(mockApi.resume(recordingId)).thenAnswer((_) {});
       instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
@@ -89,7 +92,7 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-      when(mockApi.stop(recordingId)).thenAnswer((_) { });
+      when(mockApi.stop(recordingId)).thenAnswer((_) {});
       instanceManager.addHostCreatedInstance(recording, recordingId,
           onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 

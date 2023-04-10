@@ -13,9 +13,12 @@ import 'android_camera_camerax_test.mocks.dart';
 import 'recorder_test.mocks.dart';
 import 'test_camerax_library.g.dart';
 
-@GenerateMocks(<Type>[TestRecorderHostApi])
+@GenerateMocks(<Type>[TestRecorderHostApi, TestInstanceManagerHostApi])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // Mocks the call to clear the native InstanceManager.
+  TestInstanceManagerHostApi.setup(MockTestInstanceManagerHostApi());
 
   group('Recorder', () {
     tearDown(() => TestCameraSelectorHostApi.setup(null));
@@ -55,7 +58,8 @@ void main() {
     test('prepareRecording calls prepareRecording on Java side', () async {
       final MockTestRecorderHostApi mockApi = MockTestRecorderHostApi();
       TestRecorderHostApi.setup(mockApi);
-      when(mockApi.prepareRecording(0, '/test/path')).thenAnswer((realInvocation) => 2);
+      when(mockApi.prepareRecording(0, '/test/path'))
+          .thenAnswer((realInvocation) => 2);
 
       final InstanceManager instanceManager = InstanceManager(
         onWeakReferenceRemoved: (_) {},

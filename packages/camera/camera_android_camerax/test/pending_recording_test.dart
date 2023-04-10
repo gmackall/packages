@@ -13,9 +13,12 @@ import 'android_camera_camerax_test.mocks.dart';
 import 'pending_recording_test.mocks.dart';
 import 'test_camerax_library.g.dart';
 
-@GenerateMocks(<Type>[TestPendingRecordingHostApi])
+@GenerateMocks(<Type>[TestPendingRecordingHostApi, TestInstanceManagerHostApi])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // Mocks the call to clear the native InstanceManager.
+  TestInstanceManagerHostApi.setup(MockTestInstanceManagerHostApi());
 
   test('start calls the Java side and returns correct recording', () async {
     final MockTestPendingRecordingHostApi mockApi =

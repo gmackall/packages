@@ -23,7 +23,7 @@ class Recorder extends JavaObject {
       : super.detached(
             binaryMessenger: binaryMessenger,
             instanceManager: instanceManager) {
-    //AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
+    AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
     _api = RecorderHostApiImpl(
         binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     _api.createFromInstance(this, aspectRatio, bitRate);
@@ -40,7 +40,7 @@ class Recorder extends JavaObject {
             instanceManager: instanceManager) {
     _api = RecorderHostApiImpl(
         binaryMessenger: binaryMessenger, instanceManager: instanceManager);
-    //AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
+    AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
   }
 
   late final RecorderHostApiImpl _api;
