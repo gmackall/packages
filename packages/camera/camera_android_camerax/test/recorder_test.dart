@@ -55,6 +55,7 @@ void main() {
     test('prepareRecording calls prepareRecording on Java side', () async {
       final MockTestRecorderHostApi mockApi = MockTestRecorderHostApi();
       TestRecorderHostApi.setup(mockApi);
+      when(mockApi.prepareRecording(0, '/test/path')).thenAnswer((realInvocation) => 2);
 
       final InstanceManager instanceManager = InstanceManager(
         onWeakReferenceRemoved: (_) {},
@@ -67,7 +68,7 @@ void main() {
       const int mockPendingRecordingId = 2;
 
       instanceManager.addHostCreatedInstance(recorder, recorderId,
-          onCopy: (_) => Recorder.detached());
+          onCopy: (_) => Recorder.detached(instanceManager: instanceManager));
 
       final MockPendingRecording mockPendingRecording = MockPendingRecording();
       instanceManager.addHostCreatedInstance(

@@ -22,7 +22,7 @@ class Recording extends JavaObject {
         ) {
     _api = RecordingHostApiImpl(
         binaryMessenger: binaryMessenger, instanceManager: instanceManager);
-    AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
+    //AndroidCameraXCameraFlutterApis.instance.ensureSetUp();
   }
 
   late final RecordingHostApiImpl _api;

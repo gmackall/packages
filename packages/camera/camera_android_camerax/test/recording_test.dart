@@ -29,9 +29,9 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-
+      when(mockApi.close(recordingId)).thenAnswer((_) { });
       instanceManager.addHostCreatedInstance(recording, recordingId,
-          onCopy: (_) => Recording.detached());
+          onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
       recording.close();
 
@@ -49,9 +49,9 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-
+      when(mockApi.pause(recordingId)).thenAnswer((_) { });
       instanceManager.addHostCreatedInstance(recording, recordingId,
-          onCopy: (_) => Recording.detached());
+          onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
       recording.pause();
 
@@ -69,9 +69,9 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-
+      when(mockApi.resume(recordingId)).thenAnswer((_) { });
       instanceManager.addHostCreatedInstance(recording, recordingId,
-          onCopy: (_) => Recording.detached());
+          onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
       recording.resume();
 
@@ -89,9 +89,9 @@ void main() {
       final Recording recording =
           Recording.detached(instanceManager: instanceManager);
       const int recordingId = 0;
-
+      when(mockApi.stop(recordingId)).thenAnswer((_) { });
       instanceManager.addHostCreatedInstance(recording, recordingId,
-          onCopy: (_) => Recording.detached());
+          onCopy: (_) => Recording.detached(instanceManager: instanceManager));
 
       recording.stop();
 
