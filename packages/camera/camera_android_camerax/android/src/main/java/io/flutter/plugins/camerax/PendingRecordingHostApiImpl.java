@@ -28,7 +28,9 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
   @VisibleForTesting RecordingFlutterApiImpl recordingFlutterApi;
 
   public PendingRecordingHostApiImpl(
-      BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager, Context context) {
+      @NonNull BinaryMessenger binaryMessenger,
+      @NonNull InstanceManager instanceManager,
+      Context context) {
     this.binaryMessenger = binaryMessenger;
     this.instanceManager = instanceManager;
     this.context = context;

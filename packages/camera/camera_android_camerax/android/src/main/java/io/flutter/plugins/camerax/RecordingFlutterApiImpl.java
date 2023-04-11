@@ -4,7 +4,7 @@
 
 package io.flutter.plugins.camerax;
 
-import androidx.camera.video.Recording;
+import androidx.annotation.NonNull;import androidx.camera.video.Recording;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecordingFlutterApi;
 
@@ -16,7 +16,7 @@ public class RecordingFlutterApiImpl extends RecordingFlutterApi {
     this.instanceManager = instanceManager;
   }
 
-  void create(Recording recording, Reply<Void> reply) {
+  void create(@NonNull Recording recording, Reply<Void> reply) {
     create(instanceManager.addHostCreatedInstance(recording), reply);
   }
 }
