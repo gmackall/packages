@@ -58,8 +58,7 @@ void main() {
     test('prepareRecording calls prepareRecording on Java side', () async {
       final MockTestRecorderHostApi mockApi = MockTestRecorderHostApi();
       TestRecorderHostApi.setup(mockApi);
-      when(mockApi.prepareRecording(0, '/test/path'))
-          .thenAnswer((_) => 2);
+      when(mockApi.prepareRecording(0, '/test/path')).thenAnswer((_) => 2);
 
       final InstanceManager instanceManager = InstanceManager(
         onWeakReferenceRemoved: (_) {},
