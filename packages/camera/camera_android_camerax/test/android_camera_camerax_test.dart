@@ -39,8 +39,8 @@ import 'android_camera_camerax_test.mocks.dart';
   MockSpec<PendingRecording>(),
   MockSpec<Recording>(),
   MockSpec<VideoCapture>(),
+  MockSpec<BuildContext>(),
 ])
-@GenerateMocks(<Type>[BuildContext])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 

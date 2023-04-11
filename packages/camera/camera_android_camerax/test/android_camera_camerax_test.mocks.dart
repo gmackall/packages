@@ -452,14 +452,14 @@ class MockVideoCapture extends _i1.Mock implements _i17.VideoCapture {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockBuildContext extends _i1.Mock implements _i7.BuildContext {
-  MockBuildContext() {
-    _i1.throwOnMissingStub(this);
-  }
-
   @override
   _i7.Widget get widget => (super.noSuchMethod(
         Invocation.getter(#widget),
         returnValue: _FakeWidget_5(
+          this,
+          Invocation.getter(#widget),
+        ),
+        returnValueForMissingStub: _FakeWidget_5(
           this,
           Invocation.getter(#widget),
         ),
@@ -468,11 +468,13 @@ class MockBuildContext extends _i1.Mock implements _i7.BuildContext {
   bool get mounted => (super.noSuchMethod(
         Invocation.getter(#mounted),
         returnValue: false,
+        returnValueForMissingStub: false,
       ) as bool);
   @override
   bool get debugDoingBuild => (super.noSuchMethod(
         Invocation.getter(#debugDoingBuild),
         returnValue: false,
+        returnValueForMissingStub: false,
       ) as bool);
   @override
   _i7.InheritedWidget dependOnInheritedElement(
@@ -486,6 +488,14 @@ class MockBuildContext extends _i1.Mock implements _i7.BuildContext {
           {#aspect: aspect},
         ),
         returnValue: _FakeInheritedWidget_6(
+          this,
+          Invocation.method(
+            #dependOnInheritedElement,
+            [ancestor],
+            {#aspect: aspect},
+          ),
+        ),
+        returnValueForMissingStub: _FakeInheritedWidget_6(
           this,
           Invocation.method(
             #dependOnInheritedElement,
@@ -539,6 +549,14 @@ class MockBuildContext extends _i1.Mock implements _i7.BuildContext {
             {#style: style},
           ),
         ),
+        returnValueForMissingStub: _FakeDiagnosticsNode_7(
+          this,
+          Invocation.method(
+            #describeElement,
+            [name],
+            {#style: style},
+          ),
+        ),
       ) as _i9.DiagnosticsNode);
   @override
   _i9.DiagnosticsNode describeWidget(
@@ -559,6 +577,14 @@ class MockBuildContext extends _i1.Mock implements _i7.BuildContext {
             {#style: style},
           ),
         ),
+        returnValueForMissingStub: _FakeDiagnosticsNode_7(
+          this,
+          Invocation.method(
+            #describeWidget,
+            [name],
+            {#style: style},
+          ),
+        ),
       ) as _i9.DiagnosticsNode);
   @override
   List<_i9.DiagnosticsNode> describeMissingAncestor(
@@ -570,6 +596,7 @@ class MockBuildContext extends _i1.Mock implements _i7.BuildContext {
           {#expectedAncestorType: expectedAncestorType},
         ),
         returnValue: <_i9.DiagnosticsNode>[],
+        returnValueForMissingStub: <_i9.DiagnosticsNode>[],
       ) as List<_i9.DiagnosticsNode>);
   @override
   _i9.DiagnosticsNode describeOwnershipChain(String? name) =>
@@ -579,6 +606,13 @@ class MockBuildContext extends _i1.Mock implements _i7.BuildContext {
           [name],
         ),
         returnValue: _FakeDiagnosticsNode_7(
+          this,
+          Invocation.method(
+            #describeOwnershipChain,
+            [name],
+          ),
+        ),
+        returnValueForMissingStub: _FakeDiagnosticsNode_7(
           this,
           Invocation.method(
             #describeOwnershipChain,
