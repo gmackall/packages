@@ -25,7 +25,6 @@ void main() {
     final MockTestVideoCaptureHostApi mockApi = MockTestVideoCaptureHostApi();
     TestVideoCaptureHostApi.setup(mockApi);
 
-    when(mockApi.withOutput(3)).thenReturn(2);
     final InstanceManager instanceManager = InstanceManager(
       onWeakReferenceRemoved: (_) {},
     );

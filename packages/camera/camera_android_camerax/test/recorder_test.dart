@@ -59,7 +59,7 @@ void main() {
       final MockTestRecorderHostApi mockApi = MockTestRecorderHostApi();
       TestRecorderHostApi.setup(mockApi);
       when(mockApi.prepareRecording(0, '/test/path'))
-          .thenAnswer((realInvocation) => 2);
+          .thenAnswer((_) => 2);
 
       final InstanceManager instanceManager = InstanceManager(
         onWeakReferenceRemoved: (_) {},
