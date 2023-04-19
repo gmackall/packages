@@ -44,13 +44,13 @@ public class RecorderTest {
 
   @Before
   public void setUp() {
-    testInstanceManager = spy(InstanceManager.open(identifier -> {}));
+    testInstanceManager = spy(InstanceManager.create(identifier -> {}));
     context = ApplicationProvider.getApplicationContext();
   }
 
   @After
   public void tearDown() {
-    testInstanceManager.close();
+    testInstanceManager.stopFinalizationListener();
   }
 
   @Test

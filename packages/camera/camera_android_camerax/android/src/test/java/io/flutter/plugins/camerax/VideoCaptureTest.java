@@ -35,12 +35,12 @@ public class VideoCaptureTest {
 
   @Before
   public void setUp() {
-    testInstanceManager = spy(InstanceManager.open(identifier -> {}));
+    testInstanceManager = spy(InstanceManager.create(identifier -> {}));
   }
 
   @After
   public void tearDown() {
-    testInstanceManager.close();
+    testInstanceManager.stopFinalizationListener();
   }
 
   @Test
