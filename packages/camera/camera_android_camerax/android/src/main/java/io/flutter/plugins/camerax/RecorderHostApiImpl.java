@@ -8,7 +8,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;import androidx.annotation.VisibleForTesting;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.FileOutputOptions;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recorder;
@@ -24,16 +25,14 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   private final InstanceManager instanceManager;
   private Context context;
 
-  @NonNull
-  @VisibleForTesting
-  public CameraXProxy cameraXProxy = new CameraXProxy();
+  @NonNull @VisibleForTesting public CameraXProxy cameraXProxy = new CameraXProxy();
 
-  @NonNull
-  @VisibleForTesting
-  public PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
+  @NonNull @VisibleForTesting public PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
 
   public RecorderHostApiImpl(
-      @Nullable BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager, @Nullable Context context) {
+      @Nullable BinaryMessenger binaryMessenger,
+      @NonNull InstanceManager instanceManager,
+      @Nullable Context context) {
     this.binaryMessenger = binaryMessenger;
     this.instanceManager = instanceManager;
     this.context = context;

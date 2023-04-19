@@ -13,7 +13,8 @@ import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecorderFlutterApi;
 public class RecorderFlutterApiImpl extends RecorderFlutterApi {
   private final InstanceManager instanceManager;
 
-  public RecorderFlutterApiImpl(@Nullable BinaryMessenger binaryMessenger, @Nullable InstanceManager instanceManager) {
+  public RecorderFlutterApiImpl(
+      @Nullable BinaryMessenger binaryMessenger, @Nullable InstanceManager instanceManager) {
     super(binaryMessenger);
     this.instanceManager = instanceManager;
   }
