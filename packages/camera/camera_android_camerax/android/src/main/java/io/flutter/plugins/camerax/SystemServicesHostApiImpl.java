@@ -90,7 +90,7 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
    */
   @Override
   public void startListeningForDeviceOrientationChange(
-      Boolean isFrontFacing, Long sensorOrientation) {
+      @NonNull Boolean isFrontFacing, @NonNull Long sensorOrientation) {
     deviceOrientationManager =
         cameraXProxy.createDeviceOrientationManager(
             activity,
@@ -123,6 +123,7 @@ public class SystemServicesHostApiImpl implements SystemServicesHostApi {
 
   /** Returns a path to be used to create a temp file in the current cache directory. */
   @Override
+  @NonNull
   public String getTempFilePath(@NonNull String prefix, @NonNull String suffix) {
     try {
       File path = File.createTempFile(prefix, suffix, context.getCacheDir());

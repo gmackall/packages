@@ -12,7 +12,7 @@ import io.flutter.plugins.camerax.GeneratedCameraXLibrary.VideoCaptureFlutterApi
 
 public class VideoCaptureFlutterApiImpl extends VideoCaptureFlutterApi {
   public VideoCaptureFlutterApiImpl(
-      BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+      @NonNull BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager) {
     super(binaryMessenger);
     this.instanceManager = instanceManager;
   }

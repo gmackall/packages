@@ -16,7 +16,8 @@ public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
   private final BinaryMessenger binaryMessenger;
   private final InstanceManager instanceManager;
 
-  public VideoCaptureHostApiImpl(BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+  public VideoCaptureHostApiImpl(
+      @NonNull BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager) {
     this.binaryMessenger = binaryMessenger;
     this.instanceManager = instanceManager;
   }
@@ -43,8 +44,9 @@ public class VideoCaptureHostApiImpl implements VideoCaptureHostApi {
   }
 
   @VisibleForTesting
+  @NonNull
   public VideoCaptureFlutterApiImpl getVideoCaptureFlutterApiImpl(
-      BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+      @NonNull BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager) {
     return new VideoCaptureFlutterApiImpl(binaryMessenger, instanceManager);
   }
 }

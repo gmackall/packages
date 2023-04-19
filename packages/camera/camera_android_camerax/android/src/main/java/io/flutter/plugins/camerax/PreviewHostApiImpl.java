@@ -108,7 +108,8 @@ public class PreviewHostApiImpl implements PreviewHostApi {
                   break;
               }
             });
-      };
+      }
+      ;
     };
   }
 

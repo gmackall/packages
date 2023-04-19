@@ -22,7 +22,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
   private final InstanceManager instanceManager;
   private Context context;
 
-  @VisibleForTesting public CameraXProxy cameraXProxy = new CameraXProxy();
+  @VisibleForTesting @NonNull public CameraXProxy cameraXProxy = new CameraXProxy();
 
   @VisibleForTesting SystemServicesFlutterApiImpl systemServicesFlutterApi;
 

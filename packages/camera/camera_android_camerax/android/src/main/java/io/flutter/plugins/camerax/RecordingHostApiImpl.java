@@ -15,7 +15,7 @@ public class RecordingHostApiImpl implements RecordingHostApi {
   private final InstanceManager instanceManager;
 
   public RecordingHostApiImpl(
-      BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager) {
+      @NonNull BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager) {
     this.binaryMessenger = binaryMessenger;
     this.instanceManager = instanceManager;
   }
