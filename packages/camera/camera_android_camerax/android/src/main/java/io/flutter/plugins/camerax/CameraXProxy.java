@@ -63,7 +63,7 @@ public class CameraXProxy {
   /**
    * Creates an {@link ImageCapture.OutputFileOptions} to configure where to save a captured image.
    */
-  public ImageCapture.OutputFileOptions createImageCaptureOutputFileOptions(@NonNull File file) {
+  public @NonNull ImageCapture.OutputFileOptions createImageCaptureOutputFileOptions(@NonNull File file) {
     return new ImageCapture.OutputFileOptions.Builder(file).build();
   }
 }

@@ -13,7 +13,7 @@ import io.flutter.plugins.camerax.GeneratedCameraXLibrary.RecorderFlutterApi;
 public class RecorderFlutterApiImpl extends RecorderFlutterApi {
   private final InstanceManager instanceManager;
 
-  public RecorderFlutterApiImpl(BinaryMessenger binaryMessenger, InstanceManager instanceManager) {
+  public RecorderFlutterApiImpl(@Nullable BinaryMessenger binaryMessenger, @Nullable InstanceManager instanceManager) {
     super(binaryMessenger);
     this.instanceManager = instanceManager;
   }
@@ -22,7 +22,7 @@ public class RecorderFlutterApiImpl extends RecorderFlutterApi {
       @NonNull Recorder recorder,
       @Nullable Long aspectRatio,
       @Nullable Long bitRate,
-      Reply<Void> reply) {
+      @Nullable Reply<Void> reply) {
     create(instanceManager.addHostCreatedInstance(recorder), aspectRatio, bitRate, reply);
   }
 }

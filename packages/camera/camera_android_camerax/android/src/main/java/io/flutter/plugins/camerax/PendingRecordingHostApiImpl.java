@@ -6,6 +6,7 @@ package io.flutter.plugins.camerax;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recording;
@@ -30,7 +31,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
   public PendingRecordingHostApiImpl(
       @NonNull BinaryMessenger binaryMessenger,
       @NonNull InstanceManager instanceManager,
-      Context context) {
+      @Nullable Context context) {
     this.binaryMessenger = binaryMessenger;
     this.instanceManager = instanceManager;
     this.context = context;
@@ -39,7 +40,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
   }
 
   /** Sets the context, which is used to get the {@link Executor} needed to start the recording. */
-  public void setContext(Context context) {
+  public void setContext(@Nullable Context context) {
     this.context = context;
   }
 
@@ -59,6 +60,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
   }
 
+  @Nullable
   @VisibleForTesting
   public Executor getExecutor() {
     return ContextCompat.getMainExecutor(context);

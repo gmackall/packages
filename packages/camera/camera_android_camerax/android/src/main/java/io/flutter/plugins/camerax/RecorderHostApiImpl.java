@@ -8,7 +8,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
+import androidx.annotation.Nullable;import androidx.annotation.VisibleForTesting;
 import androidx.camera.video.FileOutputOptions;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recorder;
@@ -24,12 +24,16 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   private final InstanceManager instanceManager;
   private Context context;
 
-  @VisibleForTesting public CameraXProxy cameraXProxy = new CameraXProxy();
+  @NonNull
+  @VisibleForTesting
+  public CameraXProxy cameraXProxy = new CameraXProxy();
 
-  @VisibleForTesting public PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
+  @NonNull
+  @VisibleForTesting
+  public PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
 
   public RecorderHostApiImpl(
-      BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager, Context context) {
+      @Nullable BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager, @Nullable Context context) {
     this.binaryMessenger = binaryMessenger;
     this.instanceManager = instanceManager;
     this.context = context;
@@ -38,7 +42,7 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   }
 
   @Override
-  public void create(@NonNull Long instanceId, Long aspectRatio, Long bitRate) {
+  public void create(@NonNull Long instanceId, @Nullable Long aspectRatio, @Nullable Long bitRate) {
     Recorder.Builder recorderBuilder = cameraXProxy.createRecorderBuilder();
     if (aspectRatio != null) {
       recorderBuilder.setAspectRatio(aspectRatio.intValue());
@@ -51,7 +55,7 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   }
 
   /** Sets the context, which is used to get the {@link Executor} passed to the Recorder builder. */
-  public void setContext(Context context) {
+  public void setContext(@Nullable Context context) {
     this.context = context;
   }
 
@@ -71,6 +75,7 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     return Long.valueOf(recorder.getTargetVideoEncodingBitRate());
   }
 
+  @NonNull
   @Override
   public Long prepareRecording(@NonNull Long identifier, @NonNull String path) {
     Recorder recorder = getRecorderFromInstanceId(identifier);
@@ -87,6 +92,7 @@ public class RecorderHostApiImpl implements RecorderHostApi {
         instanceManager.getIdentifierForStrongReference(pendingRecording));
   }
 
+  @Nullable
   @VisibleForTesting
   public File openTempFile(@NonNull String path) {
     File file = null;
