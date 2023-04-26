@@ -70,8 +70,7 @@ class VideoCaptureHostApiImpl extends VideoCaptureHostApi {
           binaryMessenger: binaryMessenger, instanceManager: instanceManager);
     });
     final int videoCaptureId = await withOutput(identifier);
-    return instanceManager.getInstanceWithWeakReference(videoCaptureId)!
-        as VideoCapture;
+    return instanceManager.getInstanceWithWeakReference<VideoCapture>(videoCaptureId)!;
   }
 
   /// Gets the [Recorder] associated with the provided [VideoCapture] instance.

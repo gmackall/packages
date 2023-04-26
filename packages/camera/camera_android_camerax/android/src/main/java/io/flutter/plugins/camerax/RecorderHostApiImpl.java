@@ -74,6 +74,10 @@ public class RecorderHostApiImpl implements RecorderHostApi {
     return Long.valueOf(recorder.getTargetVideoEncodingBitRate());
   }
 
+  /**
+   * Uses the provided {@link Recorder} to prepare a recording that will
+   * be saved to a file at the provided path.
+   */
   @NonNull
   @Override
   public Long prepareRecording(@NonNull Long identifier, @NonNull String path) {

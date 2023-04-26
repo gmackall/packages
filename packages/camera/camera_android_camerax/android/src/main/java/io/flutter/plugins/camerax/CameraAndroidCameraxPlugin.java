@@ -20,9 +20,9 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
   private ProcessCameraProviderHostApiImpl processCameraProviderHostApi;
   private ImageCaptureHostApiImpl imageCaptureHostApi;
   public SystemServicesHostApiImpl systemServicesHostApi;
-  private PendingRecordingHostApiImpl pendingRecordingHostApi;
-  private RecorderHostApiImpl recorderHostApi;
-  private VideoCaptureHostApiImpl videoCaptureHostApi;
+  private PendingRecordingHostApiImpl pendingRecordingHostApiImpl;
+  private RecorderHostApiImpl recorderHostApiImpl;
+  private VideoCaptureHostApiImpl videoCaptureHostApiImpl;
 
   /**
    * Initialize this within the {@code #configureFlutterEngine} of a Flutter activity or fragment.
@@ -60,13 +60,14 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
         binaryMessenger, new PreviewHostApiImpl(binaryMessenger, instanceManager, textureRegistry));
     GeneratedCameraXLibrary.RecordingHostApi.setup(
         binaryMessenger, new RecordingHostApiImpl(binaryMessenger, instanceManager));
-    recorderHostApi = new RecorderHostApiImpl(binaryMessenger, instanceManager, context);
-    GeneratedCameraXLibrary.RecorderHostApi.setup(binaryMessenger, recorderHostApi);
-    pendingRecordingHostApi =
+    recorderHostApiImpl = new RecorderHostApiImpl(binaryMessenger, instanceManager, context);
+    GeneratedCameraXLibrary.RecorderHostApi.setup(binaryMessenger, recorderHostApiImpl);
+    pendingRecordingHostApiImpl =
         new PendingRecordingHostApiImpl(binaryMessenger, instanceManager, context);
-    GeneratedCameraXLibrary.PendingRecordingHostApi.setup(binaryMessenger, pendingRecordingHostApi);
-    videoCaptureHostApi = new VideoCaptureHostApiImpl(binaryMessenger, instanceManager);
-    GeneratedCameraXLibrary.VideoCaptureHostApi.setup(binaryMessenger, videoCaptureHostApi);
+    GeneratedCameraXLibrary.PendingRecordingHostApi.setup(
+        binaryMessenger, pendingRecordingHostApiImpl);
+    videoCaptureHostApiImpl = new VideoCaptureHostApiImpl(binaryMessenger, instanceManager);
+    GeneratedCameraXLibrary.VideoCaptureHostApi.setup(binaryMessenger, videoCaptureHostApiImpl);
     imageCaptureHostApi = new ImageCaptureHostApiImpl(binaryMessenger, instanceManager, context);
     GeneratedCameraXLibrary.ImageCaptureHostApi.setup(binaryMessenger, imageCaptureHostApi);
   }
@@ -123,11 +124,11 @@ public final class CameraAndroidCameraxPlugin implements FlutterPlugin, Activity
     if (processCameraProviderHostApi != null) {
       processCameraProviderHostApi.setContext(context);
     }
-    if (recorderHostApi != null) {
-      recorderHostApi.setContext(context);
+    if (recorderHostApiImpl != null) {
+      recorderHostApiImpl.setContext(context);
     }
-    if (pendingRecordingHostApi != null) {
-      pendingRecordingHostApi.setContext(context);
+    if (pendingRecordingHostApiImpl != null) {
+      pendingRecordingHostApiImpl.setContext(context);
     }
     if (systemServicesHostApi != null) {
       systemServicesHostApi.setContext(context);

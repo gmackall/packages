@@ -55,7 +55,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
   public Long start(@NonNull Long identifier) {
     PendingRecording pendingRecording = getPendingRecordingFromInstanceId(identifier);
     Recording recording =
-        pendingRecording.start(this.getExecutor(), x -> handleVideoRecordEvent(x));
+        pendingRecording.start(this.getExecutor(), event -> handleVideoRecordEvent(event));
     recordingFlutterApi.create(recording, reply -> {});
     return Objects.requireNonNull(instanceManager.getIdentifierForStrongReference(recording));
   }
@@ -66,6 +66,10 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
     return ContextCompat.getMainExecutor(context);
   }
 
+  /**
+   * Handles {@link VideoRecordEvent}s that come in during video recording. Sends any errors
+   * encountered using {@link SystemServicesFlutterApiImpl}.
+   */
   private void handleVideoRecordEvent(VideoRecordEvent event) {
     if (event instanceof VideoRecordEvent.Finalize) {
       VideoRecordEvent.Finalize castedEvent = (VideoRecordEvent.Finalize) event;

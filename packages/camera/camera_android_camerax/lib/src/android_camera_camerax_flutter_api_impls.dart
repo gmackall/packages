@@ -40,11 +40,11 @@ class AndroidCameraXCameraFlutterApis {
     this.cameraFlutterApi = cameraFlutterApi ?? CameraFlutterApiImpl();
     this.systemServicesFlutterApi =
         systemServicesFlutterApi ?? SystemServicesFlutterApiImpl();
-    this.pendingRecordingFlutterApi =
+    this.pendingRecordingFlutterApiImpl =
         pendingRecordingFlutterApi ?? PendingRecordingFlutterApiImpl();
-    this.recordingFlutterApi = recordingFlutterApi ?? RecordingFlutterApiImpl();
-    this.recorderFlutterApi = recorderFlutterApi ?? RecorderFlutterApiImpl();
-    this.videoCaptureFlutterApi =
+    this.recordingFlutterApiImpl = recordingFlutterApi ?? RecordingFlutterApiImpl();
+    this.recorderFlutterApiImpl = recorderFlutterApi ?? RecorderFlutterApiImpl();
+    this.videoCaptureFlutterApiImpl =
         videoCaptureFlutterApi ?? VideoCaptureFlutterApiImpl();
   }
 
@@ -76,16 +76,16 @@ class AndroidCameraXCameraFlutterApis {
   late final SystemServicesFlutterApiImpl systemServicesFlutterApi;
 
   /// Flutter Api for [PendingRecording].
-  late final PendingRecordingFlutterApiImpl pendingRecordingFlutterApi;
+  late final PendingRecordingFlutterApiImpl pendingRecordingFlutterApiImpl;
 
   /// Flutter Api for [Recording].
-  late final RecordingFlutterApiImpl recordingFlutterApi;
+  late final RecordingFlutterApiImpl recordingFlutterApiImpl;
 
   /// Flutter Api for [Recorder].
-  late final RecorderFlutterApiImpl recorderFlutterApi;
+  late final RecorderFlutterApiImpl recorderFlutterApiImpl;
 
   /// Flutter Api for [VideoCapture].
-  late final VideoCaptureFlutterApiImpl videoCaptureFlutterApi;
+  late final VideoCaptureFlutterApiImpl videoCaptureFlutterApiImpl;
 
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
@@ -96,10 +96,10 @@ class AndroidCameraXCameraFlutterApis {
       ProcessCameraProviderFlutterApi.setup(processCameraProviderFlutterApi);
       CameraFlutterApi.setup(cameraFlutterApi);
       SystemServicesFlutterApi.setup(systemServicesFlutterApi);
-      PendingRecordingFlutterApi.setup(pendingRecordingFlutterApi);
-      RecordingFlutterApi.setup(recordingFlutterApi);
-      RecorderFlutterApi.setup(recorderFlutterApi);
-      VideoCaptureFlutterApi.setup(videoCaptureFlutterApi);
+      PendingRecordingFlutterApi.setup(pendingRecordingFlutterApiImpl);
+      RecordingFlutterApi.setup(recordingFlutterApiImpl);
+      RecorderFlutterApi.setup(recorderFlutterApiImpl);
+      VideoCaptureFlutterApi.setup(videoCaptureFlutterApiImpl);
       _haveBeenSetUp = true;
     }
   }

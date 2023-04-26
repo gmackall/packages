@@ -52,6 +52,7 @@ public class CameraXProxy {
     return new SystemServicesFlutterApiImpl(binaryMessenger);
   }
 
+  /** Creates an instance of {@link Recorder.Builder}. */
   public Recorder.Builder createRecorderBuilder() {
     return new Recorder.Builder();
   }
