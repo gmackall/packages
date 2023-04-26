@@ -24,10 +24,10 @@ class AndroidCameraXCameraFlutterApis {
     CameraSelectorFlutterApiImpl? cameraSelectorFlutterApi,
     ProcessCameraProviderFlutterApiImpl? processCameraProviderFlutterApi,
     SystemServicesFlutterApiImpl? systemServicesFlutterApi,
-    PendingRecordingFlutterApiImpl? pendingRecordingFlutterApi,
-    RecordingFlutterApiImpl? recordingFlutterApi,
-    RecorderFlutterApiImpl? recorderFlutterApi,
-    VideoCaptureFlutterApiImpl? videoCaptureFlutterApi,
+    PendingRecordingFlutterApiImpl? pendingRecordingFlutterApiImpl,
+    RecordingFlutterApiImpl? recordingFlutterApiImpl,
+    RecorderFlutterApiImpl? recorderFlutterApiImpl,
+    VideoCaptureFlutterApiImpl? videoCaptureFlutterApiImpl,
   }) {
     this.javaObjectFlutterApi =
         javaObjectFlutterApi ?? JavaObjectFlutterApiImpl();
@@ -41,11 +41,11 @@ class AndroidCameraXCameraFlutterApis {
     this.systemServicesFlutterApi =
         systemServicesFlutterApi ?? SystemServicesFlutterApiImpl();
     this.pendingRecordingFlutterApiImpl =
-        pendingRecordingFlutterApi ?? PendingRecordingFlutterApiImpl();
-    this.recordingFlutterApiImpl = recordingFlutterApi ?? RecordingFlutterApiImpl();
-    this.recorderFlutterApiImpl = recorderFlutterApi ?? RecorderFlutterApiImpl();
+        pendingRecordingFlutterApiImpl ?? PendingRecordingFlutterApiImpl();
+    this.recordingFlutterApiImpl = recordingFlutterApiImpl ?? RecordingFlutterApiImpl();
+    this.recorderFlutterApiImpl = recorderFlutterApiImpl ?? RecorderFlutterApiImpl();
     this.videoCaptureFlutterApiImpl =
-        videoCaptureFlutterApi ?? VideoCaptureFlutterApiImpl();
+        videoCaptureFlutterApiImpl ?? VideoCaptureFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
