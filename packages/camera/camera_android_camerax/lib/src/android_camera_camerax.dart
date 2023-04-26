@@ -64,11 +64,6 @@ class AndroidCameraCameraX extends CameraPlatform {
   @visibleForTesting
   String? videoOutputPath;
 
-  /// Whether or not the [preview] is currently bound to the lifecycle that the
-  /// [processCameraProvider] tracks.
-  @visibleForTesting
-  bool previewIsBound = false;
-
   bool _previewIsPaused = false;
 
   final String _videoPrefix = 'MOV';
