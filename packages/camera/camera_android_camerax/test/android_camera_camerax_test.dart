@@ -27,6 +27,8 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import 'android_camera_camerax_test.mocks.dart';
+import 'system_services_test.mocks.dart';
+import 'test_camerax_library.g.dart';
 
 @GenerateNiceMocks(<MockSpec<Object>>[
   MockSpec<Camera>(),
@@ -140,6 +142,10 @@ void main() {
     // Verify the camera's ImageCapture instance is instantiated properly.
     expect(camera.imageCapture, equals(camera.testImageCapture));
 
+    // Verify the camera's Recorder and VideoCapture instances are instantiated properly.
+    expect(camera.recorder, equals(camera.testRecorder));
+    expect(camera.videoCapture, equals(camera.testVideoCapture));
+
     // Verify the camera's Preview instance has its surface provider set.
     verify(camera.preview!.setSurfaceProvider());
   });
@@ -191,7 +197,7 @@ void main() {
         ResolutionInfo(width: resolutionWidth, height: resolutionHeight);
 
     // TODO(camsim99): Modify this when camera configuration is supported and
-    // defualt values no longer being used.
+    // default values no longer being used.
     // https://github.com/flutter/flutter/issues/120468
     // https://github.com/flutter/flutter/issues/120467
     final CameraInitializedEvent testCameraInitializedEvent =
@@ -396,6 +402,39 @@ void main() {
     expect(previewTexture.textureId, equals(textureId));
   });
 
+  test('startVideoRecording binds video capture use case and starts the recording', () async {
+    //Set up mocks and constants.
+    final MockAndroidCameraCamerax camera = MockAndroidCameraCamerax();
+    camera.processCameraProvider = MockProcessCameraProvider();
+    camera.cameraSelector = MockCameraSelector();
+    camera.recorder = camera.testRecorder;
+    camera.videoCapture = camera.testVideoCapture;
+    camera.camera = MockCamera();
+    final MockPendingRecording mockPendingRecording = MockPendingRecording();
+    final MockRecording mockRecording = MockRecording();
+    final TestSystemServicesHostApi mockSystemServicesApi = MockTestSystemServicesHostApi();
+    TestSystemServicesHostApi.setup(mockSystemServicesApi);
+
+    const int cameraId = 17;
+    const String outputPath = '/temp/MOV123.temp';
+
+    // Mock method calls.
+    when(mockSystemServicesApi.getTempFilePath(camera.videoPrefix, '.temp')).thenReturn(outputPath);
+    when(camera.testRecorder.prepareRecording(outputPath)).thenAnswer((_) async => mockPendingRecording);
+    when(mockPendingRecording.start()).thenAnswer((_) async => mockRecording);
+    when(camera.processCameraProvider!.isBound(camera.videoCapture!)).thenAnswer((_) async => false);
+    when(camera.processCameraProvider!
+        .bindToLifecycle(camera.cameraSelector!,
+        <UseCase>[camera.videoCapture!])).thenAnswer((_) async => camera.camera!);
+
+    await camera.startVideoRecording(cameraId);
+
+    verify(camera.processCameraProvider!
+        .bindToLifecycle(camera.cameraSelector!, <UseCase>[camera.videoCapture!]));
+    expect(camera.pendingRecording, equals(mockPendingRecording));
+    expect(camera.recording, mockRecording);
+  });
+
   test('pauseVideoRecording pauses the recording', () async {
     final AndroidCameraCameraX camera = AndroidCameraCameraX();
     final MockRecording recording = MockRecording();
@@ -462,6 +501,8 @@ class MockAndroidCameraCamerax extends AndroidCameraCameraX {
   final MockImageCapture testImageCapture = MockImageCapture();
   final MockCameraSelector mockBackCameraSelector = MockCameraSelector();
   final MockCameraSelector mockFrontCameraSelector = MockCameraSelector();
+  final MockRecorder testRecorder = MockRecorder();
+  final MockVideoCapture testVideoCapture = MockVideoCapture();
 
   @override
   Future<void> requestCameraPermissions(bool enableAudio) async {
@@ -495,5 +536,15 @@ class MockAndroidCameraCamerax extends AndroidCameraCameraX {
   ImageCapture createImageCapture(
       int? flashMode, ResolutionInfo? targetResolution) {
     return testImageCapture;
+  }
+
+  @override
+  Recorder createRecorder() {
+    return testRecorder;
+  }
+
+  @override
+  Future<VideoCapture> createVideoCapture(Recorder recorder) {
+    return Future<VideoCapture>.value(testVideoCapture);
   }
 }

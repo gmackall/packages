@@ -66,7 +66,9 @@ class AndroidCameraCameraX extends CameraPlatform {
 
   bool _previewIsPaused = false;
 
-  final String _videoPrefix = 'MOV';
+  /// The prefix used to create the filename for video recording files.
+  @visibleForTesting
+  final String videoPrefix = 'MOV';
 
   /// The [ImageCapture] instance that can be configured to capture a still image.
   @visibleForTesting
@@ -186,8 +188,14 @@ class AndroidCameraCameraX extends CameraPlatform {
         _getTargetResolutionForImageCapture(_resolutionPreset);
     imageCapture = createImageCapture(null, imageCaptureTargetResolution);
 
+    // Configure VideoCapture and Recorder instances.
+    // TODO(gmackall): Enable video capture resolution configuration in createRecorder().
+    recorder = createRecorder();
+    videoCapture = await createVideoCapture(recorder!);
+
     // Bind configured UseCases to ProcessCameraProvider instance & mark Preview
-    // instance as bound but not paused.
+    // instance as bound but not paused. Video capture is bound at first use
+    // instead of here.
     camera = await processCameraProvider!
         .bindToLifecycle(cameraSelector!, <UseCase>[preview!, imageCapture!]);
     _previewIsPaused = false;
@@ -326,6 +334,47 @@ class AndroidCameraCameraX extends CameraPlatform {
     return XFile(picturePath);
   }
 
+  /// Configures and starts a video recording.
+  @override
+  Future<void> startVideoRecording(int cameraId,
+      {Duration? maxVideoDuration}) async {
+    assert(cameraSelector != null);
+    assert(processCameraProvider != null);
+
+    if (!(await processCameraProvider!.isBound(videoCapture!))) {
+      camera = await processCameraProvider!
+          .bindToLifecycle(cameraSelector!, <UseCase>[videoCapture!]);
+    }
+
+    videoOutputPath =
+      await SystemServices.getTempFilePath(videoPrefix, '.temp');
+    pendingRecording = await recorder!.prepareRecording(videoOutputPath!);
+    recording = await pendingRecording!.start();
+  }
+
+  /// Stops the video recording and returns the file where it was saved.
+  @override
+  Future<XFile> stopVideoRecording(int cameraId) async {
+    recording!.close();
+    recording = null;
+    pendingRecording = null;
+    return XFile(videoOutputPath!);
+  }
+
+  /// Pause video recording.
+  @override
+  Future<void> pauseVideoRecording(int cameraId) async {
+    assert(recording != null);
+    recording!.pause();
+  }
+
+  /// Resume video recording after pausing.
+  @override
+  Future<void> resumeVideoRecording(int cameraId) async {
+    assert(recording != null);
+    recording!.resume();
+  }
+
   // Methods for binding UseCases to the lifecycle of the camera controlled
   // by a ProcessCameraProvider instance:
 
@@ -446,46 +495,6 @@ class AndroidCameraCameraX extends CameraPlatform {
         targetRotation: targetRotation, targetResolution: targetResolution);
   }
 
-  /// Configures and starts a video recording.
-  @override
-  Future<void> startVideoRecording(int cameraId,
-      {Duration? maxVideoDuration}) async {
-    assert(cameraSelector != null);
-    assert(processCameraProvider != null);
-
-    recorder = Recorder(); // TODO(gmackall): Configure resolution info here.
-    videoCapture = await VideoCapture.withOutput(recorder!);
-    processCameraProvider!
-        .bindToLifecycle(cameraSelector!, <UseCase>[videoCapture!]);
-    videoOutputPath =
-        await SystemServices.getTempFilePath(_videoPrefix, '.temp');
-    pendingRecording = await recorder!.prepareRecording(videoOutputPath!);
-    recording = await pendingRecording!.start();
-  }
-
-  /// Stops the video recording and returns the file where it was saved.
-  @override
-  Future<XFile> stopVideoRecording(int cameraId) async {
-    recording!.close();
-    recording = null;
-    pendingRecording = null;
-    return XFile(videoOutputPath!);
-  }
-
-  /// Pause video recording.
-  @override
-  Future<void> pauseVideoRecording(int cameraId) async {
-    assert(recording != null);
-    recording!.pause();
-  }
-
-  /// Resume video recording after pausing.
-  @override
-  Future<void> resumeVideoRecording(int cameraId) async {
-    assert(recording != null);
-    recording!.resume();
-  }
-
   /// Returns an [ImageCapture] configured with specified flash mode and
   /// target resolution.
   @visibleForTesting
@@ -493,5 +502,17 @@ class AndroidCameraCameraX extends CameraPlatform {
       int? flashMode, ResolutionInfo? targetResolution) {
     return ImageCapture(
         targetFlashMode: flashMode, targetResolution: targetResolution);
+  }
+
+  /// Returns a [Recorder] for use in video capture.
+  @visibleForTesting
+  Recorder createRecorder() {
+    return Recorder();
+  }
+
+  /// Returns a [VideoCapture] associated with the provided [Recorder].
+  @visibleForTesting
+  Future<VideoCapture> createVideoCapture(Recorder recorder) async {
+    return VideoCapture.withOutput(recorder);
   }
 }
