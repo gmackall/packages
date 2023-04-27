@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:camera_android_camerax/src/camerax_library.g.dart';
 import 'package:camera_android_camerax/src/instance_manager.dart';
 import 'package:camera_android_camerax/src/recorder.dart';
 import 'package:camera_android_camerax/src/video_capture.dart';
@@ -70,5 +71,19 @@ void main() {
     when(mockApi.getOutput(videoCaptureId)).thenReturn(mockRecorderId);
     expect(await videoCapture.getOutput(), mockRecorder);
     verify(mockApi.getOutput(videoCaptureId));
+  });
+
+  test('flutterApiCreateTest', () async {
+    final InstanceManager instanceManager = InstanceManager(
+      onWeakReferenceRemoved: (_) {},
+    );
+
+    final VideoCaptureFlutterApi flutterApi = VideoCaptureFlutterApiImpl(
+      instanceManager: instanceManager,
+    );
+
+    flutterApi.create(0);
+
+    expect(instanceManager.getInstanceWithWeakReference(0), isA<VideoCapture>());
   });
 }

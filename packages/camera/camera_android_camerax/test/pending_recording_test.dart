@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:camera_android_camerax/src/camerax_library.g.dart';
 import 'package:camera_android_camerax/src/instance_manager.dart';
 import 'package:camera_android_camerax/src/pending_recording.dart';
 import 'package:camera_android_camerax/src/recording.dart';
@@ -44,5 +45,19 @@ void main() {
     when(mockApi.start(pendingRecordingId)).thenReturn(mockRecordingId);
     expect(await pendingRecording.start(), mockRecording);
     verify(mockApi.start(pendingRecordingId));
+  });
+
+  test('flutterApiCreateTest', () async {
+    final InstanceManager instanceManager = InstanceManager(
+      onWeakReferenceRemoved: (_) {},
+    );
+
+    final PendingRecordingFlutterApi flutterApi = PendingRecordingFlutterApiImpl(
+      instanceManager: instanceManager,
+    );
+
+    flutterApi.create(0);
+
+    expect(instanceManager.getInstanceWithWeakReference(0), isA<PendingRecording>());
   });
 }
