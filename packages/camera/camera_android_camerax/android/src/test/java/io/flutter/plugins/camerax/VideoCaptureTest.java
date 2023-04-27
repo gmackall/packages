@@ -6,9 +6,11 @@ package io.flutter.plugins.camerax;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import androidx.camera.video.Recorder;
 import androidx.camera.video.VideoCapture;
@@ -21,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;import java.util.Objects;
 
 @RunWith(RobolectricTestRunner.class)
 public class VideoCaptureTest {
@@ -30,6 +32,7 @@ public class VideoCaptureTest {
   @Mock public BinaryMessenger mockBinaryMessenger;
   @Mock public Recorder mockRecorder;
   @Mock public VideoCaptureFlutterApiImpl mockVideoCaptureFlutterApi;
+  @Mock public VideoCapture<Recorder> mockVideoCapture;
 
   InstanceManager testInstanceManager;
 
@@ -82,5 +85,16 @@ public class VideoCaptureTest {
 
     testInstanceManager.remove(recorderId);
     testInstanceManager.remove(videoCaptureId);
+  }
+
+  @Test
+  public void flutterApiCreateTest() {
+    final VideoCaptureFlutterApiImpl spyVideoCaptureFlutterApi =
+            spy(new VideoCaptureFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
+    spyVideoCaptureFlutterApi.create(mockVideoCapture, reply -> {});
+
+    final long identifier =
+            Objects.requireNonNull(testInstanceManager.getIdentifierForStrongReference(mockVideoCapture));
+    verify(spyVideoCaptureFlutterApi).create(eq(identifier), any());
   }
 }

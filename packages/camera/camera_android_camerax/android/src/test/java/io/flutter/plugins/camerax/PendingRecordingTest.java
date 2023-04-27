@@ -17,7 +17,7 @@ import android.content.Context;
 import androidx.camera.video.PendingRecording;
 import androidx.camera.video.Recording;
 import io.flutter.plugin.common.BinaryMessenger;
-import java.util.concurrent.Executor;
+import java.util.Objects;import java.util.concurrent.Executor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -67,5 +67,17 @@ public class PendingRecordingTest {
 
     testInstanceManager.remove(mockPendingRecordingId);
     testInstanceManager.remove(mockRecordingId);
+  }
+
+  @Test
+  public void flutterApiCreateTest() {
+    final PendingRecordingFlutterApiImpl spyPendingRecordingFlutterApi =
+            spy(new PendingRecordingFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
+
+    spyPendingRecordingFlutterApi.create(mockPendingRecording, reply -> {});
+
+    final long identifier =
+            Objects.requireNonNull(testInstanceManager.getIdentifierForStrongReference(mockPendingRecording));
+    verify(spyPendingRecordingFlutterApi).create(eq(identifier), any());
   }
 }

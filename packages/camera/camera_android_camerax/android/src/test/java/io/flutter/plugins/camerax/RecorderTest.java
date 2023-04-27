@@ -7,6 +7,7 @@ package io.flutter.plugins.camerax;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -21,7 +22,7 @@ import androidx.camera.video.Recorder;
 import androidx.test.core.app.ApplicationProvider;
 import io.flutter.plugin.common.BinaryMessenger;
 import java.io.File;
-import java.util.concurrent.Executor;
+import java.util.Objects;import java.util.concurrent.Executor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -152,5 +153,17 @@ public class RecorderTest {
           recorderHostApi.prepareRecording(Long.valueOf(recorderId), null);
         });
     testInstanceManager.remove(Long.valueOf(recorderId));
+  }
+
+  @Test
+  public void flutterApiCreateTest() {
+    final RecorderFlutterApiImpl spyRecorderFlutterApi =
+            spy(new RecorderFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
+
+    spyRecorderFlutterApi.create(mockRecorder, null, null, reply -> {});
+
+    final long identifier =
+            Objects.requireNonNull(testInstanceManager.getIdentifierForStrongReference(mockRecorder));
+    verify(spyRecorderFlutterApi).create(eq(identifier), eq(null), eq(null), any());
   }
 }

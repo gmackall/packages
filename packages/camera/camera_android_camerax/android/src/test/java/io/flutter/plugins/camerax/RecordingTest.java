@@ -4,6 +4,8 @@
 
 package io.flutter.plugins.camerax;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -17,7 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;import java.util.Objects;
 
 @RunWith(RobolectricTestRunner.class)
 public class RecordingTest {
@@ -92,5 +94,17 @@ public class RecordingTest {
 
     verify(mockRecording).pause();
     testInstanceManager.remove(recordingId);
+  }
+
+  @Test
+  public void flutterApiCreateTest() {
+    final RecordingFlutterApiImpl spyRecordingFlutterApi =
+            spy(new RecordingFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
+
+    spyRecordingFlutterApi.create(mockRecording, reply -> {});
+
+    final long identifier =
+            Objects.requireNonNull(testInstanceManager.getIdentifierForStrongReference(mockRecording));
+    verify(spyRecordingFlutterApi).create(eq(identifier), any());
   }
 }
