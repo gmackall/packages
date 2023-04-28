@@ -353,26 +353,39 @@ class AndroidCameraCameraX extends CameraPlatform {
   }
 
   /// Stops the video recording and returns the file where it was saved.
+  /// Throws a CameraException if the recording is currently null, or if the
+  /// videoOutputPath is null.
   @override
   Future<XFile> stopVideoRecording(int cameraId) async {
+    if (recording == null) {
+      throw CameraException('videoRecordingFailed', 'Attempting to stop a '
+          'video recording while no recording is in progress.');
+    }
+    if (videoOutputPath == null) {
+      throw CameraException('INVALID_PATH', 'The platform did not return a path '
+          'while reporting success. The platform should always '
+          'return a valid path or report an error.');
+    }
     recording!.close();
     recording = null;
     pendingRecording = null;
     return XFile(videoOutputPath!);
   }
 
-  /// Pause video recording.
+  /// Pause the current video recording if it is not null.
   @override
   Future<void> pauseVideoRecording(int cameraId) async {
-    assert(recording != null);
-    recording!.pause();
+    if (recording != null) {
+      recording!.pause();
+    }
   }
 
-  /// Resume video recording after pausing.
+  /// Resume the current video recording if it is not null.
   @override
   Future<void> resumeVideoRecording(int cameraId) async {
-    assert(recording != null);
-    recording!.resume();
+    if (recording != null) {
+      recording!.resume();
+    }
   }
 
   // Methods for binding UseCases to the lifecycle of the camera controlled
