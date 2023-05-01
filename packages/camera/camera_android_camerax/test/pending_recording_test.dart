@@ -10,11 +10,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'android_camera_camerax_test.mocks.dart';
 import 'pending_recording_test.mocks.dart';
 import 'test_camerax_library.g.dart';
 
-@GenerateMocks(<Type>[TestPendingRecordingHostApi, TestInstanceManagerHostApi])
+@GenerateMocks(<Type>[TestPendingRecordingHostApi, TestInstanceManagerHostApi, Recording])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 

@@ -3,9 +3,13 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'dart:async' as _i5;
+
+import 'package:camera_android_camerax/src/pending_recording.dart' as _i4;
+import 'package:camera_android_camerax/src/recording.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
-import 'test_camerax_library.g.dart' as _i2;
+import 'test_camerax_library.g.dart' as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -18,11 +22,21 @@ import 'test_camerax_library.g.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeRecording_0 extends _i1.SmartFake implements _i2.Recording {
+  _FakeRecording_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [TestRecorderHostApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTestRecorderHostApi extends _i1.Mock
-    implements _i2.TestRecorderHostApi {
+    implements _i3.TestRecorderHostApi {
   MockTestRecorderHostApi() {
     _i1.throwOnMissingStub(this);
   }
@@ -81,7 +95,7 @@ class MockTestRecorderHostApi extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTestInstanceManagerHostApi extends _i1.Mock
-    implements _i2.TestInstanceManagerHostApi {
+    implements _i3.TestInstanceManagerHostApi {
   MockTestInstanceManagerHostApi() {
     _i1.throwOnMissingStub(this);
   }
@@ -94,4 +108,28 @@ class MockTestInstanceManagerHostApi extends _i1.Mock
         ),
         returnValueForMissingStub: null,
       );
+}
+
+/// A class which mocks [PendingRecording].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPendingRecording extends _i1.Mock implements _i4.PendingRecording {
+  MockPendingRecording() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Future<_i2.Recording> start() => (super.noSuchMethod(
+        Invocation.method(
+          #start,
+          [],
+        ),
+        returnValue: _i5.Future<_i2.Recording>.value(_FakeRecording_0(
+          this,
+          Invocation.method(
+            #start,
+            [],
+          ),
+        )),
+      ) as _i5.Future<_i2.Recording>);
 }
