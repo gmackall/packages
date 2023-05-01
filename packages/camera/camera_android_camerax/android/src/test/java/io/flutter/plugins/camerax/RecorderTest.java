@@ -22,7 +22,8 @@ import androidx.camera.video.Recorder;
 import androidx.test.core.app.ApplicationProvider;
 import io.flutter.plugin.common.BinaryMessenger;
 import java.io.File;
-import java.util.Objects;import java.util.concurrent.Executor;
+import java.util.Objects;
+import java.util.concurrent.Executor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -158,12 +159,12 @@ public class RecorderTest {
   @Test
   public void flutterApiCreateTest() {
     final RecorderFlutterApiImpl spyRecorderFlutterApi =
-            spy(new RecorderFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
+        spy(new RecorderFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
 
     spyRecorderFlutterApi.create(mockRecorder, null, null, reply -> {});
 
     final long identifier =
-            Objects.requireNonNull(testInstanceManager.getIdentifierForStrongReference(mockRecorder));
+        Objects.requireNonNull(testInstanceManager.getIdentifierForStrongReference(mockRecorder));
     verify(spyRecorderFlutterApi).create(eq(identifier), eq(null), eq(null), any());
   }
 }

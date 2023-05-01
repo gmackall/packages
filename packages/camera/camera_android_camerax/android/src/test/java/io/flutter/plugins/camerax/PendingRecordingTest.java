@@ -11,13 +11,16 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import androidx.camera.video.PendingRecording;
-import androidx.camera.video.Recording;import androidx.camera.video.VideoRecordEvent;
+import androidx.camera.video.Recording;
+import androidx.camera.video.VideoRecordEvent;
 import io.flutter.plugin.common.BinaryMessenger;
-import java.util.Objects;import java.util.concurrent.Executor;
+import java.util.Objects;
+import java.util.concurrent.Executor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -75,14 +78,14 @@ public class PendingRecordingTest {
   @Test
   public void testHandleVideoRecordEventSendsError() {
     PendingRecordingHostApiImpl pendingRecordingHostApi =
-            new PendingRecordingHostApiImpl(mockBinaryMessenger, testInstanceManager, mockContext);
+        new PendingRecordingHostApiImpl(mockBinaryMessenger, testInstanceManager, mockContext);
     pendingRecordingHostApi.systemServicesFlutterApi = mockSystemServicesFlutterApi;
     final String eventMessage = "example failure message";
 
     when(event.hasError()).thenReturn(true);
     when(event.getCause()).thenReturn(throwable);
     when(throwable.toString()).thenReturn(eventMessage);
-    doNothing().when(mockSystemServicesFlutterApi).sendCameraError(any(),any());
+    doNothing().when(mockSystemServicesFlutterApi).sendCameraError(any(), any());
 
     pendingRecordingHostApi.handleVideoRecordEvent(event);
 
@@ -92,12 +95,13 @@ public class PendingRecordingTest {
   @Test
   public void flutterApiCreateTest() {
     final PendingRecordingFlutterApiImpl spyPendingRecordingFlutterApi =
-            spy(new PendingRecordingFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
+        spy(new PendingRecordingFlutterApiImpl(mockBinaryMessenger, testInstanceManager));
 
     spyPendingRecordingFlutterApi.create(mockPendingRecording, reply -> {});
 
     final long identifier =
-            Objects.requireNonNull(testInstanceManager.getIdentifierForStrongReference(mockPendingRecording));
+        Objects.requireNonNull(
+            testInstanceManager.getIdentifierForStrongReference(mockPendingRecording));
     verify(spyPendingRecordingFlutterApi).create(eq(identifier), any());
   }
 }

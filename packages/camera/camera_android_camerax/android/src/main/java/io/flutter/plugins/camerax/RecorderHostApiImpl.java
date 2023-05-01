@@ -75,8 +75,8 @@ public class RecorderHostApiImpl implements RecorderHostApi {
   }
 
   /**
-   * Uses the provided {@link Recorder} to prepare a recording that will
-   * be saved to a file at the provided path.
+   * Uses the provided {@link Recorder} to prepare a recording that will be saved to a file at the
+   * provided path.
    */
   @NonNull
   @Override
