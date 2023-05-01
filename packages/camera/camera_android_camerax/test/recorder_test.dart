@@ -12,7 +12,8 @@ import 'package:mockito/mockito.dart';
 import 'recorder_test.mocks.dart';
 import 'test_camerax_library.g.dart';
 
-@GenerateMocks(<Type>[TestRecorderHostApi, TestInstanceManagerHostApi, PendingRecording])
+@GenerateMocks(
+    <Type>[TestRecorderHostApi, TestInstanceManagerHostApi, PendingRecording])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 

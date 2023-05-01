@@ -13,7 +13,8 @@ import 'package:mockito/mockito.dart';
 import 'test_camerax_library.g.dart';
 import 'video_capture_test.mocks.dart';
 
-@GenerateMocks(<Type>[TestVideoCaptureHostApi, TestInstanceManagerHostApi, Recorder])
+@GenerateMocks(
+    <Type>[TestVideoCaptureHostApi, TestInstanceManagerHostApi, Recorder])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -83,6 +84,7 @@ void main() {
 
     flutterApi.create(0);
 
-    expect(instanceManager.getInstanceWithWeakReference(0), isA<VideoCapture>());
+    expect(
+        instanceManager.getInstanceWithWeakReference(0), isA<VideoCapture>());
   });
 }

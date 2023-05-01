@@ -13,7 +13,8 @@ import 'package:mockito/mockito.dart';
 import 'pending_recording_test.mocks.dart';
 import 'test_camerax_library.g.dart';
 
-@GenerateMocks(<Type>[TestPendingRecordingHostApi, TestInstanceManagerHostApi, Recording])
+@GenerateMocks(
+    <Type>[TestPendingRecordingHostApi, TestInstanceManagerHostApi, Recording])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -51,12 +52,14 @@ void main() {
       onWeakReferenceRemoved: (_) {},
     );
 
-    final PendingRecordingFlutterApi flutterApi = PendingRecordingFlutterApiImpl(
+    final PendingRecordingFlutterApi flutterApi =
+        PendingRecordingFlutterApiImpl(
       instanceManager: instanceManager,
     );
 
     flutterApi.create(0);
 
-    expect(instanceManager.getInstanceWithWeakReference(0), isA<PendingRecording>());
+    expect(instanceManager.getInstanceWithWeakReference(0),
+        isA<PendingRecording>());
   });
 }

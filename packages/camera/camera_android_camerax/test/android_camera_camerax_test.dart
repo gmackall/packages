@@ -414,7 +414,9 @@ void main() {
     expect(previewTexture.textureId, equals(textureId));
   });
 
-  test('startVideoRecording binds video capture use case and starts the recording', () async {
+  test(
+      'startVideoRecording binds video capture use case and starts the recording',
+      () async {
     //Set up mocks and constants.
     final MockAndroidCameraCameraX camera = MockAndroidCameraCameraX();
     camera.processCameraProvider = MockProcessCameraProvider();
@@ -424,25 +426,29 @@ void main() {
     camera.camera = MockCamera();
     final MockPendingRecording mockPendingRecording = MockPendingRecording();
     final MockRecording mockRecording = MockRecording();
-    final TestSystemServicesHostApi mockSystemServicesApi = MockTestSystemServicesHostApi();
+    final TestSystemServicesHostApi mockSystemServicesApi =
+        MockTestSystemServicesHostApi();
     TestSystemServicesHostApi.setup(mockSystemServicesApi);
 
     const int cameraId = 17;
     const String outputPath = '/temp/MOV123.temp';
 
     // Mock method calls.
-    when(mockSystemServicesApi.getTempFilePath(camera.videoPrefix, '.temp')).thenReturn(outputPath);
-    when(camera.testRecorder.prepareRecording(outputPath)).thenAnswer((_) async => mockPendingRecording);
+    when(mockSystemServicesApi.getTempFilePath(camera.videoPrefix, '.temp'))
+        .thenReturn(outputPath);
+    when(camera.testRecorder.prepareRecording(outputPath))
+        .thenAnswer((_) async => mockPendingRecording);
     when(mockPendingRecording.start()).thenAnswer((_) async => mockRecording);
-    when(camera.processCameraProvider!.isBound(camera.videoCapture!)).thenAnswer((_) async => false);
-    when(camera.processCameraProvider!
-        .bindToLifecycle(camera.cameraSelector!,
-        <UseCase>[camera.videoCapture!])).thenAnswer((_) async => camera.camera!);
+    when(camera.processCameraProvider!.isBound(camera.videoCapture!))
+        .thenAnswer((_) async => false);
+    when(camera.processCameraProvider!.bindToLifecycle(
+            camera.cameraSelector!, <UseCase>[camera.videoCapture!]))
+        .thenAnswer((_) async => camera.camera!);
 
     await camera.startVideoRecording(cameraId);
 
-    verify(camera.processCameraProvider!
-        .bindToLifecycle(camera.cameraSelector!, <UseCase>[camera.videoCapture!]));
+    verify(camera.processCameraProvider!.bindToLifecycle(
+        camera.cameraSelector!, <UseCase>[camera.videoCapture!]));
     expect(camera.pendingRecording, equals(mockPendingRecording));
     expect(camera.recording, mockRecording);
   });
