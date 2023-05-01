@@ -680,6 +680,7 @@ class MockAndroidCameraCameraX extends AndroidCameraCameraX {
     return Future<VideoCapture>.value(testVideoCapture);
   }
 
+  @override
   ImageAnalysis createImageAnalysis(ResolutionInfo? targetResolution) {
     return mockImageAnalysis;
   }
