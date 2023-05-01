@@ -64,10 +64,12 @@ public class CameraXProxy {
   }
 
   /** Creates an instance of {@link Recorder.Builder}. */
+  @NonNull
   public Recorder.Builder createRecorderBuilder() {
     return new Recorder.Builder();
   }
 
+  @NonNull
   public ImageCapture.Builder createImageCaptureBuilder() {
     return new ImageCapture.Builder();
   }

@@ -71,7 +71,7 @@ public class PendingRecordingHostApiImpl implements PendingRecordingHostApi {
    * encountered using {@link SystemServicesFlutterApiImpl}.
    */
   @VisibleForTesting
-  public void handleVideoRecordEvent(VideoRecordEvent event) {
+  public void handleVideoRecordEvent(@NonNull VideoRecordEvent event) {
     if (event instanceof VideoRecordEvent.Finalize) {
       VideoRecordEvent.Finalize castedEvent = (VideoRecordEvent.Finalize) event;
       if (castedEvent.hasError()) {
