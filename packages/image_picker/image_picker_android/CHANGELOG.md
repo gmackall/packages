@@ -1,3 +1,7 @@
+## 0.8.6+12
+
+* Bumps androidx.activity:activity from 1.6.1 to 1.7.0.
+
 ## 0.8.6+11
 
 * Updates gradle to 7.6.1.
