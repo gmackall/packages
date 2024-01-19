@@ -59,12 +59,17 @@ typedef PurchasesUpdatedListener = void Function(
 /// transparently.
 class BillingClient {
   /// Creates a billing client.
-  BillingClient(PurchasesUpdatedListener onPurchasesUpdated) {
+  BillingClient(PurchasesUpdatedListener onPurchasesUpdated, {this.enableAlternativeBillingOnly = false}) {
     channel.setMethodCallHandler(callHandler);
     _callbacks[kOnPurchasesUpdated] = <PurchasesUpdatedListener>[
       onPurchasesUpdated
     ];
   }
+
+  // Whether or not to enable alternative billing only when creating the native
+  // BillingClient object.
+  // See https://developer.android.com/reference/com/android/billingclient/api/BillingClient.Builder#enableAlternativeBillingOnly().
+  final bool enableAlternativeBillingOnly;
 
   // Occasionally methods in the native layer require a Dart callback to be
   // triggered in response to a Java callback. For example,
@@ -118,6 +123,7 @@ class BillingClient {
                 'BillingClient#startConnection(BillingClientStateListener)',
                 <String, dynamic>{
               'handle': disconnectCallbacks.length - 1,
+              'enableAlternativeBillingOnly' : enableAlternativeBillingOnly,
             })) ??
         <String, dynamic>{});
   }

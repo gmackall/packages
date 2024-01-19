@@ -144,7 +144,9 @@ class MethodCallHandlerImpl
         isReady(result);
         break;
       case MethodNames.START_CONNECTION:
-        startConnection((int) call.argument("handle"), result);
+        startConnection((int) call.argument("handle"),
+                (boolean) call.argument("enableAlternativeBillingOnly"),
+                result);
         break;
       case MethodNames.END_CONNECTION:
         endConnection(result);
@@ -408,9 +410,11 @@ class MethodCallHandlerImpl
     result.success(serialized);
   }
 
-  private void startConnection(final int handle, final MethodChannel.Result result) {
+  private void startConnection(final int handle, boolean enableAlternativeBillingOnly, final MethodChannel.Result result) {
     if (billingClient == null) {
-      billingClient = billingClientFactory.createBillingClient(applicationContext, methodChannel);
+      billingClient = billingClientFactory.createBillingClient(applicationContext,
+              enableAlternativeBillingOnly,
+              methodChannel);
     }
 
     billingClient.startConnection(

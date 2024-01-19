@@ -19,5 +19,5 @@ interface BillingClientFactory {
    * @param channel The method channel used to create the {@link BillingClient}.
    * @return The {@link BillingClient} object that is created.
    */
-  BillingClient createBillingClient(@NonNull Context context, @NonNull MethodChannel channel);
+  BillingClient createBillingClient(@NonNull Context context, boolean enableAlternativeBillingOnly, @NonNull MethodChannel channel);
 }
