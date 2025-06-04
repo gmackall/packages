@@ -579,50 +579,40 @@ class GoogleMapsFlutterAndroid extends GoogleMapsFlutterPlatform {
     );
 
     const String viewType = 'plugins.flutter.dev/google_maps_android';
-    if (useAndroidViewSurface) {
-      return PlatformViewLink(
-        viewType: viewType,
-        surfaceFactory: (
+
+    return PlatformViewLink(
+      viewType: viewType,
+      surfaceFactory: (
           BuildContext context,
           PlatformViewController controller,
-        ) {
-          return AndroidViewSurface(
-            controller: controller as AndroidViewController,
-            gestureRecognizers: widgetConfiguration.gestureRecognizers,
-            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-          );
-        },
-        onCreatePlatformView: (PlatformViewCreationParams params) {
-          final AndroidViewController controller =
-              PlatformViewsService.initExpensiveAndroidView(
-            id: params.id,
-            viewType: viewType,
-            layoutDirection: widgetConfiguration.textDirection,
-            creationParams: creationParams,
-            creationParamsCodec: MapsApi.pigeonChannelCodec,
-            onFocus: () => params.onFocusChanged(true),
-          );
-          controller.addOnPlatformViewCreatedListener(
-            params.onPlatformViewCreated,
-          );
-          controller.addOnPlatformViewCreatedListener(
-            onPlatformViewCreated,
-          );
+          ) {
+        return AndroidViewSurface(
+          controller: controller as AndroidViewController,
+          gestureRecognizers: widgetConfiguration.gestureRecognizers,
+          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+        );
+      },
+      onCreatePlatformView: (PlatformViewCreationParams params) {
+        final AndroidViewController controller =
+        PlatformViewsService.initHybridAndroidView(
+          id: params.id,
+          viewType: viewType,
+          layoutDirection: widgetConfiguration.textDirection,
+          creationParams: creationParams,
+          creationParamsCodec: MapsApi.pigeonChannelCodec,
+          onFocus: () => params.onFocusChanged(true),
+        );
+        controller.addOnPlatformViewCreatedListener(
+          params.onPlatformViewCreated,
+        );
+        controller.addOnPlatformViewCreatedListener(
+          onPlatformViewCreated,
+        );
 
-          controller.create();
-          return controller;
-        },
-      );
-    } else {
-      return AndroidView(
-        viewType: viewType,
-        onPlatformViewCreated: onPlatformViewCreated,
-        gestureRecognizers: widgetConfiguration.gestureRecognizers,
-        layoutDirection: widgetConfiguration.textDirection,
-        creationParams: creationParams,
-        creationParamsCodec: MapsApi.pigeonChannelCodec,
-      );
-    }
+        controller.create();
+        return controller;
+      },
+    );
   }
 
   @override

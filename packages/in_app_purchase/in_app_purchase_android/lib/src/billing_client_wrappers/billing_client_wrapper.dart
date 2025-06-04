@@ -127,7 +127,7 @@ class BillingClient {
   /// [`BillingClient#queryProductDetailsAsync(QueryProductDetailsParams, ProductDetailsResponseListener)`](https://developer.android.com/reference/com/android/billingclient/api/BillingClient#queryProductDetailsAsync(com.android.billingclient.api.QueryProductDetailsParams,%20com.android.billingclient.api.ProductDetailsResponseListener).
   /// Instead of taking a callback parameter, it returns a Future
   /// [ProductDetailsResponseWrapper]. It also takes the values of
-  /// `ProductDetailsParams` as direct arguments instead of requiring it
+  /// `ProductDetailsParams` asi direct arguments instead of requiring it
   /// constructed and passed in as a class.
   Future<ProductDetailsResponseWrapper> queryProductDetails({
     required List<ProductWrapper> productList,
