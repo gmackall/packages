@@ -39,7 +39,7 @@ class PlatformViewPlayer extends StatelessWidget {
           );
         },
         onCreatePlatformView: (PlatformViewCreationParams params) {
-          return PlatformViewsService.initSurfaceAndroidView(
+          return PlatformViewsService.initHybridAndroidView(
               id: params.id,
               viewType: viewType,
               layoutDirection:
