@@ -1,3 +1,7 @@
+## 3.25.0
+
+* Adds support for retrieving cookies with `PlatformWebViewCookieManager.getCookies`.
+
 ## 3.24.5
 
 * Reverts `3.24.4` to prevent missing `FlutterSceneLifeCycleDelegate` build error.
