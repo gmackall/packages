@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 
 import 'camerax_library.g.dart';
 import 'image_reader_rotated_preview.dart';
+import 'rotated_preview_utils.dart';
 import 'surface_texture_rotated_preview.dart';
 
 /// Widget that rotates the camera preview to be upright according to the
@@ -30,6 +31,8 @@ final class RotatedPreviewDelegate extends StatelessWidget {
     required this.sensorOrientationDegrees,
     required this.cameraIsFrontFacing,
     required this.deviceOrientationManager,
+    this.initialSurfaceRequestTransformationInfo = const SurfaceRequestTransformationInfo(),
+    this.surfaceRequestTransformationInfoStream,
     required this.child,
   });
 
@@ -59,6 +62,14 @@ final class RotatedPreviewDelegate extends StatelessWidget {
   /// Instance required to check the current rotation of the default Android display.
   final DeviceOrientationManager deviceOrientationManager;
 
+  /// The initial `SurfaceRequest.TransformationInfo` metadata for the camera
+  /// preview.
+  final SurfaceRequestTransformationInfo initialSurfaceRequestTransformationInfo;
+
+  /// Stream of changes to the camera preview's
+  /// `SurfaceRequest.TransformationInfo` metadata.
+  final Stream<SurfaceRequestTransformationInfo>? surfaceRequestTransformationInfoStream;
+
   /// The camera preview [Widget] to rotate.
   final Widget child;
 
@@ -70,6 +81,8 @@ final class RotatedPreviewDelegate extends StatelessWidget {
         initialDefaultDisplayRotation,
         deviceOrientationStream,
         deviceOrientationManager,
+        initialSurfaceRequestTransformationInfo: initialSurfaceRequestTransformationInfo,
+        surfaceRequestTransformationInfo: surfaceRequestTransformationInfoStream,
         child: child,
       );
     }
@@ -81,6 +94,8 @@ final class RotatedPreviewDelegate extends StatelessWidget {
         deviceOrientationStream,
         sensorOrientationDegrees,
         deviceOrientationManager,
+        initialSurfaceRequestTransformationInfo: initialSurfaceRequestTransformationInfo,
+        surfaceRequestTransformationInfo: surfaceRequestTransformationInfoStream,
         child: child,
       );
     } else {
@@ -90,6 +105,8 @@ final class RotatedPreviewDelegate extends StatelessWidget {
         deviceOrientationStream,
         sensorOrientationDegrees,
         deviceOrientationManager,
+        initialSurfaceRequestTransformationInfo: initialSurfaceRequestTransformationInfo,
+        surfaceRequestTransformationInfo: surfaceRequestTransformationInfoStream,
         child: child,
       );
     }

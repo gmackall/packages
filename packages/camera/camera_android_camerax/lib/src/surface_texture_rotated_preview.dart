@@ -24,6 +24,8 @@ final class SurfaceTextureRotatedPreview extends StatefulWidget {
     this.initialDefaultDisplayRotation,
     this.deviceOrientationStream,
     this.deviceOrientationManager, {
+    this.initialSurfaceRequestTransformationInfo = const SurfaceRequestTransformationInfo(),
+    this.surfaceRequestTransformationInfo,
     required this.child,
     super.key,
   });
@@ -43,6 +45,14 @@ final class SurfaceTextureRotatedPreview extends StatefulWidget {
   /// Instance required to check the current rotation of the default Android display.
   final DeviceOrientationManager deviceOrientationManager;
 
+  /// The initial `SurfaceRequest.TransformationInfo` metadata for the camera
+  /// preview.
+  final SurfaceRequestTransformationInfo initialSurfaceRequestTransformationInfo;
+
+  /// Stream of changes to the camera preview's
+  /// `SurfaceRequest.TransformationInfo` metadata.
+  final Stream<SurfaceRequestTransformationInfo>? surfaceRequestTransformationInfo;
+
   /// The camera preview [Widget] to rotate.
   final Widget child;
 
@@ -53,7 +63,10 @@ final class SurfaceTextureRotatedPreview extends StatefulWidget {
 final class _SurfaceTextureRotatedPreviewState extends State<SurfaceTextureRotatedPreview> {
   late StreamSubscription<DeviceOrientation> deviceOrientationSubscription;
   late int preappliedRotationQuarterTurns;
+  late int initialDefaultDisplayRotationQuarterTurns;
   late Future<int> defaultDisplayRotationQuarterTurns;
+  late SurfaceRequestTransformationInfo transformationInfo;
+  StreamSubscription<SurfaceRequestTransformationInfo>? transformationInfoSubscription;
 
   Future<int> _getCurrentDefaultDisplayRotationQuarterTurns() async {
     final int currentDefaultDisplayRotationQuarterTurns = await widget.deviceOrientationManager
@@ -66,9 +79,13 @@ final class _SurfaceTextureRotatedPreviewState extends State<SurfaceTextureRotat
     preappliedRotationQuarterTurns = getPreAppliedQuarterTurnsRotationFromDeviceOrientation(
       widget.initialDeviceOrientation,
     );
-    defaultDisplayRotationQuarterTurns = Future<int>.value(
-      getQuarterTurnsFromSurfaceRotationConstant(widget.initialDefaultDisplayRotation),
+    initialDefaultDisplayRotationQuarterTurns = getQuarterTurnsFromSurfaceRotationConstant(
+      widget.initialDefaultDisplayRotation,
     );
+    defaultDisplayRotationQuarterTurns = Future<int>.value(
+      initialDefaultDisplayRotationQuarterTurns,
+    );
+    transformationInfo = widget.initialSurfaceRequestTransformationInfo;
     deviceOrientationSubscription = widget.deviceOrientationStream.listen((
       DeviceOrientation event,
     ) {
@@ -84,12 +101,24 @@ final class _SurfaceTextureRotatedPreviewState extends State<SurfaceTextureRotat
         defaultDisplayRotationQuarterTurns = _getCurrentDefaultDisplayRotationQuarterTurns();
       });
     });
+    transformationInfoSubscription = widget.surfaceRequestTransformationInfo?.listen((
+      SurfaceRequestTransformationInfo event,
+    ) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        transformationInfo = event;
+      });
+    });
     super.initState();
   }
 
   @override
   void dispose() {
     deviceOrientationSubscription.cancel();
+    transformationInfoSubscription?.cancel();
     super.dispose();
   }
 
@@ -99,13 +128,25 @@ final class _SurfaceTextureRotatedPreviewState extends State<SurfaceTextureRotat
       future: defaultDisplayRotationQuarterTurns,
       builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          // Rotated preview according to current default display rotation,
-          // but subtract out rotation applied by the CameraPreview widget
-          // (see camera/camera/lib/src/camera_preview.dart) that is not
-          // correct for this plugin.
+          // Per https://developer.android.com/reference/androidx/camera/core/SurfaceRequest.TransformationInfo#hasCameraTransform(),
+          // if hasCameraTransform() is true, rotate according to the current
+          // default display rotation; otherwise, apply
+          // TransformationInfo.getRotationDegrees() (which rotates the buffer
+          // to Preview's targetRotation,
+          // initialDefaultDisplayRotationQuarterTurns) plus any subsequent
+          // change in display rotation, and subtract out the rotation applied
+          // by the CameraPreview widget (see
+          // camera/camera/lib/src/camera_preview.dart).
           final int currentDefaultDisplayRotation = snapshot.data!;
+          final int displayRotationQuarterTurns = transformationInfo.hasCameraTransform
+              ? currentDefaultDisplayRotation
+              : ((transformationInfo.rotationDegrees ~/ 90) +
+                        currentDefaultDisplayRotation -
+                        initialDefaultDisplayRotationQuarterTurns +
+                        4) %
+                    4;
           final int rotationCorrection =
-              currentDefaultDisplayRotation - preappliedRotationQuarterTurns;
+              displayRotationQuarterTurns - preappliedRotationQuarterTurns;
 
           return RotatedBox(quarterTurns: rotationCorrection, child: widget.child);
         } else {

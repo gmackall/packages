@@ -138,6 +138,12 @@ class PreviewProxyApi extends PigeonApiPreview {
           });
 
       // Provide surface.
+      request.setTransformationInfoListener(
+          Executors.newSingleThreadExecutor(),
+          transformationInfo -> {
+            systemServicesManager.onSurfaceRequestTransformationInfoChanged(
+                transformationInfo.hasCameraTransform(), transformationInfo.getRotationDegrees());
+          });
       surfaceProducer.setSize(
           request.getResolution().getWidth(), request.getResolution().getHeight());
       Surface flutterSurface = surfaceProducer.getForcedNewSurface();

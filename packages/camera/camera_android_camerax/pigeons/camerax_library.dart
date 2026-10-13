@@ -344,6 +344,9 @@ abstract class SystemServicesManager {
 
   late void Function(String errorDescription) onCameraError;
 
+  late void Function(bool hasCameraTransform, int rotationDegrees)?
+  onSurfaceRequestTransformationInfoChanged;
+
   @async
   CameraPermissionsError? requestCameraPermissions(bool enableAudio);
 

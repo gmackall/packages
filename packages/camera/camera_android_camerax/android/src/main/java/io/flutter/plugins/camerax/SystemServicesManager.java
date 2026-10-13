@@ -26,6 +26,9 @@ public abstract class SystemServicesManager {
 
   abstract void onCameraError(@NonNull String description);
 
+  void onSurfaceRequestTransformationInfoChanged(
+      boolean hasCameraTransform, long rotationDegrees) {}
+
   @NonNull
   abstract Context getContext();
 

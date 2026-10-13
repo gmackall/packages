@@ -3,8 +3,32 @@
 // found in the LICENSE file.
 
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 
 import 'camerax_library.dart' show Surface;
+
+/// Transformation metadata from a CameraX `SurfaceRequest.TransformationInfo`
+/// event for the camera preview.
+@internal
+@immutable
+final class SurfaceRequestTransformationInfo {
+  /// Creates a [SurfaceRequestTransformationInfo].
+  const SurfaceRequestTransformationInfo({
+    this.hasCameraTransform = true,
+    this.rotationDegrees = 0,
+  });
+
+  /// Whether the `Surface` contains the camera hardware transform.
+  ///
+  /// See https://developer.android.com/reference/androidx/camera/core/SurfaceRequest.TransformationInfo#hasCameraTransform().
+  final bool hasCameraTransform;
+
+  /// The clockwise rotation in degrees needed to transform the output from the
+  /// buffer to the target rotation when [hasCameraTransform] is `false`.
+  ///
+  /// See https://developer.android.com/reference/androidx/camera/core/SurfaceRequest.TransformationInfo#getRotationDegrees().
+  final int rotationDegrees;
+}
 
 /// Returns the number of counter-clockwise quarter turns represented by
 /// [surfaceRotationConstant], a [Surface] constant representing a clockwise

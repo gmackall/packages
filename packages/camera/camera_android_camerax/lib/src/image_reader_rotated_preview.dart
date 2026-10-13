@@ -25,6 +25,8 @@ final class ImageReaderRotatedPreview extends StatefulWidget {
     this.deviceOrientation,
     this.sensorOrientationDegrees,
     this.deviceOrientationManager, {
+    this.initialSurfaceRequestTransformationInfo = const SurfaceRequestTransformationInfo(),
+    this.surfaceRequestTransformationInfo,
     required this.child,
     super.key,
   }) : facingSign = 1;
@@ -37,6 +39,8 @@ final class ImageReaderRotatedPreview extends StatefulWidget {
     this.deviceOrientation,
     this.sensorOrientationDegrees,
     this.deviceOrientationManager, {
+    this.initialSurfaceRequestTransformationInfo = const SurfaceRequestTransformationInfo(),
+    this.surfaceRequestTransformationInfo,
     required this.child,
     super.key,
   }) : facingSign = -1;
@@ -59,6 +63,14 @@ final class ImageReaderRotatedPreview extends StatefulWidget {
   /// Instance required to check the current rotation of the default Android display.
   final DeviceOrientationManager deviceOrientationManager;
 
+  /// The initial `SurfaceRequest.TransformationInfo` metadata for the camera
+  /// preview.
+  final SurfaceRequestTransformationInfo initialSurfaceRequestTransformationInfo;
+
+  /// Stream of changes to the camera preview's
+  /// `SurfaceRequest.TransformationInfo` metadata.
+  final Stream<SurfaceRequestTransformationInfo>? surfaceRequestTransformationInfo;
+
   /// Value used to calculate the correct preview rotation.
   ///
   /// 1 if the camera is front facing; -1 if the camera is back facing.
@@ -73,8 +85,11 @@ final class ImageReaderRotatedPreview extends StatefulWidget {
 
 final class _ImageReaderRotatedPreviewState extends State<ImageReaderRotatedPreview> {
   late DeviceOrientation deviceOrientation;
+  late int initialDefaultDisplayRotationDegrees;
   late Future<int> defaultDisplayRotationDegrees;
   late StreamSubscription<DeviceOrientation> deviceOrientationSubscription;
+  late SurfaceRequestTransformationInfo transformationInfo;
+  StreamSubscription<SurfaceRequestTransformationInfo>? transformationInfoSubscription;
 
   Future<int> _getCurrentDefaultDisplayRotationDegrees() async {
     final int currentDefaultDisplayRotationQuarterTurns = await widget.deviceOrientationManager
@@ -86,9 +101,10 @@ final class _ImageReaderRotatedPreviewState extends State<ImageReaderRotatedPrev
   @override
   void initState() {
     deviceOrientation = widget.initialDeviceOrientation;
-    defaultDisplayRotationDegrees = Future<int>.value(
-      getQuarterTurnsFromSurfaceRotationConstant(widget.initialDefaultDisplayRotation) * 90,
-    );
+    initialDefaultDisplayRotationDegrees =
+        getQuarterTurnsFromSurfaceRotationConstant(widget.initialDefaultDisplayRotation) * 90;
+    defaultDisplayRotationDegrees = Future<int>.value(initialDefaultDisplayRotationDegrees);
+    transformationInfo = widget.initialSurfaceRequestTransformationInfo;
     deviceOrientationSubscription = widget.deviceOrientation.listen((DeviceOrientation event) {
       // Ensure that we aren't updating the state if the widget is being destroyed.
       if (!mounted) {
@@ -100,6 +116,17 @@ final class _ImageReaderRotatedPreviewState extends State<ImageReaderRotatedPrev
         defaultDisplayRotationDegrees = _getCurrentDefaultDisplayRotationDegrees();
       });
     });
+    transformationInfoSubscription = widget.surfaceRequestTransformationInfo?.listen((
+      SurfaceRequestTransformationInfo event,
+    ) {
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        transformationInfo = event;
+      });
+    });
     super.initState();
   }
 
@@ -108,11 +135,29 @@ final class _ImageReaderRotatedPreviewState extends State<ImageReaderRotatedPrev
     int currentDefaultDisplayRotationDegrees, {
     required double sensorOrientationDegrees,
     required int sign,
+    required SurfaceRequestTransformationInfo transformationInfo,
   }) {
-    // Rotate the camera preview according to
-    // https://developer.android.com/media/camera/camera2/camera-preview#orientation_calculation.
-    double rotationDegrees =
-        (sensorOrientationDegrees - currentDefaultDisplayRotationDegrees * sign + 360) % 360;
+    double rotationDegrees;
+    if (transformationInfo.hasCameraTransform) {
+      // Rotate the camera preview according to
+      // https://developer.android.com/media/camera/camera2/camera-preview#orientation_calculation.
+      rotationDegrees =
+          (sensorOrientationDegrees - currentDefaultDisplayRotationDegrees * sign + 360) % 360;
+    } else {
+      // Per https://developer.android.com/reference/androidx/camera/core/SurfaceRequest.TransformationInfo#hasCameraTransform(),
+      // when hasCameraTransform() is false, the Surface does not contain the
+      // camera orientation value and the app must instead apply
+      // TransformationInfo.getRotationDegrees() (which rotates the buffer to
+      // Preview's targetRotation, initialDefaultDisplayRotationDegrees), plus
+      // any subsequent change in display rotation.
+      rotationDegrees =
+          ((transformationInfo.rotationDegrees +
+                      currentDefaultDisplayRotationDegrees -
+                      initialDefaultDisplayRotationDegrees +
+                      360) %
+                  360)
+              .toDouble();
+    }
 
     // Then, subtract the rotation already applied in the CameraPreview widget
     // (see camera/camera/lib/src/camera_preview.dart) that is not correct
@@ -127,6 +172,7 @@ final class _ImageReaderRotatedPreviewState extends State<ImageReaderRotatedPrev
   @override
   void dispose() {
     deviceOrientationSubscription.cancel();
+    transformationInfoSubscription?.cancel();
     super.dispose();
   }
 
@@ -142,13 +188,16 @@ final class _ImageReaderRotatedPreviewState extends State<ImageReaderRotatedPrev
             currentDefaultDisplayRotation,
             sensorOrientationDegrees: widget.sensorOrientationDegrees,
             sign: widget.facingSign,
+            transformationInfo: transformationInfo,
           );
 
           // If the camera is front facing (widget.facingSign is 1 for front
-          // cameras, -1 for back cameras), mirror the camera preview
-          // according to the current device orientation.
+          // cameras, -1 for back cameras) and the buffer still contains raw
+          // unmirrored sensor frames (transformationInfo.hasCameraTransform is
+          // true), mirror the camera preview according to the current device
+          // orientation.
           Widget cameraPreview = widget.child;
-          if (widget.facingSign == 1) {
+          if (widget.facingSign == 1 && transformationInfo.hasCameraTransform) {
             if (deviceOrientation == DeviceOrientation.portraitDown ||
                 deviceOrientation == DeviceOrientation.portraitUp) {
               cameraPreview = Transform.scale(scaleY: -1, child: cameraPreview);
